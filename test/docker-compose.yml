@@ -17,3 +17,8 @@ services:
     restart: always
     ports:
       - 8080:8080
+
+
+
+# PAA: cow activity ... +
+# PA: ... + activity type + distance
