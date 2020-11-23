@@ -55,6 +55,58 @@ def checkPositionTables(database):
         cursor.close()
 
 
+def checkInfoTables(database):
+    Mapstatement = "CREATE TABLE IF NOT EXISTS Mapping " \
+                   "(cowID SMALLINT, " \
+                   " insertDate DATE, " \
+                   " kalvnDate DATE, " \
+                   " PRIMARY KEY (cowID, insertDate))"
+
+    Infostatement = "CREATE TABLE IF NOT EXISTS CowInfo " \
+                    "(cowID SMALLINT, " \
+                    " insertDate DATE, " \
+                    " resp INT, " \
+                    " grp SMALLINT, " \
+                    " stat VARCHAR(10), " \
+                    " lakt SMALLINT, " \
+                    " PRIMARY KEY (cowID, insertDate))"
+
+    Sltstatement = "CREATE TABLE IF NOT EXISTS SltInfo " \
+                   "(cowID SMALLINT, " \
+                   " insertDate DATE, " \
+                   " gp SMALLINT, " \
+                   " avsinad DATE, " \
+                   " insem_date DATE, " \
+                   " insem_tjur VARCHAR(50), " \
+                   " forv_kalvn DATE, " \
+                   " tid_ins SMALLINT, " \
+                   " tid_mellan SMALLINT, " \
+                   " PRIMARY KEY (cowID, insertDate))"
+
+    Healthstatement = "CREATE TABLE IF NOT EXISTS HealthInfo " \
+                      "(cowID SMALLINT, " \
+                      " insertDate Date, " \
+                      " 7dag FLOAT, " \
+                      " 100dag INT, " \
+                      " comments VARCHAR(500), " \
+                      " PRIMARY KEY (cowID, insertDate))"
+
+    Milkstatement = "CREATE TABLE IF NOT EXISTS MilkInfo " \
+                    "(cowID SMALLINT," \
+                    " measure_time TIMESTAMP," \
+                    " station SMALLINT," \
+                    " volume FLOAT," \
+                    " PRIMARY KEY (cowID, measure_time))"
+
+    statements = [Milkstatement, Infostatement, Sltstatement, Healthstatement, Mapstatement]
+    for statement in statements:
+        # print(statement)
+        cursor = database.cursor()
+        cursor.execute(statement)
+        database.commit()
+        cursor.close()
+
+
 def connect():
     db = mysql.connector.connect(
         host="localhost",
@@ -63,14 +115,15 @@ def connect():
     )
 
     ## make sure database position exists: if not, create it
-    checkDatabase("position", db)
+    checkDatabase("CowData", db)
 
     ## connect to position database
-    positiondb = mysql.connector.connect(
+    db = mysql.connector.connect(
         host="localhost",
         user="root",
         password="example",
-        database="position"
+        database="CowData"
     )
-    checkPositionTables(positiondb)
-    return positiondb
+    checkPositionTables(db)
+    checkInfoTables(db)
+    return db

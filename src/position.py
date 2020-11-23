@@ -7,23 +7,23 @@ def readData(filename):
     data = read_csv(filename, sep=",")
     return numpy.array(data)
 
-def insert(fileName, Insertor):
+def insertpos(fileName, Insertor):
     start = time.time()
     ## data read
     data = readData(fileName)
 
     ## connect to sql server
-    positiondb = connect()
+    db = connect()
     #
     ## data preparation
     insertor = Insertor()
-    tableName = insertor.type
+    # tableName = insertor.type
     vals = insertor.convert(data)
     # return vals
     ## data insertion
     insertStart = time.time()
-    insertor.insert(positiondb, vals)
-    positiondb.close()
+    insertor.insert(db, vals)
+    db.close()
 
     # time test
     print("Total time: ", time.time()-start)
