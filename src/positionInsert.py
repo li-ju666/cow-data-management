@@ -3,7 +3,7 @@ from pandas import read_csv, unique
 import numpy
 import time
 from src.lib.typeclass import FA, PA, PAA, PC
-
+from os import listdir
 
 # Read data from CSV file
 def readData(filename):
@@ -152,16 +152,38 @@ def insert(fileName, Insertor):
     print("Insertion time: ", time.time()-insertStart)
 
 
-start = time.time()
-path = "data/position/"
-f1 = "FA_20200921T000000UTC.csv"
-f2 = "PA_20200921T000000UTC.csv"
-f3 = "PAA_20200921T000000UTC.csv"
-f4 = "PC_20200921T000000UTC.csv"
-insert(path+f1, FA)
-insert(path+f2, PA)
-insert(path+f3, PAA)
-insert(path+f4, PC)
-print("overall time: ", time.time() - start)
-# insertFA("FA_20200921T000000UTC.csv")
-#vals = insertPA("PA_20200921T000000UTC.csv")
+# start = time.time()
+# path = "data/position/"
+# f1 = "FA_20200921T000000UTC.csv"
+# f2 = "PA_20200921T000000UTC.csv"
+# f3 = "PAA_20200921T000000UTC.csv"
+# f4 = "PC_20200921T000000UTC.csv"
+# insert(path+f1, FA)
+# insert(path+f2, PA)
+# insert(path+f3, PAA)
+# insert(path+f4, PC)
+# print("overall time: ", time.time() - start)
+# # insertFA("FA_20200921T000000UTC.csv")
+# #vals = insertPA("PA_20200921T000000UTC.csv")
+
+# start = time.time()
+# path = "data/position/"
+#
+# files = listdir(path)
+# FAFiles = list(filter((lambda x: x.startswith("FA")), files))
+# PAFiles = list(filter((lambda x: x.startswith("PA")), files))
+# PAAFiles = list(filter((lambda x: x.startswith("PAA")), files))
+# PAFiles = [x for x in PAFiles if x not in PAAFiles]
+# PCFiles = list(filter((lambda x: x.startswith("PC")), files))
+#
+# for file in FAFiles:
+#     insert(path+file, FA)
+#
+# for file in PAFiles:
+#     insert(path+file, PA)
+#
+# for file in PAAFiles:
+#     insert(path+file, PAA)
+#
+# for file in PCFiles:
+#     insert(path+file, PC)
