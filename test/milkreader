@@ -1,0 +1,221 @@
+# -*- coding: utf-8 -*-
+import numpy as np
+import datetime as dt
+
+"""
+This method reads an "Avkastn" file to a numpy array.  
+"""
+def readAvkastfile(textfile):
+    
+    file1 = open(textfile,'r')
+    array = np.genfromtxt(textfile, dtype=None,  skip_header=4, skip_footer=5, missing_values='missing', autostrip=True)
+    file1.close()
+    return array
+
+"""
+This method takes a "Mjölkplats yymmdd" file and transforms it into a list of tuple entries
+containting (cow, date time, milking place). The status of a cow decides how the data is treated:
+
+SINLD - The first consequtive morning milkings are matched to monday/wednesday/friday, the rest is not saved.
+TIDIG - The data is checked for shifted (morning/evening) data. If the data is shifted, entire row is skipped.
+ALL OTHERS - Handled as "TIDIG", but rows with missing entries are skipped.
+
+SUGGESTION: Include Avkast file in the method to match the data with date-time. For this, we must understand the file.
+
+"""
+def readMjolkplatsfile(textfile):
+    #Save file date
+    textfile_arr = textfile.split()
+    date_str = textfile_arr[1]
+    year = int("20" + date_str[0:2])
+    month = int(date_str[2:4])
+    day = int(date_str[4:6])
+
+    #Read lines, ignoring å ä ö
+    file1 = open(textfile,'r', errors='ignore')
+    lines = file1.readlines()
+
+    n_max = len(lines)-6
+    n_line = 0
+
+    #Use only wanted rows (skip 5 first and 5 last)
+    #Creating list of cow_dicts with info + array
+    tuple_list = []
+
+    for line in lines:
+        if (n_line > 4 and n_line < n_max):
+            entry_list = line.split()
+            cow_id = int(entry_list[0])
+            status = entry_list[1]
+            dim = int(entry_list[2]) #DIM not interesting?
+            data = entry_list[3:] #Get milking data in list
+            milk_info_input = [] #List/array to upload
+            #data_arr = np.array(data) #inte än
+            missing = False
+            wrong_order = False
+            #CHECK THE DATA AND SET MISSING/WRONG_ORDER TRUE
+            #Check status
+            
+            if (status == "SINLD"):
+                # For SINLD cows we adjust milking timestamps to morning milkings
+                # on monday, wednesday and friday. 
+                milkPlace = True
+                sinld = True
+                sinldShift = 0 # Shift days caused by SINLD-scheme
+                delay = 0.5
+                for elem in data:
+                    if milkPlace:
+                        mp = elem
+                        milkPlace = False
+                    else:
+                        #Split timestamp into hours & minutes
+                        split_str = elem.split(':')
+                        #For the period of the cow being SINLD, data are recorded for
+                        #monday, wednesday and friday
+                        if sinld: #perhaps irrelavent/redundant
+                            if (int(split_str[0]) < 12):
+                                if (sinldShift%7 == 0):
+                                    d = dt.datetime(year,month,day) - dt.timedelta(days=sinldShift)
+                                    t = dt.time(int(split_str[0]),minute=int(split_str[1]))
+                                    milktime = dt.datetime.combine(d.date(),t)
+                                    milkPlace = True
+                                    tuple_list.append((str(cow_id),str(milktime), str(mp)))
+                                    sinldShift += 3
+                                elif (sinldShift%7 == 3):
+                                    d = dt.datetime(year,month,day) - dt.timedelta(days=sinldShift)
+                                    t = dt.time(int(split_str[0]),minute=int(split_str[1]))
+                                    milktime = dt.datetime.combine(d.date(),t)
+                                    milkPlace = True
+                                    tuple_list.append((str(cow_id),str(milktime), str(mp)))
+                                    sinldShift += 2
+                                elif (sinldShift%7 == 5):
+                                    d = dt.datetime(year,month,day) - dt.timedelta(days=sinldShift)
+                                    t = dt.time(int(split_str[0]),minute=int(split_str[1]))
+                                    milktime = dt.datetime.combine(d.date(),t)
+                                    milkPlace = True
+                                    tuple_list.append((str(cow_id),str(milktime), str(mp)))
+                                    sinldShift += 2
+                                else:
+                                    print("SINLD-shifting encountered an error")
+                            else:
+                                #If the cow is no longer considered SINLD, then we
+                                #cannot match a milking to a date.
+                                sinld = False
+                                break
+
+            elif (status == "TIDIG"):
+                milkPlace = True
+                delay = 0.5
+                newRecords = []
+                broken = False
+                if not (len(data)==30):
+                    for elem in data:
+                        if milkPlace:
+                            mp = elem
+                            milkPlace = False
+                        else:
+                            #Split timestamp into hours & minutes
+                            split_str = elem.split(':')
+
+                            #Check for shifted values
+                            if (delay%1 == 0):
+                                if (int(split_str[0]) < 12):
+                                    #print("small forbidden time value:",elem,"for TIDIG cow",cow_id)
+                                    broken = True
+                                    break
+                            else:
+                                if (int(split_str[0]) > 12):
+                                    #print("large forbidden time value:",elem,"for TIDIG cow",cow_id)
+                                    broken = True
+                                    break
+                            
+                            #Construct timestamp, counting backwards for date
+                            #and reading timestamp for time.
+                            d = dt.datetime(year,month,day) - dt.timedelta(days=np.floor(delay))
+                            t = dt.time(int(split_str[0]),minute=int(split_str[1]))
+                            milktime = dt.datetime.combine(d.date(),t)
+                            newRecords.append((str(cow_id),str(milktime), str(mp)))
+                            delay += 0.5
+                            milkPlace = True
+                    if not broken:
+                        tuple_list.extend(newRecords) #If no data was shifted, add to list   
+
+                else:
+                    for elem in data[:-1]:
+                        if milkPlace:
+                            mp = elem
+                            milkPlace = False
+                            broken = False
+                            newRecords = []
+                        else:
+                            #Split timestamp into hours & minutes
+                            split_str = elem.split(':')
+
+                            #Check for shifted values
+                            if (delay%1 == 0):
+                                if (int(split_str[0]) < 12):
+                                    #print("small forbidden time value:",elem,"for TIDIG cow",cow_id)
+                                    broken = True
+                                    break
+                            else:
+                                if (int(split_str[0]) > 12):
+                                    #print("large forbidden time value:",elem,"for TIDIG cow",cow_id)
+                                    broken = True
+                                    break
+                            
+                            #Construct timestamp, counting backwards for date
+                            #and reading timestamp for time.
+                            d = dt.datetime(year,month,day) - dt.timedelta(days=np.floor(delay))
+                            t = dt.time(int(split_str[0]),minute=int(split_str[1]))
+                            milktime = dt.datetime.combine(d.date(),t)
+                            newRecords.append((str(cow_id),str(milktime), str(mp)))
+                            delay += 0.5
+                            milkPlace = True
+                    if not broken:
+                        tuple_list.extend(newRecords) #If no data was shifted, add to list 
+            else:
+                milkPlace = True
+                delay = 0.5
+                broken = False
+                newRecords = []
+                if not (len(data)==30):
+                    continue #If not full columns, skip cow data
+                for elem in data[:-1]:
+                    if milkPlace:
+                        mp = int(elem)
+                        milkPlace = False
+                    else:
+                        #Split time into hours & minutes
+                        split_str = elem.split(':')
+                        
+                        #Check for shifted values
+                        if (delay%1 == 0):
+                            if (int(split_str[0]) < 12):
+                                #print("small forbidden time value:",elem,"for cow",cow_id)
+                                broken = True
+                                break
+                        else:
+                            if (int(split_str[0]) > 12):
+                                #print("large forbidden time value:",elem,"for cow",cow_id)
+                                broken = True
+                                break
+                            
+                        #Construct timestamp, counting backwards for date
+                        #and reading timestamp for time.
+                        d = dt.datetime(year,month,day) - dt.timedelta(days=np.floor(delay))
+                        t = dt.time(int(split_str[0]),minute=int(split_str[1]))
+                        milktime = dt.datetime.combine(d.date(),t)
+                        newRecords.append((str(cow_id),str(milktime), str(mp)))
+                        delay += 0.5
+                        milkPlace = True
+                if not broken:
+                    tuple_list.extend(newRecords) #If no data was shifted, add to list 
+        n_line += 1 #Count rows in for loop
+    return tuple_list
+ 
+    
+
+a = readAvkastfile('Avkastn 14 dag 200907.txt')
+c = readMjolkplatsfile('Mjölkplats 200907.txt')
+for i in range(30):
+    print(c[i])
