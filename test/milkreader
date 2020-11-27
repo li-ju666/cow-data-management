@@ -5,11 +5,27 @@ import datetime as dt
 """
 This method reads an "Avkastn" file to a numpy array.  
 """
-def readAvkastfile(textfile):
-    
-    file1 = open(textfile,'r')
-    array = np.genfromtxt(textfile, dtype=None,  skip_header=4, skip_footer=5, missing_values='missing', autostrip=True)
-    file1.close()
+def readAvkastfile(textfile, first_upload=False):
+    #add date 0 2345 7 each time
+    #exception first time upload?
+    """" 
+    textfile_arr = textfile.split()
+    date_str = textfile_arr[1]
+    year = int("20" + date_str[0:2])
+    month = int(date_str[2:4])
+    day = int(date_str[4:6])
+    """
+
+    if not first_upload:
+        #file1 = open(textfile,'r', errors='ignore')
+        array = np.genfromtxt(textfile, dtype=None,  skip_header=4, skip_footer=5, missing_values='missing', autostrip=True)
+        
+        print(array[0])
+        #file1.close()
+    else: 
+        file1 = open(textfile,'r')
+        array = np.genfromtxt(textfile, dtype=None,  skip_header=4, skip_footer=5, missing_values='missing', autostrip=True)
+        file1.close()
     return array
 
 """
