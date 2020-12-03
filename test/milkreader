@@ -7,6 +7,7 @@ This method reads an "Avkastn" file to list of tuples (cow_id, date, produced vo
 The method is based on an assumption of overlapping data, only extracting 
 entry akt 23456 8, translating to akt=mon, - ,sat, fri, thu, wed, tue, - ,sun.  
 """
+
 def readAvkastfile(textfile, first_upload=False):
     #add date 0 2345 7 each time
     #exception first time upload?
@@ -47,7 +48,7 @@ This method takes a "Mjölkplats yymmdd" file and transforms it into a list of t
 containting (cow, date time, milking place). The status of a cow decides how the data is treated:
 
 SINLD - The first consequtive morning milkings are matched to monday/wednesday/friday, the rest is not saved.
-TIDIG - The data is checked for shifted (morning/evening) data. If the data is shifted, entire row is skipped.
+TIDIG - The data is checked for shifted (morning/evening) data. If the data is shifted, elements after the shift is skipped.
 ALL OTHERS - Handled as "TIDIG", but rows with missing entries are skipped.
 
 SUGGESTION: Include Avkast file in the method to match the data with date-time. For this, we must understand the file.
@@ -167,8 +168,7 @@ def readMjolkplatsfile(textfile):
                             newRecords.append((str(cow_id),str(milktime), str(mp)))
                             delay += 0.5
                             milkPlace = True
-                    if not broken:
-                        tuple_list.extend(newRecords) #If no data was shifted, add to list   
+                    tuple_list.extend(newRecords) #Add non-shifted entries to list   
 
                 else:
                     for elem in data[:-1]:
@@ -201,8 +201,7 @@ def readMjolkplatsfile(textfile):
                             newRecords.append((str(cow_id),str(milktime), str(mp)))
                             delay += 0.5
                             milkPlace = True
-                    if not broken:
-                        tuple_list.extend(newRecords) #If no data was shifted, add to list 
+                    tuple_list.extend(newRecords) #If no data was shifted, add to list 
             else:
                 milkPlace = True
                 delay = 0.5
@@ -238,8 +237,7 @@ def readMjolkplatsfile(textfile):
                         newRecords.append((str(cow_id),str(milktime), str(mp)))
                         delay += 0.5
                         milkPlace = True
-                if not broken:
-                    tuple_list.extend(newRecords) #If no data was shifted, add to list 
+                tuple_list.extend(newRecords) #Add non-shifted data to list 
         n_line += 1 #Count rows in for loop
     return tuple_list
  
@@ -247,5 +245,5 @@ def readMjolkplatsfile(textfile):
 
 a = readAvkastfile('Avkastn 14 dag 200907.txt') #, first_upload=True) First file uploaded? set true to upload all entries
 c = readMjolkplatsfile('Mjölkplats 200907.txt')
-for i in range(30):
-    print(a[i])
+for i in range(50):
+    print(c[i])
