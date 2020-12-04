@@ -1,5 +1,21 @@
 import numpy as np
+import datetime as dt
+
 """
+Function getTags takes cow_id, start_date, end_date as input and 
+returns a list of tuples (tag_str, start_date, end_date) 
+"""
+def getTagTimes(cow_id, start_d, end_d):
+
+    # 1. connect to database (matching table)
+    # 2. extract * where cow_id=cow_id 
+    # 3. find tag(s) in interval start_d - end_d
+    #   if several tags -> end_date = next start_date 
+    # 
+
+
+"""
+OUTDATED - GET A LIFE!
 This script works as a reference table to match a cow + time interval to 
 one or more tags. This script is currently not saving the list (TODO), should 
 save to a file or something and read when __init__  the ReferenceList. 
