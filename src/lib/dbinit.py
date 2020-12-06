@@ -69,14 +69,16 @@ def checkInfoTables(database):
                     " grp SMALLINT, " \
                     " stat VARCHAR(10), " \
                     " lakt SMALLINT, " \
+                    " kalvn_date DATE, "\
                     " PRIMARY KEY (cowID, insertDate))"
 
-    Sltstatement = "CREATE TABLE IF NOT EXISTS SltInfo " \
+    Driedstatement = "CREATE TABLE IF NOT EXISTS DriedInfo " \
                    "(cowID SMALLINT, " \
                    " insertDate DATE, " \
                    " gp SMALLINT, " \
                    " avsinad DATE, " \
                    " insem_date DATE, " \
+                   " sedan_insem SMALLINT, " \
                    " insem_tjur VARCHAR(50), " \
                    " forv_kalvn DATE, " \
                    " tid_ins SMALLINT, " \
@@ -88,6 +90,7 @@ def checkInfoTables(database):
                       " insertDate Date, " \
                       " 7dag FLOAT, " \
                       " 100dag INT, " \
+                      " handelse_day SMALLINT, " \
                       " comments VARCHAR(500), " \
                       " PRIMARY KEY (cowID, insertDate))"
 
@@ -98,7 +101,7 @@ def checkInfoTables(database):
                     " volume FLOAT," \
                     " PRIMARY KEY (cowID, measure_time))"
 
-    statements = [Milkstatement, Infostatement, Sltstatement, Healthstatement, Mapstatement]
+    statements = [Milkstatement, Infostatement, Driedstatement, Healthstatement, Mapstatement]
     for statement in statements:
         # print(statement)
         cursor = database.cursor()

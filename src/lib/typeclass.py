@@ -1,6 +1,7 @@
 import numpy
 import datetime
 
+
 def timeConvert(time):
     timeFormat = '%Y-%m-%d %H:%M:%S.%f'
     return datetime.datetime.fromtimestamp(time / 1000.0).strftime(timeFormat)
@@ -27,6 +28,7 @@ def insertWithFields(database, vals, type, fields):
         cursor.close()
         startIdx = endIdx
 
+
 def commonConvert(data, tableNames):
     reformated = numpy.column_stack(data)
 
@@ -40,20 +42,13 @@ def commonConvert(data, tableNames):
         dupNum = len(tmp) - len(idx)
         if dupNum != 0:
             print("duplicated number: ", dupNum)
-        vals[name] = tuple(map(tuple, tmp[numpy.sort(idx), ]))
+        vals[name] = tuple(map(tuple, tmp[numpy.sort(idx),]))
         # vals[name] = tuple(map(tuple, reformated[mask][:, 1:]))
     return vals
-    #
-    #
-    # vals = {}
-    # for name in tableNames:
-    #     print("preparing...", name)
-    #     mask = reformated[:, 0] == name
-    #     vals[name] = tuple(map(tuple, reformated[mask][:, 1:]))
-    # return vals
 
 
 dateVec = numpy.vectorize(timeConvert)
+
 
 class FA:
     def __init__(self):
@@ -67,6 +62,7 @@ class FA:
 
     def insert(self, database, vals):
         insertWithFields(database, vals, self.type, self.fields)
+
 
 class PA:
     def __init__(self):
@@ -82,9 +78,7 @@ class PA:
     def insert(self, database, vals):
         insertWithFields(database, vals, self.type, self.fields)
 
-# PAA: type, t1, interval, act, dis, period, dur
-# PAA,2426227,00250573,1600646400000,600000,2,1290,16,228139
-# 0   1       2        3             4      5 6    7  8
+
 class PAA:
     def __init__(self):
         self.type = "PAA"
@@ -101,7 +95,6 @@ class PAA:
         insertWithFields(database, vals, self.type, self.fields)
 
 
-# PC,2432144,00251C90,1600646400756,1600646400756,2835,2681,198
 class PC:
     def __init__(self):
         self.type = "PC"
@@ -111,6 +104,65 @@ class PC:
         print("Converting data")
         reformated = numpy.column_stack((data[:, 2], dateVec(data[:, 3]), dateVec(data[:, 4]), data[:, 5:]))
         return tuple(map(tuple, reformated))
+
+    def insert(self, database, vals):
+        insertWithFields(database, vals, self.type, self.fields)
+
+
+class KO:
+    def __init__(self):
+        self.type1 = "CowInfo"
+        self.fields1 = " (cowID, insertDate, resp, grp, stat, lakt, kalvn_date) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        self.type2 = "DriedInfo"
+        self.fields2 = " (cowID, insertDate, gp, avsinad, insem_date, sedan_insem, insem_tjur, forv_kalvn, " \
+                       "tid_ins, tid_mellan) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+
+    def convert(self, kolista, dried, insertDate):
+        print("Converting data")
+        fileDate = datetime.datetime.strptime(insertDate, "%y%m%d")
+        fileDate = fileDate.strftime("%y-%m-%d")
+        def kalvnDate(x):
+            try:
+                a = datetime.datetime.strptime(x, "%d-%m-%y")
+                return a.strftime("%Y-%m-%d")
+            except:
+                return 'NULL'
+        kalvnVec = numpy.vectorize(kalvnDate)
+        kolista = numpy.column_stack((kolista[:, 0], numpy.repeat(fileDate, len(kolista)), kolista[:, 1],
+                                     kolista[:, 3:6], kalvnVec(kolista[:, 6])))
+
+        dried = numpy.column_stack((dried[:, 0], numpy.repeat(fileDate, len(dried)), dried[:, 1],
+                                    kalvnVec(dried[:, 3]), kalvnVec(dried[:, 7]), dried[:, 8:10],
+                                    kalvnVec(dried[:, 10]), dried[:, 11:]))
+        # def cleanNone(x):
+        #     if x == 'None':
+        #         return 1
+        # NoneVec = numpy.vectorize(cleanNone)
+        def removeNull(x):
+            return tuple(map(lambda x: None if x=='NULL' else x, x))
+        return tuple(map(removeNull, kolista)), tuple(map(removeNull, dried))
+
+    def insert(self, database, kolista, dried):
+        insertWithFields(database, kolista, self.type1, self.fields1)
+        insertWithFields(database, dried, self.type2, self.fields2)
+
+class Health:
+    def __init__(self):
+        self.type = "HealthInfo"
+        self.fields = " (cowID, insertDate, 7dag, 100dag, handelse_day, comments)" \
+                      " VALUES (%s, %s, %s, %s, %s, %s)"
+
+    def convert(self, data, insertDate):
+        print("Converting data")
+        print(data[0,4])
+        print(data[0,5])
+        fileDate = datetime.datetime.strptime(insertDate, "%y%m%d")
+        fileDate = fileDate.strftime("%y-%m-%d")
+        reformated = numpy.column_stack((data[:, 0], numpy.repeat(fileDate, len(data)),
+                                         data[:, -4:]))
+        def removeNull(x):
+            return tuple(map(lambda x: None if x=='NULL' else x, x))
+        return tuple(map(removeNull, reformated))
 
     def insert(self, database, vals):
         insertWithFields(database, vals, self.type, self.fields)

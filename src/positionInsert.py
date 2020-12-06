@@ -1,6 +1,3 @@
-# import mysql.connector
-# from pandas import read_csv
-# import numpy
 import time
 from src.lib.typeclass import FA, PA, PAA, PC
 from src.position import insertpos
