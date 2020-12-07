@@ -58,7 +58,7 @@ ALL OTHERS - Handled as "TIDIG", but rows with missing entries are skipped.
 SUGGESTION: Include Avkast file in the method to match the data with date-time. For this, we must understand the file.
 
 """
-def readMjolkplatsfile(textfile):
+def readMjolkplatsfile(textfile, avkfile=None):
     #Save file date
     textfile_arr = textfile.split()
     date_str = textfile_arr[1]
@@ -69,6 +69,14 @@ def readMjolkplatsfile(textfile):
     #Read lines, ignoring å ä ö
     file1 = open(textfile,'r', errors='ignore')
     lines = file1.readlines()
+    file1.close()
+
+    #Read avkastn file
+    # 1. Read file
+    # 2. Check what cows are relavent
+    #avk_array = np.genfromtxt(textfile, dtype=None,  skip_header=4, skip_footer=5, missing_values='missing', autostrip=True)
+
+
 
     n_max = len(lines)-6
     n_line = 0
