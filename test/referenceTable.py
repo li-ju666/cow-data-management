@@ -15,7 +15,7 @@ def getTagTimes(cow_id, start_d, end_d):
 
 
 """
-OUTDATED - GET A LIFE!
+OUTDATED - Kill this \/
 This script works as a reference table to match a cow + time interval to 
 one or more tags. This script is currently not saving the list (TODO), should 
 save to a file or something and read when __init__  the ReferenceList. 
