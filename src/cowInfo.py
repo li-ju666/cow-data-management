@@ -1,6 +1,6 @@
 from src.lib.dbinit import connect
-from src.lib.read import readKO, readHealth
-from src.lib.typeclass import KO, Health
+from src.lib.read import readKO, readHealth, readMjolkplatsfile, readAvkastfile
+from src.lib.typeclass import KO, Health, Milk
 from re import findall
 
 def insertInfo(fileName):
@@ -35,3 +35,17 @@ def insertHealth(fileName):
     ## data insertion
     health.insert(db, data)
     db.close()
+
+def insertMilk(file1, file2):
+    f1 = readAvkastfile(file1)
+    f2 = readMjolkplatsfile(file2)
+    # db = connect()
+    # for i in f1:
+    #     print(i)
+    milk = Milk()
+    data = milk.convert(f1, f2)
+    for i in data:
+        print(i)
+
+# insertMilk("data/info/Avkastn 14 dag 201012.txt", "data/info/Mjölkplats 201012.txt")
+# # data = readMjolkplatsfile("data/info/Mjölkplats 201026.txt")

@@ -139,7 +139,7 @@ class KO:
         #         return 1
         # NoneVec = numpy.vectorize(cleanNone)
         def removeNull(x):
-            return tuple(map(lambda x: None if x=='NULL' else x, x))
+            return tuple(map(lambda x: None if x == 'NULL' else x, x))
         return tuple(map(removeNull, kolista)), tuple(map(removeNull, dried))
 
     def insert(self, database, kolista, dried):
@@ -161,8 +161,29 @@ class Health:
         reformated = numpy.column_stack((data[:, 0], numpy.repeat(fileDate, len(data)),
                                          data[:, -4:]))
         def removeNull(x):
-            return tuple(map(lambda x: None if x=='NULL' else x, x))
+            return tuple(map(lambda x: None if x == 'NULL' else x, x))
         return tuple(map(removeNull, reformated))
 
     def insert(self, database, vals):
         insertWithFields(database, vals, self.type, self.fields)
+
+class Milk:
+    def __init__(self):
+        self.type = "MilkInfo"
+        self.fields = " (cowID, measure_time, station, volume)" \
+                      " VALUES (%s, %s, %s, %s)"
+
+    def convert(self, volumes, milk):
+        volumes = numpy.array(volumes)
+        milk = numpy.array(milk)
+        volumeDict = dict(map(lambda x: (x[0]+'-'+x[1][:10], x[2]), volumes))
+        for i in volumeDict:
+            print(i)
+        def volHandle(x):
+            try:
+                return volumeDict[x[0]+'-'+x[1][:10]]
+            except:
+                return 'NULL'
+        vols = numpy.array(list(map(volHandle, milk)))
+        milkWithVol = numpy.column_stack((milk, vols))
+        return tuple(map(tuple, milkWithVol))
