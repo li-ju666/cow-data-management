@@ -187,3 +187,15 @@ class Milk:
         vols = numpy.array(list(map(volHandle, milk)))
         milkWithVol = numpy.column_stack((milk, vols))
         return tuple(map(tuple, milkWithVol))
+
+class Reference:
+    def __init__(self):
+        self.type = "Reference"
+        self.fields = " (cowID, tagStr, startDate, endDate)" \
+                      " VALUES (%s, %s, %s, %s)"
+
+    def convert(self, x):
+        return x
+
+    def insert(self, database, vals):
+        insertWithFields(database, vals, self.type, self.fields)

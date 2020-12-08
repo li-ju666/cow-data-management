@@ -56,11 +56,12 @@ def checkPositionTables(database):
 
 
 def checkInfoTables(database):
-    Mapstatement = "CREATE TABLE IF NOT EXISTS Mapping " \
+    Mapstatement = "CREATE TABLE IF NOT EXISTS Reference " \
                    "(cowID SMALLINT, " \
-                   " insertDate DATE, " \
-                   " kalvnDate DATE, " \
-                   " PRIMARY KEY (cowID, insertDate))"
+                   " tagStr VARCHAR(10)," \
+                   " startDate DATE, " \
+                   " endDate DATE, " \
+                   " PRIMARY KEY (cowID, startDate))"
 
     Infostatement = "CREATE TABLE IF NOT EXISTS CowInfo " \
                     "(cowID SMALLINT, " \
