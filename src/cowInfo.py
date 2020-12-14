@@ -117,7 +117,8 @@ def insertRef(kofile):
             cur.close()
         # print(statement)
 #
-# # insertMilk("data/info/Avkastn 14 dag 201012.txt", "data/info/Mjölkplats 201012.txt")
+insertMilk("data/info/Avkastn 14 dag 201012.txt", "data/info/Mjölkplats 201012.txt")
 # # data = readMjolkplatsfile("data/info/Mjölkplats 201026.txt")
 # insertRef("data/info/KO info 201006.txt")
 # newValues = len(list(filter(lambda x: x[2] != 'NULL', ko)))
+# ko,others = readKO("data/info/KO info 201006.txt")

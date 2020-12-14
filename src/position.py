@@ -16,3 +16,4 @@ def insertpos(fileName, Insertor):
     ## data insertion
     insertor.insert(db, vals)
     db.close()
+
