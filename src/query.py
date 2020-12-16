@@ -146,10 +146,20 @@ def positionQuery(cow_id, grp, stats, types, start_date, end_date, start_time, e
             # print(tag)
             start = tag[2].strftime("%y-%m-%d")
             end = tag[3].strftime("%y-%m-%d")
-            statement = 'SELECT * FROM ' + pType + ' WHERE tag_str = ' + quote(tag[1]) + \
-                ' AND ' + queryDict[pType] + '>=' + quote(start+' '+start_time) + ' AND ' + \
-                        queryDict[pType] + '<=' + quote(end+' '+end_time)
-            # print(statement)
+            if periodic:
+                statement = 'SELECT * FROM ' + pType + ' WHERE tag_str = ' + quote(tag[1]) + \
+                            ' AND date(' + queryDict[pType] + \
+                            ') between ' + quote(start) + ' and ' + quote(end) + \
+                            ' AND time(' + queryDict[pType] + \
+                            ') between ' + quote(start_time) + ' and ' + quote(end_time)
+            else:
+                # statement = 'SELECT * FROM ' + pType + ' WHERE tag_str = ' + quote(tag[1]) + \
+                #     ' AND ' + queryDict[pType] + '>=' + quote(start+' '+start_time) + ' AND ' + \
+                #             queryDict[pType] + '<=' + quote(end+' '+end_time)
+                statement = 'SELECT * FROM ' + pType + ' WHERE tag_str = ' + quote(tag[1]) + \
+                    ' AND ' + queryDict[pType] + \
+                    ' between' + quote(start+' '+start_time) + ' and ' + quote(end+' '+end_time)
+            print(statement)
             cur = db.cursor()
             cur.execute(statement)
             tmp = cur.fetchall()
@@ -162,5 +172,4 @@ def positionQuery(cow_id, grp, stats, types, start_date, end_date, start_time, e
         data.to_csv(filename, index=False, header=False)
     return filenames
 
-
-a = positionQuery([], [11], ["DRÄKT"], ['PC', 'PA', 'PAA'], "20-09-22", "20-09-22", "08:15:00", "10:15:00", 9)
+# a = positionQuery([601, 841], [11], ["DRÄKT"], ['PC', 'PA', 'PAA'], "20-09-22", "20-09-25", "08:15:00", "10:15:00", True)
