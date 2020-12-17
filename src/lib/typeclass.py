@@ -161,7 +161,8 @@ class Health:
         reformated = numpy.column_stack((data[:, 0], numpy.repeat(fileDate, len(data)),
                                          data[:, -4:]))
         def removeNull(x):
-            return tuple(map(lambda x: None if x == 'NULL' else x, x))
+            x = tuple(map(lambda x: None if x == 'NULL' else x, x))
+            return x[:-1] + (x[-1].replace("\n", "").replace('"', ''), )
         return tuple(map(removeNull, reformated))
 
     def insert(self, database, vals):
@@ -177,8 +178,8 @@ class Milk:
         volumes = numpy.array(volumes)
         milk = numpy.array(milk)
         volumeDict = dict(map(lambda x: (x[0]+'-'+x[1][:10], x[2]), volumes))
-        for i in volumeDict:
-            print(i)
+        # for i in volumeDict:
+        #     print(i)
         def volHandle(x):
             try:
                 return volumeDict[x[0]+'-'+x[1][:10]]
@@ -186,7 +187,14 @@ class Milk:
                 return 'NULL'
         vols = numpy.array(list(map(volHandle, milk)))
         milkWithVol = numpy.column_stack((milk, vols))
-        return tuple(map(tuple, milkWithVol))
+        def handleMilkWithVol(x):
+            x = list(x)
+            return tuple(None if v == 'NULL' else v for v in x)
+        return tuple(map(handleMilkWithVol, milkWithVol))
+
+    def insert(self, database, vals):
+        print(vals)
+        insertWithFields(database, vals, self.type, self.fields)
 
 class Reference:
     def __init__(self):

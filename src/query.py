@@ -1,17 +1,15 @@
 from src.lib.dbinit import connect
 import datetime
 from pandas import DataFrame as df
+from itertools import compress
 
-# arg1 = cow_id: [int], arg2 = group_no: [int], arg3 = status: [string], arg4 = position_type: [string],
-# arg5 = start_date: string (yy-mm-dd), arg6 = end_date: string(yy-mm-dd), arg7 = start_time:string(hour:min:sec),
-# arg8 = end_time:string(hour:min:sec), arg9 = periodic:bool
-
+# return a quoted string
 def quote(x):
     return '"' + x + '"'
 
-def tagQuery(cow_id, grp, stats, start_date, end_date):
+# function to query all cows with valid time ranges
+def cowQuery(cow_id, grp, stats, start_date, end_date):
     db = connect()
-    ############# TO DO: compare start and end date-time
 
     raw_records = []
     start_date = datetime.datetime.strptime(start_date, "%y-%m-%d")
@@ -90,6 +88,92 @@ def tagQuery(cow_id, grp, stats, start_date, end_date):
 
     # dictionary: key-cowid, value-a list of ranges requested
     cow_dateRange = {k: daysToRanges(v) for k, v in cow_dateRange.items()}
+    return cow_dateRange
+
+# query tags with valid ranges
+def tagQuery(cow_id, grp, stats, start_date, end_date):
+    db = connect()
+    # ############# TO DO: compare start and end date-time
+    #
+    # raw_records = []
+    # start_date = datetime.datetime.strptime(start_date, "%y-%m-%d")
+    # end_date = datetime.datetime.strptime(end_date, "%y-%m-%d")
+    #
+    # localStart = (start_date - datetime.timedelta(days=7)).strftime("%y-%m-%d")
+    # localEnd = end_date.strftime("%y-%m-%d")
+    # if len(cow_id):
+    #     # query by cow id
+    #     for i in cow_id:
+    #         cur = db.cursor()
+    #         statement = 'SELECT cowID, insertDate, stat FROM CowInfo WHERE cowID = ' + str(i) + \
+    #                     ' AND insertDate > ' + quote(localStart) + ' AND insertDate <= ' + quote(localEnd)
+    #         cur.execute(statement)
+    #         raw_records += cur.fetchall()
+    #         cur.close()
+    # elif len(grp):
+    #     # query by group no
+    #     for i in grp:
+    #         cur = db.cursor()
+    #         # WHERE grp = 5 AND insertDate > (startDate - 7) AND insertDate <= (endDate)
+    #         statement = 'SELECT cowID, insertDate, stat FROM CowInfo WHERE grp = ' + str(i) + \
+    #                     ' AND insertDate > ' + quote(localStart) + ' AND insertDate <= ' + quote(localEnd)
+    #         # print(statement)
+    #         cur.execute(statement)
+    #         raw_records += cur.fetchall()
+    #         cur.close()
+    # else:
+    #     # select all records between time range
+    #     cur = db.cursor()
+    #     # WHERE grp = 5 AND insertDate > (startDate - 7) AND insertDate <= (endDate)
+    #     statement = 'SELECT cowID, insertDate, stat FROM CowInfo WHERE insertDate > ' + \
+    #                 quote(localStart) + ' AND insertDate <= ' + quote(localEnd)
+    #     # print(statement)
+    #     cur.execute(statement)
+    #     raw_records += cur.fetchall()
+    #     cur.close()
+    # # convert tuple to list
+    # raw_records = list(map(list, raw_records))
+    # # filter status
+    # raw_records = list(filter(lambda x: x[2] in stats, raw_records))
+    # # define function to get date intersection of valid range of record and requested date range
+    # def DateInsectWithRequested(x):
+    #     x[2] = x[1]+datetime.timedelta(days=7)
+    #     x[1], x[2] = dateIntersect(x[1], x[2], start_date.date(), end_date.date())
+    #     return x
+    # #  get date intersection of valid range of record and requested date range
+    # raw_records = list(map(DateInsectWithRequested, raw_records))
+    # # for each cow, merge all requested valid days
+    # cow_dateRange = {}
+    # for record in raw_records:
+    #     if cow_dateRange.get(record[0]):
+    #         cow_dateRange[record[0]] += (getDays(record[1], record[2]))
+    #     else:
+    #         cow_dateRange[record[0]] = getDays(record[1], record[2])
+    # # function to generate a list of days to several ranges
+    # def daysToRanges(l):
+    #     if not l:
+    #         return []
+    #     l = sorted(list(set(l)))
+    #     # print(l)
+    #     ranges = []
+    #     step = datetime.timedelta(days=1)
+    #     start = l[0]
+    #     last = l[0]
+    #     for day in l:
+    #         if day <= last + step:
+    #             last = day
+    #             continue
+    #         else:
+    #             ranges.append([start, last])
+    #             start = day
+    #             last = day
+    #     ranges.append([start, last])
+    #     return ranges
+    #
+    # # dictionary: key-cowid, value-a list of ranges requested
+    # cow_dateRange = {k: daysToRanges(v) for k, v in cow_dateRange.items()}
+
+    cow_dateRange = cowQuery(cow_id, grp, stats, start_date, end_date)
 
     def tagRangeInsect(range, tagInfo):
         if tagInfo[3] == None:
@@ -112,12 +196,14 @@ def tagQuery(cow_id, grp, stats, start_date, end_date):
         cur.close()
     return results
 
+# get the insersection of two date ranges
 def dateIntersect(start1, end1, start2, end2):
     # print(start1, end1, start2, end2)
     latest_start = max(start1, start2)
     earliest_end = min(end1, end2)
     return latest_start, earliest_end
 
+# get all days within a data range
 def getDays(start, end):
     days = []
     step = datetime.timedelta(days = 1)
@@ -126,7 +212,6 @@ def getDays(start, end):
         days.append(current)
         current += step
     return days
-
 
 # arg1 = cow_id: [int], arg2 = group_no: [int], arg3 = status: [string], arg4 = position_type: [string],
 # arg5 = start_date: string (yy-mm-dd), arg6 = end_date: string(yy-mm-dd), arg7 = start_time:string(hour:min:sec),
@@ -172,4 +257,73 @@ def positionQuery(cow_id, grp, stats, types, start_date, end_date, start_time, e
         data.to_csv(filename, index=False, header=False)
     return filenames
 
-# a = positionQuery([601, 841], [11], ["DRÄKT"], ['PC', 'PA', 'PAA'], "20-09-22", "20-09-25", "08:15:00", "10:15:00", True)
+# arg1 = cow_id: [int], arg2 = group_no: [int], arg3 = status: [string]
+# arg4 = start_date: string (yy-mm-dd), arg5 = end_date: string(yy-mm-dd)
+# arg6 = fields: [string] - ["stat", "lakt", ...]
+# args7 = dateType: Int
+
+def infoQuery(cow_id, grp, stats, start_date, end_date, fields, type):
+    db = connect()
+    cow_dateRange = cowQuery(cow_id, grp, stats, start_date, end_date)
+
+    # function to get statement for each type
+    def getStatement(type, cow, start, end):
+        if type == 0:
+            statement = "SELECT * FROM CowInfo WHERE " + \
+                        "cowID = " + str(cow) + " AND " + \
+                        "insertDate between " + quote(start) + " and " + quote(end)
+        elif type == 1:
+            statement = "SELECT * FROM CowInfo" +\
+                        " INNER JOIN HealthInfo ON CowInfo.cowID = HealthInfo.cowID" \
+                        " AND CowInfo.insertDate = HealthInfo.insertDate" +\
+                        " WHERE HealthInfo.cowID = " + str(cow) + " AND" + \
+                        " HealthInfo.insertDate between " + quote(start) + " and " + quote(end)
+            return statement
+        else:
+            statement = "SELECT * FROM CowInfo" +\
+                        " INNER JOIN DriedInfo ON CowInfo.cowID = DriedInfo.cowID" \
+                        " AND CowInfo.insertDate = DriedInfo.insertDate" +\
+                        " WHERE DriedInfo.cowID = " + str(cow) + " AND" + \
+                        " DriedInfo.insertDate between " + quote(start) + " and " + quote(end)
+        return statement
+    results = []
+    # query data for each cow and each time range one by one
+    for cow, dates in cow_dateRange.items():
+        for each in dates:
+            start = each[0].strftime("%y-%m-%d")
+            end = each[1].strftime("%y-%m-%d")
+            cur = db.cursor()
+            statement = getStatement(type, cow, start, end)
+            # print(statement)
+            cur.execute(statement)
+            # result = cur.fetchall()
+            # results += result
+            results += cur.fetchall()
+            cur.close()
+    allfields = ["cowID", "insertDate", "resp", "grp", "stat", "lakt", "kalvn_date"]
+    fieldnames = [[], ["cowID", "insertDate", "7dag", "100dag", "handelse_day", "comments"],
+                ["insertDate", "gp", "avsinad", "insem_date", "sedan_insem", "insem_tjur", "forv_kalvn", "tid_ins",
+                "tid_mellan"]]
+    fieldnames = list(map(lambda x: allfields+x, fieldnames))
+    mask = [True, False] + fields + [False] + [True] * 20
+    fieldnames = list(compress(fieldnames[type], mask))
+    def filterAndTrans(x):
+        x = list(compress(x, mask))
+        x = [a.strftime("%y-%m-%d") if isinstance(a, datetime.date) else a for a in x]
+        return x
+    requested = list(map(filterAndTrans, results))
+    prefix = ["info", "health", "insem"]
+    filename = prefix[type] + "_requested.csv"
+    data = df(requested)
+    data.to_csv(filename, index=False, header=fieldnames)
+    return requested
+
+
+
+# a = infoQuery([], [], ["DRÄKT"], "20-09-14", "20-10-12",
+#               [True, False, True, False, True], 1)
+# for i in range(20):
+#     print(a[i])
+
+
+# a = positionQuery([],[],["DRÄKT"],["PC"], "20-09-22", "20-09-25","08:00:00","09:00:00",True)

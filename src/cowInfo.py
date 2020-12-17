@@ -40,13 +40,14 @@ def insertHealth(fileName):
 def insertMilk(file1, file2):
     f1 = readAvkastfile(file1)
     f2 = readMjolkplatsfile(file2)
-    # db = connect()
+    db = connect()
     # for i in f1:
     #     print(i)
     milk = Milk()
     data = milk.convert(f1, f2)
-    for i in data:
-        print(i)
+    milk.insert(db, data)
+    db.close()
+
 
 def insertRef(kofile):
     kolista, dried = readKO(kofile)
@@ -117,7 +118,7 @@ def insertRef(kofile):
             cur.close()
         # print(statement)
 #
-insertMilk("data/info/Avkastn 14 dag 201012.txt", "data/info/Mjölkplats 201012.txt")
+# insertMilk("data/info/Avkastn 14 dag 201012.txt", "data/info/Mjölkplats 201012.txt")
 # # data = readMjolkplatsfile("data/info/Mjölkplats 201026.txt")
 # insertRef("data/info/KO info 201006.txt")
 # newValues = len(list(filter(lambda x: x[2] != 'NULL', ko)))

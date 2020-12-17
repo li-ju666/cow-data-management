@@ -379,7 +379,7 @@ def readMjolkplatsfile(textfile):
 
 
 # a = readAvkastfile('data/info/Avkastn 14 dag 200914.txt') #, first_upload=True) First file uploaded? set true to upload all entries
-c = readMjolkplatsfile('data/info/Mjölkplats 201026.txt')
-
-for i in c:
-    print(i)
+# c = readMjolkplatsfile('data/info/Mjölkplats 201026.txt')
+#
+# for i in c:
+#     print(i)
