@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="SplitLeft">
+    <!--
+        Hello
+        -->
+
+    <h3> File scan </h3>
+    <br>
+
+    <form method='post' enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <br>
+        
+        <button class="button button1" type="submit" id="pos" name="pos" value="pos">Scan for position data</button>
+
+        <br>
+        <br>
+        <button class="button button1" type="submit" name="info" id="info" value="info">Scan for info data</button>
+
+    </form>
+
+    <br>
+    <br>
+
+    <h5>{{ pos }}</h5> 
+    <h5>{{ info }}</h5>
+</div>
+
+<div class="SplitRight">
+    <h4>Instructions</h4>
+        Press the respective scan button to check for files to be uploaded into the database. If the initiation of the query was successful, such message will be returned.
+
+</div>
+
+
+
+
+{% endblock %}

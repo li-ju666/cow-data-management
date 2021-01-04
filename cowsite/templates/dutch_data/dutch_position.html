@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="SplitLeft">
+    
+    <h2>Dutch Position data</h2><br>
+
+    <p>Specify requirements for position data:</p>
+    <br>
+    <div class='qtop'>
+      <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+
+      <div class='quodrant1'>
+        <label for="cow_id"><b>Cow ID(s):</b></label>
+        <input type="text" id="cow_id" name="cow_id" size="10">
+
+        <!-- <label for="Tag nr"><b>Tag nr:</b></label>
+        <input type="text" id="Tag nr" name="Tag nr" size="10"> 
+
+        <label for="group_nr"><b>Group number:</b></label>
+        <input type="text" id="group_nr" name="group_nr" size="10"> -->
+      </div>
+
+
+      <div class='quodrant2'>
+
+        <b>Status:</b><br>
+        <input type="checkbox" id="drachtig+" name="drachtig+" value="drachtig+">
+        <label for="drachtig+"> Drachtig+ </label><br>
+
+        <input type="checkbox" id="gedekt" name="gedekt" value="gedekt">
+        <label for="gedekt"> Gedekt </label><br>
+        
+        <!-- <input type="checkbox" id="INSEM" name="INSEM" value="INSEM">
+        <label for="INSEM"> INSEM </label><br>
+
+        <input type="checkbox" id="DRÄKT" name="DRÄKT" value="DRÄKT">
+        <label for="DRÄKT"> DRÄKT </label><br>
+        
+        <input type="checkbox" id="SKAUT" name="SKAUT" value="SKAUT">
+        <label for="SKAUT"> SKAUT </label><br>
+
+        <input type="checkbox" id="SINLD" name="SINLD" value="SINLD">
+        <label for="SINLD"> SINLD </label><br>
+
+        <input type="checkbox" id="RÅMLK" name="RÅMLK" value="RÅMLK">
+        <label for="RÅMLK"> RÅMLK </label><br>
+
+        <input type="checkbox" id="TIDIG" name="TIDIG" value="TIDIG">
+        <label for="TIDIG"> TIDIG </label><br> -->
+      </div>
+
+    
+
+      <div class='quodrant3'>
+        <b>Position data:</b><br>
+        <input type="checkbox" id="PA" name="PA" value="PA">
+        <label for="PA"> PA </label><br>
+        <input type="checkbox" id="PAA" name="PAA" value="PAA">
+        <label for="PAA"> PAA </label><br>
+        <input type="checkbox" id="FA" name="FA" value="FA">
+        <label for="FA"> FA </label><br>
+        <input type="checkbox" id="PC" name="PC" value="PC">
+        <label for="PC"> PC </label><br>  
+      </div>
+
+      <div class='quodrant4'>
+        <label for="start_date"><b>Start date:</b></label>
+        <input type="text" id="start_date" name="start_date" size="10">
+
+        <label for="end_date"><b>End date:</b></label>
+        <input type="text" id="end_date" name="end_date" size="10">
+      </div>
+
+      <div class='quodrant5'>
+        <label for="start_time"><b>Start time:</b></label>
+        <input type="text" id="start_time" name="start_time" size="10">
+
+        <label for="end_time"><b>End time:</b></label>
+        <input type="text" id="end_time" name="end_time" size="10">
+        
+        <div style="margin-top: 20px; margin-left: 10px;">
+        <input type="checkbox" id="Periodic" name="Periodic" value="Periodic">
+        <label for="Periodic"> Periodic </label>
+      </div>
+      </div>
+
+      <div class='quodrant6'>
+        <button class="button button2" type="submit">Fetch data</button>
+      </div>
+      
+      {% csrf_token %}
+     
+    </form>
+
+  </div>
+
+   
+  </div>
+
+
+
+
+<div class="SplitRight">
+    <h4>Instructions:</h4>
+ 
+    <p>be kind</p>
+    <p>cow_id: {{ cow_id }}</p>
+    <p>group_nr: {{ group_nr }}</p>
+    <p>start_date: {{ start_date }}</p>
+    <p>end_date: {{ end_date }}</p>
+    <p>start_time: {{ start_time }}</p>
+    <p>end_time: {{ end_time }}</p>
+    <p>periodic: {{ periodic }}</p>
+    <p>position_list: {{ position_list }}</p>
+    <p>statu_list: {{ status_list }}</p>
+
+
+
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+    }
+</style>
+
+
+    <div class="SplitLeft">
+        <h2>Overview</h2>
+        <br>
+
+
+        <h4>Database size</h4>
+        <div id="size_table">
+          <table border=0>
+            <thead>
+              <tr>
+                {% for header in size_header %}
+                  <th>{{ header }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+                {% for l1 in list_size %}
+              <tr>
+            
+                  {% for l2 in l1 %}
+                      <td>{{ l2 }}</td>
+                  {% endfor %}
+
+              </tr>
+              {% endfor %}
+          </tbody>
+          </table>
+          </div>
+        
+          <br>
+
+        <h4>Information data table</h4>
+        <div id="info_table">
+            <table border=0>
+              <thead>
+                <tr>
+                  {% for header in info_header %}
+                    <th>{{ header }}</th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                  {% for l1 in list_info %}
+                <tr>
+              
+                    {% for l2 in l1 %}
+                        <td>{{ l2 }}</td>
+                    {% endfor %}
+
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+            </div>
+
+          
+         
+    <br>
+    <h4>Position data table</h4>
+
+
+    <div id="position_table">
+        <table border=0>
+          <thead>
+            <tr>
+              {% for header in position_header %}
+                <th>{{ header }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for l1 in list_pos %}
+            <tr>
+          
+                {% for l2 in l1 %}
+                    <td>{{ l2 }}</td>
+                {% endfor %}
+
+            </tr>
+            {% endfor %}
+    
+        </tbody>
+        </table>
+        </div>
+
+
+        </div>
+ 
+    </div>
+
+<div class="SplitRight">
+    <h4>Instructions</h4>
+    Here you can view what files are currently in the database and the size of the respective tables.
+
+</div>
+
+
+
+
+{% endblock %}

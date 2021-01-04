@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load static %}
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>cowsite</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+
+  <!-- Custom styles for this template -->
+  <link href="{% static 'css/simple-sidebar.css' %}" rel="stylesheet" type="text/css">
+
+  <link rel="stylesheet" href="{% static 'css/extra.css' %}">
+
+</head>
+
+<body>
+
+  <div class="d-flex" id="wrapper">
+
+    <!-- Sidebar -->
+    <div class="bg-light border-right" id="sidebar-wrapper">
+      <div class="sidebar-heading">Menu </div>
+      <div class="list-group list-group-flush">
+        <a href="/upload/" class="list-group-item list-group-item-action bg-light">File scan</a>
+        <a href="/dblist/" class="list-group-item list-group-item-action bg-light">Swedish data</a>
+        <a href="/dutch_data/" class="list-group-item list-group-item-action bg-light">Dutch data (unf)</a>
+        <a href="/overview/" class="list-group-item list-group-item-action bg-light">Overview</a>
+        <!--<a href="#" class="list-group-item list-group-item-action bg-light">dunno</a>-->
+        <a href="/about/" class="list-group-item list-group-item-action bg-light">About</a>
+      </div>
+    </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+
+      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <button class="btn btn-primary" id="menu-toggle">Toggle menu</button>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+              <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+            </li>
+
+            <!--
+            <li class="nav-item">
+              <a class="nav-link" href="/admin">Admin</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Dropdown
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Something else here</a>
+              </div>
+            </li>
+            -->
+          </ul>
+        </div>
+      </nav>
+
+      <div class="container-fluid">
+          {% block content %}
+          <div class="SplitLeft">
+            <div style="max-width:70%; word-wrap:break-word;">
+        <h1 class="mt-4">Welcome to Cowsite!</h1>
+        <br>
+        <h3>File scan</h3>
+        <p>To upload files to the database, the file(s) is copied to the folder <i>&lt;project directory&gt;/input_files</i>. Position data is copied to the folder called <i>input_files/pos</i> and all other files are copied to the folder called <i>input_files/info</i>. 
+
+          When a copy of the file(s) is placed in the correct folder, go to the upload tab and press scan folder. Files that have not previously been uploaded, will then be inserted to the database. 
+          
+          Note that uploading position data can take up to 30 minutes per file. When a file is done being uploaded, it can be removed from the folder. Be careful not to remove or alter the log file. 
+          </p>
+
+          <br>
+          <h3>Fetching/Quering data</h3>
+          <p>To query information from the database, go to the <i>Swedish Data</i> tab and select what type of data is requested. Then, one must select what cows are of interest. 
+
+            <!--This is done by either specifying Cow ID(s) or group number (both separated with “,”). The user may also select what statuses of cows are requested. If status is specified together with cow id or group number, an intersection of the two is queried. -->
+            
+            The user must then select a requested time interval. <!--This is done by selecting start/end date (yy/mm/dd) and start/end time (hh:mm:ss).--> 
+            
+            The queried data will be written to one or more created files within the uploading folder in <i>&lt;project directory&gt;/result_files</i>.
+            </p>
+
+            <br>
+            <h3>Overview</h3>
+            The <i>Overview</i> tab displays basic overview of the database regarding number of records and storage used. Also inserted files of the logs are shown.
+        </div>
+      </div>
+        
+        <div class="SplitRight">
+          <!--<h2>Nothing?</h2>-->
+        </div>
+
+        {% endblock %}
+      </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+
+  </div>
+  <!-- /#wrapper -->
+
+  <!-- Bootstrap core JavaScript -->
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- Menu Toggle Script -->
+  <script>
+    $("#menu-toggle").click(function(e) {
+      e.preventDefault();
+      $("#wrapper").toggleClass("toggled");
+    });
+  </script>
+
+</body>
+
+</html>

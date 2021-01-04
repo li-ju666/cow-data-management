@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="SplitLeft">
+    
+    <h2>List database entries</h2>
+
+    <p>Select data to list:</p>
+
+    <div class='qtop'>
+      <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+      <div class='quodrant1'>
+        <label for="Position_data"><b>Position data:</b></label>
+      <select id="Position_data" name="Position_data">
+        <option value="PC">PC</option>
+        <option value="PA">PA</option>
+        <option value="PAA">PAA</option>
+        <option value="FA">FA</option>
+        <option value="Milk_info">Milk info</option>
+      </select>
+      </div>
+
+      <div class='quodrant2'>
+        <label for="cow_id"><b>Cow id:</b></label>
+        <input type="text" id="cow_id" name="cow_id" size="10">
+
+        <label for="Tag nr"><b>Tag nr:</b></label>
+        <input type="text" id="Tag nr" name="Tag nr" size="10">
+      </div>
+
+      <div class='quodrant3'>
+        <label for="group_nr"><b>Group number:</b></label>
+        <input type="text" id="group_nr" name="group_nr" size="10">
+      </div>
+
+      <div class='quodrant4'>
+        <b>Status:</b><br>
+        <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
+        <label for="vehicle1"> I have a bike</label><br>
+        <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
+        <label for="vehicle2"> I have a car</label><br>
+        <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
+        <label for="vehicle3"> I have a boat</label><br>  
+      </div>
+
+      <div class='quodrant5'>
+        <b>Time??</b>
+      </div>
+
+      <div class='quodrant6'>
+        <button type="submit">Fetch data</button>
+      </div>
+      
+      {% csrf_token %}
+
+      
+
+     
+    </form>
+
+  </div>
+
+   
+  </div>
+
+
+
+
+<div class="SplitRight">
+    
+    <h4>Instructions:</h4>
+ 
+    <p>be kind</p>
+
+</div>
+
+
+{% endblock %}

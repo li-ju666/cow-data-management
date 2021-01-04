@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="SplitLeft">
+    
+    <h2>Swedish Cow information data</h2><br>
+
+    <p>Specify requirements of data:</p>
+      <br>
+    <div class='qtop'>
+      <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+
+
+      <div class='quodrant1'>
+
+        <label for="cow_id"><b>Cow id(s):</b></label>
+        <input type="text" id="cow_id" name="cow_id" size="10">
+
+        <!-- <label for="Tag nr"><b>Tag nr:</b></label>
+        <input type="text" id="Tag nr" name="Tag nr" size="10"> -->
+
+        <label for="group_nr"><b>Group number:</b></label>
+        <input type="text" id="group_nr" name="group_nr" size="10">
+
+  
+      </div>
+
+
+      <div class='quodrant2'>
+        <b>Status:</b><br>
+        <input type="checkbox" id="all_types" name="all_types" value="all_types">
+        <label for="all_types"> All types </label><br>
+
+        <input type="checkbox" id="REDO" name="REDO" value="REDO">
+        <label for="REDO"> REDO </label><br>
+
+        <input type="checkbox" id="INSEM" name="INSEM" value="INSEM">
+        <label for="INSEM"> INSEM </label><br>
+
+        <input type="checkbox" id="DRÄKT" name="DRÄKT" value="DRÄKT">
+        <label for="DRÄKT"> DRÄKT </label><br>
+        
+        <input type="checkbox" id="SKAUT" name="SKAUT" value="SKAUT">
+        <label for="SKAUT"> SKAUT </label><br>
+
+        <input type="checkbox" id="SINLD" name="SINLD" value="SINLD">
+        <label for="SINLD"> SINLD </label><br>
+
+        <input type="checkbox" id="RÅMLK" name="RÅMLK" value="RÅMLK">
+        <label for="RÅMLK"> RÅMLK </label><br>
+
+        <input type="checkbox" id="TIDIG" name="TIDIG" value="TIDIG">
+        <label for="TIDIG"> TIDIG </label><br>
+      </div>
+
+    
+
+      <div class='quodrant3'>
+        <label for="start_date"><b>Start date:</b></label>
+        <input type="text" id="start_date" name="start_date" size="10">
+
+        <label for="end_date"><b>End date:</b></label>
+        <input type="text" id="end_date" name="end_date" size="10">
+        <br>
+        <br>
+        <!--<input type="checkbox" id="most_recent" name="most_recent" value="most_recent">
+        <label for="most_recent"> Most recent </label><br>  -->
+      </div>
+
+      <div class='quodrant4'>
+
+        
+        <b>Requested output:</b><br>
+        <!-- # order: "resp", "grp", "stat", "lakt", "kalvn_date"  -->
+        <input type="checkbox" id="resp_nr" name="resp_nr" value="resp_nr">
+        <label for="resp_nr"> Resp number </label><br>  
+
+        <input type="checkbox" id="Group" name="Group" value="Group">
+        <label for="Group"> Group </label><br>
+
+        <input type="checkbox" id="status" name="status" value="status">
+        <label for="status"> Status </label><br>
+
+        <!--<input type="checkbox" id="DIM" name="DIM" value="DIM">
+        <label for="DIM"> DIM </label><br> -->
+
+        <!--<input type="checkbox" id="dry_off_date" name="dry_off_date" value="dry_off_date">
+        <label for="dry_off_date"> Dry-off date </label><br>-->
+
+        <!--<input type="checkbox" id="health_info" name="health_info" value="health_info">
+        <label for="Health_info"> Health_info </label><br>  -->
+
+        <input type="checkbox" id="lactation_nr" name="lactation_nr" value="lactation_nr">
+        <label for="lactation_nr"> Lactation number </label><br>
+
+        <input type="checkbox" id="kalvn_date" name="kalvn_date" value="kalvn_date">
+        <label for="kalvn_date"> Kalvn date </label><br>  
+        
+      </div>
+
+      <div class="quodrant5">
+        <label for="cars"><b>Special fields:</b></label>
+
+        <select name="special_field" id="special_field" style="max-width:85%;">
+          <option value="0">0. None</option>
+          <option value="1">1. Health data</option>
+          <option value="2">2. Insemination data</option>
+        </select>
+        
+
+
+
+        
+      </div>
+
+      <div class='quodrant6'>
+        <button class="button button2" type="submit">Fetch data</button>
+      </div>
+      
+      {% csrf_token %}
+
+      
+
+     
+    </form>
+
+  </div>
+
+   
+  </div>
+
+
+
+
+<div class="SplitRight">
+
+  <p>Inputs marked with <b>*</b> are mandatory.</p>
+  <ul>
+    
+    <li><b>Cow ID(s):</b> Only integers, seperate serval IDs by commas only.<br> 
+    Example: <i>411,324,799,122</i></li>
+    <li><b>Group number:</b> Only integers, seperate serveral group numbers by commas only.<br>
+    Example: <i>10,12,14</i></li>
+    <li><b>Date:</b> YY-MM-DD. <b>*</b><br>
+    Example: <i>20-03-14</i></li>
+
+    <li><b>Time:</b> hh:mm:ss. <b>*</b><br>
+    Example: <i>08:34:11</i></li>
+</ul>  
+  
+ 
+    <!--
+    <p>be kind</p>
+
+    <p>cow_id: {{ cow_id }}</p>
+    <p>group_nr: {{ group_nr }}</p>
+    <p>start_date: {{ start_date }}</p>
+    <p>end_date: {{ end_date }}</p>
+    <p>most_recent: {{ most_recent }}</p>
+    <p>output_list: {{ output_list }}</p>
+    <p>s: {{ status_list }}</p>
+    <p>sp feild: {{ special_field }}</p>
+      -->
+</div>
+
+
+{% endblock %}

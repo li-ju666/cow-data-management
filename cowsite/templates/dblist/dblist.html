@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <style>
+      table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+      th, td {
+        padding: 8px;
+      }
+      </style>
+
+
+
+
+    <div class="SplitLeft">
+      <h2>List database entries</h2>
+        <div class="quodrant">
+
+    
+        <p>Select new data to list:</p>
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+          <label for="cars">Choose data to be displayed:</label>
+          <select id="Position_data" name="Position_data">
+            <option value="PC">PC</option>
+            <option value="PA">PA</option>
+            <option value="PAA">PAA</option>
+            <option value="FA">FA</option>
+            <option value="Milk_info">Milk info</option>
+          </select>
+          {% csrf_token %}
+          <button type="submit">Fetch data</button>
+        </form>
+          
+    
+
+      <br></br>
+      <h4>Displaying entries of {{ position_choice }} table:</h4>
+      <div id="table">
+        <table border=0>
+          <thead>
+            <tr>
+              {% for header in data_header %}
+                <th>{{ header }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+      
+      
+      {% for x in data %}
+      <tr>
+      {% for y in x %}
+         <td>{{ y }}</td>
+      {% endfor %}
+    </tr>
+      {% endfor %}
+      
+      
+    </tr>
+    </tbody>
+    </table>
+    </div>
+  </div>
+  </div>
+
+
+      
+        <div class="SplitRight">
+        
+    
+          <h2>Instructions:</h2>
+       
+          <p>be kind</p>
+     
+    </div>
+{% endblock %}
