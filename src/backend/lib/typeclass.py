@@ -13,7 +13,7 @@ def insertWithFields(database, vals, type, fields):
     maxLen = len(vals)
     startIdx = 0
     endIdx = 0
-    step = 100000
+    step = 200000
     while endIdx < maxLen:
         print("All records: ", startIdx, "/", maxLen, "  Percentage: ", startIdx / maxLen * 100, "%")
         if startIdx + step > maxLen:

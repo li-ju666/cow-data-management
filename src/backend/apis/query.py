@@ -2,7 +2,7 @@ from src.backend.lib.dbinit import connect
 import datetime
 from pandas import DataFrame as df
 from itertools import compress
-
+import os
 
 ################################# helper functions ###########################################
 
@@ -166,6 +166,13 @@ def positionQuery(cow_id, grp, stats, types, start_date, end_date, start_time, e
     for pType in types:
         filename = "requested_" + pType + '.csv'
         filenames.append(filename)
+        try:
+            f = open(path+filename)
+            f.close()
+            os.remove(path+filename)
+        except IOError:
+            print("No old files exist")
+
         for tag in tagRanges:
             # print(tag)
             start = tag[2].strftime("%y-%m-%d")
@@ -186,7 +193,17 @@ def positionQuery(cow_id, grp, stats, types, start_date, end_date, start_time, e
             tmp = cur.fetchall()
             result = list(map(lambda x: [tag[0]] + list(x), tmp))
             data = df(result)
-            data.to_csv(path+filename, index=False, header=False, mode='a')
+            if data.empty:
+                continue
+            else:
+                data.to_csv(path+filename, index=False, header=False, mode='a')
+        try:
+            f = open(path+filename)
+        except IOError:
+            f = open(path+filename, "w")
+            f.write("No records fetched")
+        finally:
+            f.close()
     return filenames
 
 
@@ -232,7 +249,7 @@ def infoQuery(cow_id, grp, stats, start_date, end_date, fields, type):
             end = each[1].strftime("%y-%m-%d")
             cur = db.cursor()
             statement = getStatement(type, cow, start, end)
-            # print(statement)
+            print(statement)
             cur.execute(statement)
             # result = cur.fetchall()
             # results += result
@@ -243,7 +260,7 @@ def infoQuery(cow_id, grp, stats, start_date, end_date, fields, type):
                   ["insertDate", "gp", "avsinad", "insem_date", "sedan_insem", "insem_tjur", "forv_kalvn", "tid_ins",
                    "tid_mellan"]]
     fieldnames = list(map(lambda x: allfields + x, fieldnames))
-    mask = [True, False] + fields + [False] + [True] * 20
+    mask = [True, True] + fields + [False] + [True] * 20
     fieldnames = list(compress(fieldnames[type], mask))
 
     def filterAndTrans(x):
@@ -255,7 +272,12 @@ def infoQuery(cow_id, grp, stats, start_date, end_date, fields, type):
     prefix = ["info", "health", "insem"]
     filename = prefix[type] + "_requested.csv"
     data = df(requested)
-    data.to_csv(path+filename, index=False, header=fieldnames)
+    if data.empty:
+        text_file = open(path + filename, "w")
+        text_file.write("No records fetched")
+        text_file.close()
+    else:
+        data.to_csv(path+filename, index=False, header=fieldnames)
     return requested
 
 ############## direct query function #########################
@@ -272,7 +294,12 @@ def directQuery(statement):
     result = cur.fetchall()
 
     result = df(result)
-    result.to_csv(path+filename, header=False, index=False)
+    if result.empty:
+        text_file = open(path + filename, "w")
+        text_file.write("No records fetched")
+        text_file.close()
+    else:
+        result.to_csv(path+filename, header=False, index=False)
     return filename
 
 
