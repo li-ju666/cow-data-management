@@ -3,7 +3,6 @@ import datetime
 from pandas import DataFrame as df
 from itertools import compress
 import os
-
 ################################# helper functions ###########################################
 
 # return a quoted string
