@@ -6,4 +6,4 @@ sudo chmod 777 -R input_files
 sudo chmod 777 -R result_files
 sudo rm mysql -rf
 sudo rm result_files/* -f
-docker-compose up
+docker-compose up -d --build
