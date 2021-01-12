@@ -96,7 +96,13 @@
     </form>
 
   </div>
-
+  <p style="font-size:24px"><b>Query status:</b> {{ status_message }}</p>
+  <p style="font-size:24px">{{ fetch_message }}</p>
+  <ul>
+  {% for list in user_inputs %}
+    <li>{{ list }}</li>
+  {% endfor %}
+</ul>
    
   </div>
 
@@ -113,6 +119,10 @@
     Example: <i>411,324,799,122</i></li>
     <li><b>Group number:</b> Only integers, seperate serveral group numbers by commas only.<br>
     Example: <i>10,12,14</i></li>
+    <li><b>Status:*</b><br>
+      Chose <i>"All types"</i> to not query for specific status type.</li>
+    <li><b>Position data:</b><br>
+    Chose what kind of position data should be queried.</li>
     <li><b>Date:</b> YY-MM-DD. <b>*</b><br>
     Example: <i>20-03-14</i></li>
 

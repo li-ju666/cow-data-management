@@ -67,6 +67,7 @@
       </div>
 
       <div class="quodrant5">
+      
 
       </div>
 
@@ -81,8 +82,16 @@
      
     </form>
 
-  </div>
 
+    
+  </div>
+  <p style="font-size:24px"><b>Query status:</b> {{ status_message }}</p>
+  <p style="font-size:24px">{{ fetch_message }}</p>
+  <ul>
+  {% for list in user_inputs %}
+    <li>{{ list }}</li>
+  {% endfor %}
+</ul>
    
   </div>
 
@@ -97,6 +106,8 @@
     <ul>
       <li><b>Cow ID(s):</b> Only integers, seperate serval IDs by commas only.<br> 
       Example: <i>411,324,799,122</i></li>
+      <li><b>Status*</b><br>
+      Chose <i>"All types"</i> to not query for specific status type.</li>
       <li><b>Group number:</b> Only integers, seperate serveral group numbers by commas only.<br>
       Example: <i>10,12,14</i></li>
       <li><b>Date:</b> YY-MM-DD. <b>*</b><br>
@@ -105,17 +116,7 @@
     
   </ul>  
     
-    <!--
-    <p>be kind</p><br>
-
-    <p>be kind</p>
-    <p>cow_id: {{ cow_id }}</p>
-    <p>group_nr: {{ group_nr }}</p>
-    <p>start_date: {{ start_date }}</p>
-    <p>end_date: {{ end_date }}</p>
-
-    <p>s: {{ status_list }}</p>
-    -->
+   
 </div>
 
 

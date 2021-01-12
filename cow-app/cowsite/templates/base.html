@@ -30,6 +30,7 @@
     <div class="bg-light border-right" id="sidebar-wrapper">
       <div class="sidebar-heading">Menu </div>
       <div class="list-group list-group-flush">
+        <a href="/" class="list-group-item list-group-item-action bg-light">Home</a>
         <a href="/upload/" class="list-group-item list-group-item-action bg-light">File scan</a>
         <a href="/dblist/" class="list-group-item list-group-item-action bg-light">Swedish data</a>
         <a href="/dutch_data/" class="list-group-item list-group-item-action bg-light">Dutch data (unf)</a>
@@ -52,9 +53,9 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
-            <li class="nav-item active">
+            <!--<li class="nav-item active">
               <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-            </li>
+            </li> -->
 
             <!--
             <li class="nav-item">
@@ -81,29 +82,20 @@
           <div class="SplitLeft">
             <div style="max-width:70%; word-wrap:break-word;">
         <h1 class="mt-4">Welcome to Cowsite!</h1>
+        <p style="font-size:18px">This is the web page access point for accessing the database system for the cow data. Here you can insert data, fetch/download data and view overall meta data. To learn more, please keep reading.</p>
         <br>
-        <h3>File scan</h3>
-        <p>To upload files to the database, the file(s) is copied to the folder <i>&lt;project directory&gt;/input_files</i>. Position data is copied to the folder called <i>input_files/pos</i> and all other files are copied to the folder called <i>input_files/info</i>. 
-
-          When a copy of the file(s) is placed in the correct folder, go to the upload tab and press scan folder. Files that have not previously been uploaded, will then be inserted to the database. 
-          
-          Note that uploading position data can take up to 30 minutes per file. When a file is done being uploaded, it can be removed from the folder. Be careful not to remove or alter the log file. 
+        <h3>Insert/Scan for data files</h3>
+        <p style="font-size:18px">To insert files into the database, go to the <i>File Scan</i> tab. 
           </p>
 
           <br>
-          <h3>Fetching/Quering data</h3>
-          <p>To query information from the database, go to the <i>Swedish Data</i> tab and select what type of data is requested. Then, one must select what cows are of interest. 
-
-            <!--This is done by either specifying Cow ID(s) or group number (both separated with “,”). The user may also select what statuses of cows are requested. If status is specified together with cow id or group number, an intersection of the two is queried. -->
-            
-            The user must then select a requested time interval. <!--This is done by selecting start/end date (yy/mm/dd) and start/end time (hh:mm:ss).--> 
-            
-            The queried data will be written to one or more created files within the uploading folder in <i>&lt;project directory&gt;/result_files</i>.
+          <h3>Query/Download data</h3>
+          <p style="font-size:18px">To download data from the database, go to the <i>Swedish data</i> tab to access data from the Swedish farm or go to the tab Dutch data to access data from the Dutch farm.
             </p>
 
             <br>
-            <h3>Overview</h3>
-            The <i>Overview</i> tab displays basic overview of the database regarding number of records and storage used. Also inserted files of the logs are shown.
+            <h3>Overview - Meta data</h3>
+            <p style="font-size:18px">To see meta data regarding the content of the database system, go to the <i>Overview</i> tab.</p>
         </div>
       </div>
         

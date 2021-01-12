@@ -14,8 +14,9 @@
 </style>
 
 
-    <div class="SplitLeft">
+    <div class="SplitLeft" style="max-width:50%; word-wrap:break-word; font-size: 18px;">
         <h2>Overview</h2>
+    <p> {{ status_message }} </p>
         <br>
 
 
@@ -32,7 +33,7 @@
             <tbody>
                 {% for l1 in list_size %}
               <tr>
-            
+
                   {% for l2 in l1 %}
                       <td>{{ l2 }}</td>
                   {% endfor %}
@@ -42,7 +43,7 @@
           </tbody>
           </table>
           </div>
-        
+
           <br>
 
         <h4>Information data table</h4>
@@ -58,7 +59,7 @@
               <tbody>
                   {% for l1 in list_info %}
                 <tr>
-              
+
                     {% for l2 in l1 %}
                         <td>{{ l2 }}</td>
                     {% endfor %}
@@ -69,8 +70,8 @@
             </table>
             </div>
 
-          
-         
+
+
     <br>
     <h4>Position data table</h4>
 
@@ -87,21 +88,21 @@
           <tbody>
             {% for l1 in list_pos %}
             <tr>
-          
+
                 {% for l2 in l1 %}
                     <td>{{ l2 }}</td>
                 {% endfor %}
 
             </tr>
             {% endfor %}
-    
+
         </tbody>
         </table>
         </div>
 
 
         </div>
- 
+
     </div>
 
 <div class="SplitRight">
