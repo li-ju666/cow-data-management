@@ -1,8 +1,8 @@
 from django.shortcuts import render
-from src.backend.apis.bgAPIs import bgInfoScan, bgPosScan, bgPosQuery, bgInfoQuery
-from src.backend.apis.overview import overview_func, size_overview
+from src.apis.bgAPIs import bgInfoScan, bgPosScan, bgPosQuery, bgInfoQuery
+from src.apis.overview import overview_func, size_overview
 from functions import format_overview, milkdata_context, position_context, cowinfo_context
-from src.backend.apis.query import positionQuery, infoQuery
+from src.apis.query import positionQuery, infoQuery
 
 
 def index(request):

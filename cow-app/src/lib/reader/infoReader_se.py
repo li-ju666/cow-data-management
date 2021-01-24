@@ -3,11 +3,6 @@ import numpy as np
 import datetime as dt
 
 
-def readPos(filename):
-    data = read_csv(filename, sep=",")
-    return np.array(data)
-
-
 def readKO(filename):
     raw = read_csv(filename, encoding="ISO-8859-1")
     all = list(map(lambda x: list(filter(lambda y: y != '', x.split(" "))),

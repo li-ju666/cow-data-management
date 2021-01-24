@@ -56,7 +56,7 @@ def checkPositionTables(database):
         cursor.close()
 
 
-def checkInfoTables(database):
+def checkInfoTables_se(database):
     Mapstatement = "CREATE TABLE IF NOT EXISTS Reference " \
                    "(cowID SMALLINT, " \
                    " tagStr VARCHAR(10)," \
@@ -111,23 +111,106 @@ def checkInfoTables(database):
         database.commit()
         cursor.close()
 
+def checkInfoTables_nl(database):
+    Mapstatement = "CREATE TABLE IF NOT EXISTS Reference " \
+                   "(diernr SMALLINT, " \
+                   " tagstr VARCHAR(10)," \
+                   " startdate DATE, " \
+                   " enddate DATE, " \
+                   " PRIMARY KEY (diernr, startdate))"
 
-def connect():
+    Infostatement = "CREATE TABLE IF NOT EXISTS CowInfo " \
+                    "(diernr SMALLINT, " \
+                    " insertdate DATE, " \
+                    " cowname VARCHAR(20), " \
+                    " levnr INT, " \
+                    " lactnr SMALLINT, " \
+                    " weeknr INT, " \
+                    " status VARCHAR(20), "\
+                    " PRIMARY KEY (diernr, insertdate))"
+
+    Driedstatement = "CREATE TABLE IF NOT EXISTS InsemInfo " \
+                   "(diernr SMALLINT, " \
+                   " insertdate DATE, " \
+                   " insemnr SMALLINT, " \
+                   " strnm VARCHAR(20), " \
+                   " verkw DATE, " \
+                   " dekinfo VARCHAR(20), " \
+                   " PRIMARY KEY (diernr, insertdate))"
+
+    Milkstatement = "CREATE TABLE IF NOT EXISTS MilkInfo " \
+                    "(diernr SMALLINT, " \
+                    " insertdate DATE, " \
+                    " levnr INT, " \
+                    " kgmelk FLOAT, " \
+                    " isk FLOAT, " \
+                    " percentv FLOAT, " \
+                    " eiw FLOAT, " \
+                    " lact FLOAT, " \
+                    " ur FLOAT, " \
+                    " celget FLOAT, " \
+                    " klfdat DATE, " \
+                    " lftafk FLOAT, " \
+                    " mprlft FLOAT, " \
+                    " lactatiedagen SMALLINT, " \
+                    " kgmelklact FLOAT, " \
+                    " kgmelk305 FLOAT, " \
+                    " vetlact FLOAT, " \
+                    " vet305 FLOAT, " \
+                    " eiwlact FLOAT, " \
+                    " eiw305 FLOAT, " \
+                    " kgvetlact FLOAT, " \
+                    " kgvet305 FLOAT, " \
+                    " kgeiwlact FLOAT, " \
+                    " kgeiw305 FLOAT, " \
+                    " lw SMALLINT, " \
+                    " PRIMARY KEY (diernr, insertdate))"
+
+    statements = [Milkstatement, Infostatement, Driedstatement, Mapstatement]
+    for statement in statements:
+        # print(statement, flush=True)
+        cursor = database.cursor()
+        cursor.execute(statement)
+        database.commit()
+        cursor.close()
+
+
+def connect_se():
     db = mysql.connector.connect(
         host="localhost",
         user="root",
         password="example"
     )
     # make sure database position exists: if not, create it
-    checkDatabase("CowData", db)
-
+    checkDatabase("se_cow", db)
     # connect to position database
     db = mysql.connector.connect(
         host="localhost",
         user="root",
         password="example",
-        database="CowData"
+        database="se_cow"
     )
     checkPositionTables(db)
-    checkInfoTables(db)
+    checkInfoTables_se(db)
     return db
+
+
+def connect_nl():
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="example"
+    )
+    # make sure database position exists: if not, create it
+    checkDatabase("nl_cow", db)
+    # connect to position database
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="example",
+        database="nl_cow"
+    )
+    checkPositionTables(db)
+    checkInfoTables_nl(db)
+    return db
+

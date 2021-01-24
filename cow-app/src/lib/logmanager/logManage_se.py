@@ -1,15 +1,17 @@
 def saveLog(filename):
-    with open("log/log", "a") as f:
+    with open("log/log_se", "a") as f:
         f.write(filename+"\n")
+
 
 def readLog():
     try:
-        with open("log/log", "r") as f:
+        with open("log/log_se", "r") as f:
             content = f.readlines()
         content = [x.strip() for x in content]
     except:
         content = []
     return content
+
 
 def formatLog():
     records = readLog()

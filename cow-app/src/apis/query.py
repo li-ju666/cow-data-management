@@ -1,10 +1,11 @@
-from src.backend.lib.dbinit import connect
+from src.lib.dbmanager.dbinit import connect_se
 import datetime
 from pandas import DataFrame as df
 from itertools import compress
 import os
-################################# helper functions ###########################################
 
+
+################################# helper functions ###########################################
 # return a quoted string
 def quote(x):
     return '"' + x + '"'
@@ -12,7 +13,7 @@ def quote(x):
 
 # function to query all cows with valid time ranges and required status
 def cowQuery(cow_id, grp, stats, start_date, end_date):
-    db = connect()
+    db = connect_se()
 
     raw_records = []
     start_date = datetime.datetime.strptime(start_date, "%y-%m-%d")
@@ -99,7 +100,7 @@ def cowQuery(cow_id, grp, stats, start_date, end_date):
 
 # query tags with valid ranges
 def tagQuery(cow_id, grp, stats, start_date, end_date):
-    db = connect()
+    db = connect_se()
     cow_dateRange = cowQuery(cow_id, grp, stats, start_date, end_date)
 
     def tagRangeInsect(range, tagInfo):
@@ -160,7 +161,7 @@ def positionQuery(cow_id, grp, stats, types, start_date, end_date, start_time, e
     queryDict['PA'] = 'start_time'
     queryDict['PAA'] = 'measure_time'
     queryDict['PC'] = 'start_time'
-    db = connect()
+    db = connect_se()
     filenames = []
     for pType in types:
         filename = "requested_" + pType + '.csv'
@@ -186,7 +187,7 @@ def positionQuery(cow_id, grp, stats, types, start_date, end_date, start_time, e
                 statement = 'SELECT * FROM ' + pType + ' WHERE tag_str = ' + quote(tag[1]) + \
                             ' AND ' + queryDict[pType] + \
                             ' between' + quote(start + ' ' + start_time) + ' and ' + quote(end + ' ' + end_time)
-            print(statement)
+            # print(statement)
             cur = db.cursor()
             cur.execute(statement)
             tmp = cur.fetchall()
@@ -216,7 +217,7 @@ def positionQuery(cow_id, grp, stats, types, start_date, end_date, start_time, e
 def infoQuery(cow_id, grp, stats, start_date, end_date, fields, type):
     print("Info query started")
     path = "result_files/"
-    db = connect()
+    db = connect_se()
     cow_dateRange = cowQuery(cow_id, grp, stats, start_date, end_date)
 
     # function to get statement for each type
@@ -248,7 +249,7 @@ def infoQuery(cow_id, grp, stats, start_date, end_date, fields, type):
             end = each[1].strftime("%y-%m-%d")
             cur = db.cursor()
             statement = getStatement(type, cow, start, end)
-            print(statement)
+            # print(statement)
             cur.execute(statement)
             # result = cur.fetchall()
             # results += result
@@ -281,8 +282,9 @@ def infoQuery(cow_id, grp, stats, start_date, end_date, fields, type):
 
 ############## direct query function #########################
 
+
 def directQuery(statement):
-    db = connect()
+    db = connect_se()
     cur = db.cursor()
     try:
         cur.execute(statement)

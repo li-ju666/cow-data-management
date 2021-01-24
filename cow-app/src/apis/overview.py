@@ -1,12 +1,14 @@
-from src.backend.lib.logManage import formatLog
-from src.backend.lib.dbinit import connect
+from src.lib.logmanager.logManage_se import formatLog
+from src.lib.dbmanager.dbinit import connect_se, connect_nl
+
 
 def overview_func():
     return formatLog()
 
 
 def size_overview():
-    db = connect()
+    db_nl = connect_nl()
+    db = connect_se()
     cur = db.cursor()
     statement = 'SELECT table_name AS "Table", ' +\
                 'ROUND(((data_length + index_length) / 1024 / 1024), 2) AS "Size (MB)", ' +\

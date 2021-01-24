@@ -1,5 +1,5 @@
-from src.backend.lib.dbinit import connect
-from src.backend.lib.read import readKO, readHealth, readMjolkplatsfile, readAvkastfile
+from src.backend.lib.dbinit import connect_se
+from src.backend.lib.read_se import readKO, readHealth, readMjolkplatsfile, readAvkastfile
 from src.backend.lib.typeclass import KO, Health, Milk
 from re import findall
 import datetime
@@ -10,7 +10,7 @@ def insertInfo(fileName):
     kolista, dried = readKO(fileName)
 
     # connect to sql server
-    db = connect()
+    db = connect_se()
 
     # data preparation
     ko = KO()
@@ -25,7 +25,7 @@ def insertInfo(fileName):
 def insertHealth(fileName):
     data = readHealth(fileName)
     # connect to sql server
-    db = connect()
+    db = connect_se()
     # data preparation
     health = Health()
     insertDate = findall("\d+", fileName)[0]
@@ -39,7 +39,7 @@ def insertHealth(fileName):
 def insertMilk(file1, file2):
     f1 = readAvkastfile(file1)
     f2 = readMjolkplatsfile(file2)
-    db = connect()
+    db = connect_se()
     # for i in f1:
     #     print(i)
     milk = Milk()
@@ -51,7 +51,7 @@ def insertMilk(file1, file2):
 def insertRef(kofile):
     kolista, dried = readKO(kofile)
     insertDate = findall("\d+", kofile)[0]
-    db = connect()
+    db = connect_se()
     driedOffDict = dict(zip(list(dried[0]), list(dried[4])))
     for i in kolista:
         # select all references binded to the cow

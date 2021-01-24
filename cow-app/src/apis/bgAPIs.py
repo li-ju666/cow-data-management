@@ -1,7 +1,6 @@
 import threading
-from src.backend.apis.positionScan import positionScan
-from src.backend.apis.infoScan import infoScan
-from src.backend.apis.query import positionQuery, infoQuery, directQuery
+from src.apis.scan_se import positionScan, infoScan
+from src.apis.query import positionQuery, infoQuery, directQuery
 
 def bgPosScan():
     try:
