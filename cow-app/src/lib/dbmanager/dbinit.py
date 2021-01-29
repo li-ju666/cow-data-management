@@ -120,6 +120,7 @@ def checkInfoTables_nl(database):
                    " tagstr VARCHAR(10)," \
                    " iso INT, " \
                    " startdate DATE, " \
+                   " comment VARCHAR(30), " \
                    " enddate DATE, " \
                    " PRIMARY KEY (diernr, startdate))"
 
