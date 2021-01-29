@@ -119,24 +119,18 @@ def checkInfoTables_nl(database):
                    " enddate DATE, " \
                    " PRIMARY KEY (diernr, startdate))"
 
-    Infostatement = "CREATE TABLE IF NOT EXISTS CowInfo " \
-                    "(diernr SMALLINT, " \
-                    " insertdate DATE, " \
-                    " cowname VARCHAR(20), " \
-                    " levnr INT, " \
-                    " lactnr SMALLINT, " \
-                    " weeknr INT, " \
-                    " status VARCHAR(20), "\
-                    " PRIMARY KEY (diernr, insertdate))"
-
     Driedstatement = "CREATE TABLE IF NOT EXISTS InsemInfo " \
                    "(diernr SMALLINT, " \
-                   " insertdate DATE, " \
+                   " name VARCHAR(50), " \
+                   " werknr SMALLINT, " \
+                   " dekdatum DATE, " \
                    " insemnr SMALLINT, " \
-                   " strnm VARCHAR(20), " \
+                   " strnm VARCHAR(50), " \
                    " verkw DATE, " \
-                   " dekinfo VARCHAR(20), " \
-                   " PRIMARY KEY (diernr, insertdate))"
+                   " dekinfo VARCHAR(30), " \ 
+                   " lactnr SMALLINT, " \
+                   " status VARCHAR(20), " \
+                   " PRIMARY KEY (diernr, dekdatum))" 
 
     Milkstatement = "CREATE TABLE IF NOT EXISTS MilkInfo " \
                     "(diernr SMALLINT, " \
@@ -151,7 +145,8 @@ def checkInfoTables_nl(database):
                     " celget FLOAT, " \
                     " klfdat DATE, " \
                     " lftafk FLOAT, " \
-                    " mprlft FLOAT, " \
+                    " mprlft FLOAT, " \ 
+                    " lactnr SMALLINT, " \
                     " lactatiedagen SMALLINT, " \
                     " kgmelklact FLOAT, " \
                     " kgmelk305 FLOAT, " \
@@ -166,7 +161,7 @@ def checkInfoTables_nl(database):
                     " lw SMALLINT, " \
                     " PRIMARY KEY (diernr, insertdate))"
 
-    statements = [Milkstatement, Infostatement, Driedstatement, Mapstatement]
+    statements = [Milkstatement, Driedstatement, Mapstatement]
     for statement in statements:
         # print(statement, flush=True)
         cursor = database.cursor()
