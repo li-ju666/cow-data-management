@@ -111,10 +111,14 @@ def checkInfoTables_se(database):
         database.commit()
         cursor.close()
 
+# We are gonna have to change the primary keys for these tables due to the data properties. 
+# Suggestion: iso and levnr in Mapstatement and Milkstatement, werknr in Driedstatement.
+
 def checkInfoTables_nl(database):
     Mapstatement = "CREATE TABLE IF NOT EXISTS Reference " \
                    "(diernr SMALLINT, " \
                    " tagstr VARCHAR(10)," \
+                   " iso INT, " \
                    " startdate DATE, " \
                    " enddate DATE, " \
                    " PRIMARY KEY (diernr, startdate))"
