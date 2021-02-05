@@ -5,9 +5,8 @@ from src.lib.logmanager.logManage_se import readLog, saveLog
 from src.lib.dbmanager.dbinit import connect_se
 
 
-def infoScan():
+def infoScan(path):
     db = connect_se()
-    path = "input_files/se/info/"
     files = listdir(path)
 
     KOFiles = list(filter((lambda x: x.startswith("KO")), files))
@@ -42,9 +41,8 @@ def infoScan():
     db.close()
 
 
-def positionScan():
+def positionScan(path):
     db = connect_se()
-    path = "input_files/se/position/"
     files = listdir(path)
     files.sort()
     records = readLog()
@@ -56,3 +54,9 @@ def positionScan():
             saveLog(file)
     print("Position scan has completed")
     db.close()
+
+
+def scan():
+    path = "upload_files/se/"
+    infoScan(path)
+    positionScan(path)

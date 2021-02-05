@@ -152,8 +152,11 @@ def getDays(start, end):
 # arg1 = cow_id: [int], arg2 = group_no: [int], arg3 = status: [string], arg4 = position_type: [string],
 # arg5 = start_date: string (yy-mm-dd), arg6 = end_date: string(yy-mm-dd), arg7 = start_time:string(hour:min:sec),
 # arg8 = end_time:string(hour:min:sec), arg9 = periodic:bool
+# ----
+## return value: a list of tuples, each tuple is consisted of (filename, number of rows)
 def positionQuery(cow_id, grp, stats, types, start_date, end_date, start_time, end_time, periodic):
     print("Position query started")
+    suffix = datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
     path = "result_files/"
     tagRanges = tagQuery(cow_id, grp, stats, start_date, end_date)
     queryDict = {}
@@ -162,10 +165,11 @@ def positionQuery(cow_id, grp, stats, types, start_date, end_date, start_time, e
     queryDict['PAA'] = 'measure_time'
     queryDict['PC'] = 'start_time'
     db = connect_se()
-    filenames = []
+    result = []
     for pType in types:
-        filename = "requested_" + pType + '.csv'
-        filenames.append(filename)
+        num_rows = 0
+        filename = pType + suffix + '.csv'
+        # filenames.append(filename)
         try:
             f = open(path+filename)
             f.close()
@@ -196,6 +200,7 @@ def positionQuery(cow_id, grp, stats, types, start_date, end_date, start_time, e
             if data.empty:
                 continue
             else:
+                num_rows += len(data.index)
                 data.to_csv(path+filename, index=False, header=False, mode='a')
         try:
             f = open(path+filename)
@@ -204,7 +209,8 @@ def positionQuery(cow_id, grp, stats, types, start_date, end_date, start_time, e
             f.write("No records fetched")
         finally:
             f.close()
-    return filenames
+        result.append((filename, num_rows))
+    return result
 
 
 ########### info query function #################
@@ -217,6 +223,7 @@ def positionQuery(cow_id, grp, stats, types, start_date, end_date, start_time, e
 def infoQuery(cow_id, grp, stats, start_date, end_date, fields, type):
     print("Info query started")
     path = "result_files/"
+    suffix = datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
     db = connect_se()
     cow_dateRange = cowQuery(cow_id, grp, stats, start_date, end_date)
 
@@ -270,7 +277,7 @@ def infoQuery(cow_id, grp, stats, start_date, end_date, fields, type):
 
     requested = list(map(filterAndTrans, results))
     prefix = ["info", "health", "insem"]
-    filename = prefix[type] + "_requested.csv"
+    filename = prefix[type] + suffix + ".csv"
     data = df(requested)
     if data.empty:
         text_file = open(path + filename, "w")
@@ -278,7 +285,7 @@ def infoQuery(cow_id, grp, stats, start_date, end_date, fields, type):
         text_file.close()
     else:
         data.to_csv(path+filename, index=False, header=fieldnames)
-    return requested
+    return [(filename, len(data.index))]
 
 ############## direct query function #########################
 

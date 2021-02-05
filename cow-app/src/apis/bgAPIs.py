@@ -1,22 +1,16 @@
 import threading
-from src.apis.scan_se import positionScan, infoScan
+from src.apis.scan_se import scan
 from src.apis.query import positionQuery, infoQuery, directQuery
 
-def bgPosScan():
-    try:
-        thread = threading.Thread(target=positionScan)
-        thread.start()
-        return "Position scan started... "
-    except:
-        return "Failed to scan position files"
 
-def bgInfoScan():
+def bgScanSe():
     try:
-        thread = threading.Thread(target=infoScan)
+        thread = threading.Thread(target=scan)
         thread.start()
-        return "Info scan started... "
+        return "Swedish files scan started... "
     except:
-        return "Failed to scan info files"
+        return "Failed to scan Swedish files"
+
 
 def bgPosQuery(cow_id, grp, stats, types, start_date, end_date, start_time, end_time, periodic):
     try:
@@ -26,6 +20,7 @@ def bgPosQuery(cow_id, grp, stats, types, start_date, end_date, start_time, end_
         return "Querying... "
     except:
         return "Failed to start query"
+
 
 def bgInfoQuery(cow_id, grp, stats, start_date, end_date, fields, type):
     try:

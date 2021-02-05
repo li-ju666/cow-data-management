@@ -4,6 +4,7 @@ import datetime
 from .insertor import InsertorBase
 import numpy
 
+
 def insertInfo(fileName, db):
     # data read
     kolista, dried = readKO(fileName)

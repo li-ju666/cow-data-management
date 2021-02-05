@@ -29,5 +29,5 @@ services:
     #   - 8000:8000
     network_mode: host
     volumes: 
-      - ./input_files:/app/cow-app/input_files
+      - ./upload_files:/app/cow-app/upload_files
       - ./result_files:/app/cow-app/result_files

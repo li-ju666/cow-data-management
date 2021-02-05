@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from src.apis.bgAPIs import bgInfoScan, bgPosScan, bgPosQuery, bgInfoQuery
+from src.apis.bgAPIs import bgScanSe, bgPosQuery, bgInfoQuery
 from src.apis.overview import overview_func, size_overview
 from functions import format_overview, milkdata_context, position_context, cowinfo_context
 from src.apis.query import positionQuery, infoQuery
@@ -12,9 +12,9 @@ def upload(request):
    context = {}
    if request.method == 'POST':
       if 'pos' in request.POST:
-         context['pos'] = bgPosScan()
+         context['pos'] = bgScanSe()
       if 'info' in request.POST:
-         context['info'] = bgInfoScan()
+         context['info'] = bgScanSe()
 
    return render(request, 'upload.html', context)
 
