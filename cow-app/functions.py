@@ -1,3 +1,11 @@
+def handle_uploaded_file(f,temp_dest):
+    temp_dest = 'upload_files/' + temp_dest
+    print(temp_dest)
+    with open(temp_dest + f.name, 'wb+') as destination:
+        print(destination)
+        for chunk in f.chunks():
+            destination.write(chunk)
+
 def format_overview(stat):
     def get1(l, idx):
         if idx >= len(l):
@@ -325,6 +333,214 @@ def cowinfo_context(request):
         'STATUS': STATUS,
         'output_list': output_list,
         'special_field': special_field,
+        'fetch_message': fetch_message,
+        'user_inputs': user_inputs,
+    }
+    return context, query_successful
+
+
+
+# ------------ DUTCH PARAMETERS FUNCTIONS ------------------- #
+
+def dutch_position_context(request):
+
+    status_list = []
+    position_list = []
+    cow_id = request.POST['cow_id']
+    start_time = request.POST['start_time']
+    end_time = request.POST['end_time']
+    start_date = request.POST['start_date']
+    end_date = request.POST['end_date']
+
+    fetch_message = ''
+    user_inputs = []
+    query_successful = True
+
+
+    if "Periodic" in request.POST:
+        periodic = True
+    else:
+        periodic = False
+
+
+    if "PA" in request.POST:
+        position_list.append('PA')
+
+    if "PAA" in request.POST:
+        position_list.append('PAA')
+
+    if "FA" in request.POST:
+        position_list.append('FA')
+
+    if "PC" in request.POST:
+        position_list.append('PC')
+
+    
+    #if "all_types" in request.POST:
+    #    status_list = [
+    #        'REDO',
+    #        'INSEM',
+    #        'DRÄKT',
+    #        'SKAUT',
+    #        'SINLD',
+    #        'RÅMLK',
+    #        'TIDIG',
+    #    ]
+
+    if "DRACHTIG" in request.POST:
+        status_list.append('DRACHTIG')
+
+    if "GEDEKT" in request.POST:
+        status_list.append('GEDEKT')
+
+
+        # User feedback when "Fetch data" is pressed. Check for invalid inputs.
+    if status_list == [] or start_date == '' or end_date == '' or start_time=='' or end_time == '' or position_list == []:
+        query_successful = False
+        fetch_message = 'User input missing: '
+        if status_list == []:
+            user_inputs.append('status type')
+        if position_list == []:
+            user_inputs.append('position data')
+        if start_date == '':
+            user_inputs.append('start date'),
+        if end_date == '':
+            user_inputs.append('end date')
+        if start_time == '':
+            user_inputs.append('start time')
+        if end_time == '':
+            user_inputs.append('end time')
+    else:
+        user_inputs = ['Cow id: ' + cow_id,",".join(['Status types selected: '] + status_list), ['Position type(s): '] + position_list,'Start date: ' + start_date, 'End date: ' + end_date,
+        'Start time: ' + start_time, 'End time: ' + end_time, 'Periodic: ' + str(periodic)]
+        fetch_message = 'User inputs:'
+        
+
+    
+
+    context = {
+        'cow_id': cow_id,
+        'start_time': start_time,
+        'end_time': end_time,
+        'start_date': start_date,
+        'end_date': end_date,
+        'periodic': periodic,
+        'position_list': position_list,
+        'status_list': status_list,
+        'fetch_message': fetch_message,
+        'user_inputs': user_inputs,
+    }
+    return context, query_successful
+
+
+def dutch_milkdata_context(request):
+    status_list = []
+    cow_id = request.POST['cow_id']
+    start_date = request.POST['start_date']
+    end_date = request.POST['end_date']
+
+    query_successful = True
+    fetch_message = ''
+    user_inputs = []
+    
+    
+    #if "all_types" in request.POST:
+        #status_list = [
+            #'REDO',
+            #'INSEM',
+            #'DRÄKT',
+            #'SKAUT',
+            #'SINLD',
+            #'RÅMLK',
+            #'TIDIG',
+        #]
+
+    if "DRACHTIG" in request.POST:
+        status_list.append('DRACHTIG')
+
+    if "GEDEKT" in request.POST:
+        status_list.append('GEDEKT')
+    
+
+    # User feedback when "Fetch data" is pressed. Check for invalid inputs.
+    if status_list == [] or start_date == '' or end_date == '':
+        query_successful = False
+        fetch_message = 'User input missing: '
+        if status_list == []:
+            user_inputs.append('status type')
+        if start_date == '':
+            user_inputs.append('start date')
+        if end_date == '':
+            user_inputs.append('end date')
+    else:
+        user_inputs = ['Cow id: ' + cow_id, ",".join(['Status types selected: '] + status_list),'Start date: ' + start_date, 'End date: ' + end_date]
+        fetch_message = 'User input:'
+
+    context = {
+        'cow_id': cow_id,
+        'start_date': start_date,
+        'end_date': end_date,
+        'status_list': status_list,
+        'fetch_message': fetch_message,
+        'user_inputs': user_inputs,
+    }
+    
+    return context, query_successful
+
+
+
+def dutch_cowinfo_context(request):
+  
+    STATUS = []
+    output_list = []
+    cow_id = request.POST['cow_id']
+    start_date = request.POST['start_date']
+    end_date = request.POST['end_date']
+    insem_type = []
+
+    user_inputs = []
+    fetch_message = ''
+    query_successful = True
+
+
+    # -- STATUS LIST PARAMETERS -- #      
+
+    if "DRACHTIG" in request.POST:
+        STATUS.append('DRACHTIG')
+
+    if "GEDEKT" in request.POST:
+        STATUS.append('GEDEKT')
+
+
+
+    # ---------------------- #
+
+
+    # User feedback when "Fetch data" is pressed. Check for invalid inputs.
+    if STATUS == [] or start_date == '' or end_date == '' or insem_type == []:
+        query_successful = False
+        fetch_message = 'User input missing: '
+        if STATUS == []:
+            user_inputs.append('status type')
+        if start_date == '':
+            user_inputs.append('start date')
+        if end_date == '':
+            user_inputs.append('end date')
+        if insem_type == []:
+            user_inputs.append('insemination type')
+    else:
+        user_inputs = ['Cow id: ' + cow_id,", ".join(['Status types selected: '] + STATUS), 'Start date: ' + start_date, 'End date: ' + end_date,
+        ", ".join(['Requested outputs: '] + requested_list), 'Special field: ' + special_field_feedback]
+        fetch_message = 'User input:'
+    
+    
+
+    context = {
+        'cow_id': cow_id,
+        'start_date': start_date,
+        'end_date': end_date,
+        'STATUS': STATUS,
+        'insem_type': insem_type,
         'fetch_message': fetch_message,
         'user_inputs': user_inputs,
     }
