@@ -1,12 +1,19 @@
 from django.shortcuts import render
+#<<<<<<< HEAD
 from django.http import HttpResponse
-from src.backend.apis.bgAPIs import bgInfoScan, bgPosScan, bgPosQuery, bgInfoQuery
-from src.backend.apis.overview import overview_func, size_overview
+from src.apis.bgAPIs import bgScanSe, bgPosQuery, bgInfoQuery
+from src.apis.overview import overview_func, size_overview
 from functions import format_overview, milkdata_context, position_context, cowinfo_context, handle_uploaded_file, dutch_position_context, dutch_milkdata_context, dutch_cowinfo_context
-from src.backend.apis.query import positionQuery, infoQuery
+from src.apis.query import positionQuery, infoQuery
 from form import UploadFileForm
 import os
 
+#=======
+#from src.apis.bgAPIs import bgScanSe, bgPosQuery, bgInfoQuery
+#from src.apis.overview import overview_func, size_overview
+#from functions import format_overview, milkdata_context, position_context, cowinfo_context
+#from src.apis.query import positionQuery, infoQuery
+#>>>>>>> b3ef5e0d19c70da209e6bdc4730c8e1b3357a2e2
 
 
 def index(request):
@@ -19,9 +26,9 @@ def file_scan(request):
    context = {}
    if request.method == 'POST':
       if 'pos' in request.POST:
-         context['pos'] = bgPosScan()
+         context['pos'] = bgScanSe()
       if 'info' in request.POST:
-         context['info'] = bgInfoScan()
+         context['info'] = bgScanSe()
 
    return render(request, 'file_scan.html', context)
 
@@ -34,12 +41,15 @@ def upload_swedish(request):
       form = UploadFileForm(request.POST, request.FILES)
       files = request.FILES.getlist('files')
       if form.is_valid():
-         print('in valid')
          for f in files:
             handle_uploaded_file(f,'se/')
             file_names.append(f.name)
-         context['msg'] = 'Success! The following files have been passed to the database:'
-         context['file_names'] = file_names
+         try:
+            bgScanSe() # Scan for swedish files to upload
+            context['msg'] = 'Success! The following files have been passed to the database:'
+            context['file_names'] = file_names
+         except:
+            print('something else')#somethingelse
          return render(request, 'upload/upload_swedish.html', context)
       else:
          form = UploadFileForm()
