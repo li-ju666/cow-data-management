@@ -154,6 +154,7 @@ def getDays(start, end):
 # arg8 = end_time:string(hour:min:sec), arg9 = periodic:bool
 # ----
 ## return value: a list of tuples, each tuple is consisted of (filename, number of rows)
+# TODO: add parameter before start_date -> tag_strs
 def positionQuery(cow_id, grp, stats, types, start_date, end_date, start_time, end_time, periodic):
     print("Position query started")
     suffix = datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
