@@ -115,56 +115,56 @@ def checkInfoTables_se(database):
 # Suggestion: iso and levnr in Mapstatement and Milkstatement, werknr in Driedstatement.
 
 def checkInfoTables_nl(database):
-    Mapstatement = "CREATE TABLE IF NOT EXISTS Reference " \
-                   "(diernr SMALLINT, " \
-                   " tagstr VARCHAR(10)," \
-                   " iso INT, " \
-                   " startdate DATE, " \
-                   " comment VARCHAR(30), " \
-                   " enddate DATE, " \
-                   " PRIMARY KEY (diernr, startdate))"
+    Mapstatement = 'CREATE TABLE IF NOT EXISTS Reference ' \
+                   '(diernr SMALLINT, ' \
+                   ' tagstr VARCHAR(10),' \
+                   ' iso INT, ' \
+                   ' startdate DATE, ' \
+                   ' comment VARCHAR(30), ' \
+                   ' enddate DATE, ' \
+                   ' PRIMARY KEY (diernr, startdate))'
 
-    Driedstatement = "CREATE TABLE IF NOT EXISTS InsemInfo " \
-                   "(diernr SMALLINT, " \
-                   " name VARCHAR(50), " \
-                   " werknr SMALLINT, " \
-                   " dekdatum DATE, " \
-                   " insemnr SMALLINT, " \
-                   " strnm VARCHAR(50), " \
-                   " verkw DATE, " \
-                   " dekinfo VARCHAR(30), " \ 
-                   " lactnr SMALLINT, " \
-                   " status VARCHAR(20), " \
-                   " PRIMARY KEY (diernr, dekdatum))" 
+    Driedstatement = 'CREATE TABLE IF NOT EXISTS InsemInfo ' \
+                   '(diernr SMALLINT, ' \
+                   ' name VARCHAR(50), ' \
+                   ' werknr SMALLINT, ' \
+                   ' dekdatum DATE, ' \
+                   ' insemnr SMALLINT, ' \
+                   ' strnm VARCHAR(50), ' \
+                   ' verkw DATE, ' \
+                   ' dekinfo VARCHAR(30), ' \
+                   ' lactnr SMALLINT, ' \
+                   ' status VARCHAR(20), ' \
+                   ' PRIMARY KEY (diernr, dekdatum))'
 
-    Milkstatement = "CREATE TABLE IF NOT EXISTS MilkInfo " \
-                    "(diernr SMALLINT, " \
-                    " insertdate DATE, " \
-                    " levnr INT, " \
-                    " kgmelk FLOAT, " \
-                    " isk FLOAT, " \
-                    " percentv FLOAT, " \
-                    " eiw FLOAT, " \
-                    " lact FLOAT, " \
-                    " ur FLOAT, " \
-                    " celget FLOAT, " \
-                    " klfdat DATE, " \
-                    " lftafk FLOAT, " \
-                    " mprlft FLOAT, " \ 
-                    " lactnr SMALLINT, " \
-                    " lactatiedagen SMALLINT, " \
-                    " kgmelklact FLOAT, " \
-                    " kgmelk305 FLOAT, " \
-                    " vetlact FLOAT, " \
-                    " vet305 FLOAT, " \
-                    " eiwlact FLOAT, " \
-                    " eiw305 FLOAT, " \
-                    " kgvetlact FLOAT, " \
-                    " kgvet305 FLOAT, " \
-                    " kgeiwlact FLOAT, " \
-                    " kgeiw305 FLOAT, " \
-                    " lw SMALLINT, " \
-                    " PRIMARY KEY (diernr, insertdate))"
+    Milkstatement = 'CREATE TABLE IF NOT EXISTS MilkInfo ' \
+                    '(diernr SMALLINT, ' \
+                    ' insertdate DATE, ' \
+                    ' levnr INT, ' \
+                    ' kgmelk FLOAT, ' \
+                    ' isk FLOAT, ' \
+                    ' percentv FLOAT, ' \
+                    ' eiw FLOAT, ' \
+                    ' lact FLOAT, ' \
+                    ' ur FLOAT, ' \
+                    ' celget FLOAT, ' \
+                    ' klfdat DATE, ' \
+                    ' lftafk FLOAT, ' \
+                    ' mprlft FLOAT, ' \
+                    ' lactnr SMALLINT, ' \
+                    ' lactatiedagen SMALLINT, ' \
+                    ' kgmelklact FLOAT, ' \
+                    ' kgmelk305 FLOAT, ' \
+                    ' vetlact FLOAT, ' \
+                    ' vet305 FLOAT, ' \
+                    ' eiwlact FLOAT, ' \
+                    ' eiw305 FLOAT, ' \
+                    ' kgvetlact FLOAT, ' \
+                    ' kgvet305 FLOAT, ' \
+                    ' kgeiwlact FLOAT, ' \
+                    ' kgeiw305 FLOAT, ' \
+                    ' lw SMALLINT, ' \
+                    ' PRIMARY KEY (diernr, insertdate))'
 
     statements = [Milkstatement, Driedstatement, Mapstatement]
     for statement in statements:
