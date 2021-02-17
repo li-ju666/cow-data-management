@@ -45,11 +45,14 @@ def upload_swedish(request):
             handle_uploaded_file(f,'se/')
             file_names.append(f.name)
          try:
+            print('--------------------------------------------------------!!!!!!!!!!!!!!!!')
             bgScanSe() # Scan for swedish files to upload
+            print('after bgScan')
             context['msg'] = 'Success! The following files have been passed to the database:'
             context['file_names'] = file_names
-         except:
-            print('something else')#somethingelse
+         except Exception as error:
+            print('Error occured in upload_swedish:')#somethingelse
+            print(error)
          return render(request, 'upload/upload_swedish.html', context)
       else:
          form = UploadFileForm()
@@ -123,6 +126,7 @@ def dblist(request):
 def dblist_position(request):
 
    if request.method == 'POST':
+  
       context, query_successful = position_context(request)
       if query_successful == True:
          try:
@@ -134,7 +138,9 @@ def dblist_position(request):
                grp = []
             else:
                grp = list(map(int, context['group_nr'].split(',')))
-
+            print('TAG:::--------------')
+            tag_str = context['tag_str']
+            print(tag_str)
             stats = context['status_list']
             types = context['position_list']
             start_date = context['start_date']

@@ -107,7 +107,7 @@ def milkdata_context(request):
 
 
 def position_context(request):
-
+   
     status_list = []
     position_list = []
     cow_id = request.POST['cow_id']
@@ -116,6 +116,8 @@ def position_context(request):
     end_time = request.POST['end_time']
     start_date = request.POST['start_date']
     end_date = request.POST['end_date']
+    tag_str = request.POST['tag_str']
+
 
     fetch_message = ''
     user_inputs = []
@@ -189,13 +191,15 @@ def position_context(request):
             user_inputs.append('start time')
         if end_time == '':
             user_inputs.append('end time')
+
     else:
         user_inputs = ['Cow id: ' + cow_id, 'Group number: ' + group_nr,",".join(['Status types selected: '] + status_list), ['Position type(s): '] + position_list,'Start date: ' + start_date, 'End date: ' + end_date,
         'Start time: ' + start_time, 'End time: ' + end_time, 'Periodic: ' + str(periodic)]
         fetch_message = 'User inputs:'
         
 
-    
+    #if tag_str not '':
+        #if user_inputs not [] and 'end date' not in user_inputs and 'start date' not in user_inputs 
 
     context = {
         'cow_id': cow_id,
