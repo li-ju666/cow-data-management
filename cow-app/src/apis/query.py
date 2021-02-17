@@ -210,7 +210,7 @@ def positionQuery(cow_id, grp, stats, types, start_date, end_date, start_time, e
             f.write("No records fetched")
         finally:
             f.close()
-        result.append((filename, num_rows))
+        result.append((filename, num_rows)) #list of tupile
     return result
 
 

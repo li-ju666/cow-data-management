@@ -7,7 +7,7 @@
 
     <p>Specify requirements of data:</p>
     <br>
-    <div class='qtop'>
+    <div class='qtop' style="height: 30vh;">
       <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
 
@@ -15,40 +15,17 @@
       <div class='quodrant1'>
         <label for="cow_id"><b>Cow ID(s):</b></label>
         <input type="text" id="cow_id" name="cow_id" size="10">
-
-        <!-- <label for="Tag nr"><b>Tag nr:</b></label>
-        <input type="text" id="Tag nr" name="Tag nr" size="10"> -->
-
-        <!--<label for="group_nr"><b>Group number:</b></label>
-        <input type="text" id="group_nr" name="group_nr" size="10"> -->
       </div>
 
 
       <div class='quodrant2'>
         <b>Status:</b><br>
-        <input type="checkbox" id="drachtig" name="drachtig" value="drachtig">
-        <label for="drachtig"> Drachtig+ </label><br>
+        <input type="checkbox" id="DRACHTIG" name="DRACHTIG" value="DRACHTIG">
+        <label for="DRACHTIG"> Drachtig+ </label><br>
 
-        <input type="checkbox" id="gedekt" name="gedekt" value="gedekt">
-        <label for="gedekt"> Gedekt </label><br>
-        <!--
-        <input type="checkbox" id="INSEM" name="INSEM" value="INSEM">
-        <label for="INSEM"> INSEM </label><br>
-
-        <input type="checkbox" id="DRÄKT" name="DRÄKT" value="DRÄKT">
-        <label for="DRÄKT"> DRÄKT </label><br>
+        <input type="checkbox" id="GEDEKT" name="GEDEKT" value="GEDEKT">
+        <label for="GEDEKT"> Gedekt </label><br>
         
-        <input type="checkbox" id="SKAUT" name="SKAUT" value="SKAUT">
-        <label for="SKAUT"> SKAUT </label><br>
-
-        <input type="checkbox" id="SINLD" name="SINLD" value="SINLD">
-        <label for="SINLD"> SINLD </label><br>
-
-        <input type="checkbox" id="RÅMLK" name="RÅMLK" value="RÅMLK">
-        <label for="RÅMLK"> RÅMLK </label><br>
-
-        <input type="checkbox" id="TIDIG" name="TIDIG" value="TIDIG">
-        <label for="TIDIG"> TIDIG </label><br> -->
       </div>
 
     
@@ -86,11 +63,20 @@
 
      
     </form>
-
+  </div>
+  <div class="div_border" style="margin-top:  0cm; margin-bottom: 0.5cm;">
   </div>
 
+  <p style="font-size:24px"><b>Query status:</b> {{ status_message }}</p>
+  <p style="font-size:24px">{{ fetch_message }}</p>
+  <ul>
+  {% for list in user_inputs %}
+    <li>{{ list }}</li>
+  {% endfor %}
+</ul>
    
   </div>
+
 
 
 

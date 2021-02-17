@@ -7,7 +7,7 @@
 
     <p>Specify requirements of data:</p>
       <br>
-    <div class='qtop'>
+    <div class='qtop' style="height: 30vh;">
       <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
 
@@ -17,24 +17,17 @@
         <label for="cow_id"><b>Cow ID(s):</b></label>
         <input type="text" id="cow_id" name="cow_id" size="10">
 
-        <!-- <label for="Tag nr"><b>Tag nr:</b></label>
-        <input type="text" id="Tag nr" name="Tag nr" size="10"> 
-
-        <label for="group_nr"><b>Group number:</b></label>
-        <input type="text" id="group_nr" name="group_nr" size="10"> 
-      -->
-
   
       </div>
 
 
       <div class='quodrant2'>
         <b>Status:</b><br>
-        <input type="checkbox" id="drachtig" name="drachtig" value="drachtig">
+        <input type="checkbox" id="DRACHTIG" name="DRACHTIG" value="DRACHTIG">
         <label for="drachtig"> Drachtig+ </label><br>
 
-        <input type="checkbox" id="gedekt" name="gedekt" value="gedekt">
-        <label for="gedekt"> Gedekt </label><br>
+        <input type="checkbox" id="GEDEKT" name="GEDEKT" value="GEDEKT">
+        <label for="GEDEKT"> Gedekt </label><br>
       </div>
 
     
@@ -87,11 +80,18 @@
 
   </div>
 
-   
+  <div class="div_border" style="margin-top:  0cm; margin-bottom: 0.5cm;">
   </div>
 
-
-
+  <p style="font-size:24px"><b>Query status:</b> {{ status_message }}</p>
+  <p style="font-size:24px">{{ fetch_message }}</p>
+  <ul>
+  {% for list in user_inputs %}
+    <li>{{ list }}</li>
+  {% endfor %}
+</ul>
+   
+  </div>
 
 <div class="SplitRight">
     

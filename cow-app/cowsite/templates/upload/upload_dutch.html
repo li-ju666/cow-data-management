@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<div class="SplitLeft">
+    <h2>Upload Dutch data</h2>
+    <br>
+    <p style="font-size: 18px;">Please chose the file(s) that should be uploaded to the dutch database:</p>
+    <div class="div_border">
+    </div>
+    <div>
+    <form method="post" enctype="multipart/form-data"> 
+        {% csrf_token %}
+        <input type="file" name="files" autocomplete="off" required multiple value="upload">
+        <button type="submit">Upload to database</button>
+    </form>
+    
+    <div class="div_border">
+    </div>
+
+    <p style="font-size:17px">{{ msg }}</p>
+    <br>
+    <ul>
+        {% for file in file_names %}
+          <li style="font-size: 17px;">{{ file }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+</div>
+
+<div class="SplitRight">
+    <h4>Instructions</h4>
+</div>
+
+
+
+
+{% endblock %}

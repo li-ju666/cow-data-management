@@ -21,6 +21,15 @@
 
         <label for="group_nr"><b>Group number:</b></label>
         <input type="text" id="group_nr" name="group_nr" size="10">
+        
+        <br>
+        <br>
+        <b>OR</b>
+        <br>
+        <br>
+
+        <label for="tag_str"><b>Tag string:</b></label>
+        <input type="text" id="tag_str" name="tag_str" size="10">
       </div>
 
 
@@ -38,7 +47,7 @@
 
         <input type="checkbox" id="DRÄKT" name="DRÄKT" value="DRÄKT">
         <label for="DRÄKT"> DRÄKT </label><br>
-        
+
         <input type="checkbox" id="SKAUT" name="SKAUT" value="SKAUT">
         <label for="SKAUT"> SKAUT </label><br>
 
@@ -81,10 +90,10 @@
         <label for="end_time"><b>End time:</b></label>
         <input type="text" id="end_time" name="end_time" size="10">
         
-        <div style="margin-top: 20px; margin-left: 10px;">
+          <div style="margin-top: 20px; margin-left: 10px;">
         <input type="checkbox" id="Periodic" name="Periodic" value="Periodic">
         <label for="Periodic"> Periodic </label>
-      </div>
+          </div>
       </div>
 
       <div class='quodrant6'>
@@ -96,6 +105,12 @@
     </form>
 
   </div>
+
+
+  <div class="div_border" style="margin-top:  0cm; margin-bottom: 0.5cm;">
+  </div>
+ 
+
   <p style="font-size:24px"><b>Query status:</b> {{ status_message }}</p>
   <p style="font-size:24px">{{ fetch_message }}</p>
   <ul>
@@ -119,6 +134,8 @@
     Example: <i>411,324,799,122</i></li>
     <li><b>Group number:</b> Only integers, seperate serveral group numbers by commas only.<br>
     Example: <i>10,12,14</i></li>
+    <li><b>Tag string:</b> Can <b>ONLY</b> be combined with specified date. Do not query with any other options except date!<br> 
+      Example: <i>0021F512, 0032B530</i></li>
     <li><b>Status:*</b><br>
       Chose <i>"All types"</i> to not query for specific status type.</li>
     <li><b>Position data:</b><br>
@@ -132,19 +149,6 @@
     <li><b>Periodic:</b> If selected, data of time internval for each day within the date interval will be selected. If not, all records between absolute start and end date/time will be selected.</li>
   </ul>  
   
-  
-    <!--
-    <p>be kind</p>
-    <p>cow_id: {{ cow_id }}</p>
-    <p>group_nr: {{ group_nr }}</p>
-    <p>start_date: {{ start_date }}</p>
-    <p>end_date: {{ end_date }}</p>
-    <p>start_time: {{ start_time }}</p>
-    <p>end_time: {{ end_time }}</p>
-    <p>periodic: {{ periodic }}</p>
-    <p>position_list: {{ position_list }}</p>
-    <p>statu_list: {{ status_list }}</p>
-      -->
 
 
 </div>

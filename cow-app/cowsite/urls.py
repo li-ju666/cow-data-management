@@ -4,7 +4,8 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name="index"),
-    path('upload/', views.upload, name='upload'),
+    path('upload_swedish/', views.upload_swedish, name='upload_swedish'),
+    path('upload_dutch/', views.upload_dutch, name='upload_dutch'),
     path('dblist/', views.dblist, name='dblist'),
     path('dblist_position/', views.dblist_position, name='dblist_position'),
     path('dblist_milkdata/', views.dblist_milkdata, name='dblist_milkdata'),
