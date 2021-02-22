@@ -1,9 +1,14 @@
 from src.lib.reader.positionReader import readPos
 from .insertor import InsertorBase
 import numpy
+from src.lib.dbmanager.dbinit import connect_se, connect_nl
+import multiprocessing
 
-
-def insertPos(filePath, database):
+def insertPos(filePath, db):
+    if db == "se":
+        database = connect_se()
+    else:
+        database = connect_nl()
     fileName = filePath[filePath.rfind("/")+1:]
     if fileName.startswith("PAA"):
         insertor = PAA()
@@ -17,9 +22,18 @@ def insertPos(filePath, database):
         print("Skipped", flush=True)
         return
 
-    data = readPos(filePath)
+    step = 200000
+    step_n = 0
+    while True:
+        data = readPos(filePath, nrows=step, skiprows=step_n*step)
+        print(step_n, flush=True)
+        insertor.insert(database, data)
+        step_n += 1
+        if data.shape[0] < step:
+            break
 
-    insertor.insert(database, data)
+    database.close()
+    print("File inserted: {}".format(fileName), flush=True)
 
 
 """ Position insertor definitions """
