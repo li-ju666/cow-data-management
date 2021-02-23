@@ -147,7 +147,7 @@ def getDays(start, end):
 ############################### Query functions #############################################
 # position query function
 def refQuery(cow_id):
-    tagRanges = tagQuery([cow_id], ['REDO','INSEM','DRÄKT','SKAUT','SINLD','RÅMLK','TIDIG'],
+    tagRanges = tagQuery([cow_id],[], ['REDO','INSEM','DRÄKT','SKAUT','SINLD','RÅMLK','TIDIG'],
                          "00-01-01", datetime.datetime.now().strftime("%y-%m-%d"))
     return tagRanges
 
