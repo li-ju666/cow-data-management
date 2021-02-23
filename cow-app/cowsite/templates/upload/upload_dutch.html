@@ -12,15 +12,17 @@
     <div>
     <form method="post" enctype="multipart/form-data"> 
         {% csrf_token %}
-        <input type="file" name="files" autocomplete="off" required multiple value="upload">
+        <input type="file" name="files" autocomplete="off" required multiple>
         <button type="submit">Upload to database</button>
     </form>
     
     <div class="div_border">
     </div>
 
+    <h4><b>Status:</b></h4> <p style="font-size: 17px;"><b>{{ status }}</p></b>
+    <p style="font-size:17px">{{ size_sum }}</p>
     <p style="font-size:17px">{{ msg }}</p>
-    <br>
+ 
     <ul>
         {% for file in file_names %}
           <li style="font-size: 17px;">{{ file }}</li>

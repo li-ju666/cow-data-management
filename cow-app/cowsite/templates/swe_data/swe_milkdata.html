@@ -3,9 +3,9 @@
 {% block content %}
 <div class="SplitLeft">
     
-    <h2>Swedish Position data</h2><br>
+    <h2>Swedish Milk data</h2><br>
 
-    <p>Specify requirements for position data:</p>
+    <p style="font-size: 18px;">Specify requirements of data:</p>
     <br>
     <div class='qtop'>
       <form method="post" enctype="multipart/form-data">
@@ -13,15 +13,13 @@
 
 
       <div class='quodrant1'>
-        <label for="cow_id"><b>Cow ID(s):</b></label>
+        <label for="cow_id"><b>Cow id:</b></label>
         <input type="text" id="cow_id" name="cow_id" size="10">
 
-        <!-- <label for="Tag nr"><b>Tag nr:</b></label>
-        <input type="text" id="Tag nr" name="Tag nr" size="10"> -->
 
         <label for="group_nr"><b>Group number:</b></label>
         <input type="text" id="group_nr" name="group_nr" size="10">
-        
+
         <br>
         <br>
         <b>OR</b>
@@ -30,11 +28,11 @@
 
         <label for="tag_str"><b>Tag string:</b></label>
         <input type="text" id="tag_str" name="tag_str" size="10">
+
       </div>
 
 
       <div class='quodrant2'>
-
         <b>Status:</b><br>
         <input type="checkbox" id="all_types" name="all_types" value="all_types">
         <label for="all_types"> All types </label><br>
@@ -47,7 +45,7 @@
 
         <input type="checkbox" id="DRÄKT" name="DRÄKT" value="DRÄKT">
         <label for="DRÄKT"> DRÄKT </label><br>
-
+        
         <input type="checkbox" id="SKAUT" name="SKAUT" value="SKAUT">
         <label for="SKAUT"> SKAUT </label><br>
 
@@ -64,18 +62,6 @@
     
 
       <div class='quodrant3'>
-        <b>Position data:</b><br>
-        <input type="checkbox" id="PA" name="PA" value="PA">
-        <label for="PA"> PA </label><br>
-        <input type="checkbox" id="PAA" name="PAA" value="PAA">
-        <label for="PAA"> PAA </label><br>
-        <input type="checkbox" id="FA" name="FA" value="FA">
-        <label for="FA"> FA </label><br>
-        <input type="checkbox" id="PC" name="PC" value="PC">
-        <label for="PC"> PC </label><br>  
-      </div>
-
-      <div class='quodrant4'>
         <label for="start_date"><b>Start date:</b></label>
         <input type="text" id="start_date" name="start_date" size="10">
 
@@ -83,33 +69,29 @@
         <input type="text" id="end_date" name="end_date" size="10">
       </div>
 
-      <div class='quodrant5'>
-        <label for="start_time"><b>Start time:</b></label>
-        <input type="text" id="start_time" name="start_time" size="10">
-
-        <label for="end_time"><b>End time:</b></label>
-        <input type="text" id="end_time" name="end_time" size="10">
+      <div class='quodrant4'>
+        <button class="button button2" type="submit">Fetch data</button>
         
-          <div style="margin-top: 20px; margin-left: 10px;">
-        <input type="checkbox" id="Periodic" name="Periodic" value="Periodic">
-        <label for="Periodic"> Periodic </label>
-          </div>
+      </div>
+
+      <div class="quodrant5">
+      
+
       </div>
 
       <div class='quodrant6'>
-        <button class="button button2" type="submit">Fetch data</button>
+        
       </div>
       
       {% csrf_token %}
+
+      
+
      
-    </form>
-
+    </form>    
   </div>
-
-
   <div class="div_border" style="margin-top:  0cm; margin-bottom: 0.5cm;">
   </div>
- 
 
   <p style="font-size:24px"><b>Query status:</b> {{ status_message }}</p>
   <p style="font-size:24px">{{ fetch_message }}</p>
@@ -125,32 +107,26 @@
 
 
 <div class="SplitRight">
+    
+    
+    <p>Inputs marked with <b>*</b> are mandatory.</p>
 
- 
-  <p>Inputs marked with <b>*</b> are mandatory.</p>
-
-  <ul>
-    <li><b>Cow ID(s):</b> Only integers, seperate serval IDs by commas only.<br> 
-    Example: <i>411,324,799,122</i></li>
-    <li><b>Group number:</b> Only integers, seperate serveral group numbers by commas only.<br>
-    Example: <i>10,12,14</i></li>
-    <li><b>Tag string:</b> Can <b>ONLY</b> be combined with specified date. Do not query with any other options except date!<br> 
+    <ul>
+      <li><b>Cow ID(s):</b> Only integers, seperate serval IDs by commas only.<br> 
+      Example: <i>411,324,799,122</i></li>
+      <li><b>Group number:</b> Only integers, seperate serveral group numbers by commas only.<br>
+      Example: <i>10,12,14</i></li>
+      <li><b>Tag string:</b> Can <b>ONLY</b> be combined with specified time. Do not query with any other options!<br> 
       Example: <i>0021F512, 0032B530</i></li>
-    <li><b>Status:*</b><br>
+      <li><b>Status*</b><br>
       Chose <i>"All types"</i> to not query for specific status type.</li>
-    <li><b>Position data:</b><br>
-    Chose what kind of position data should be queried.</li>
-    <li><b>Date:</b> YY-MM-DD. <b>*</b><br>
-    Example: <i>20-03-14</i></li>
-
-    <li><b>Time:</b> hh:mm:ss. <b>*</b><br>
-    Example: <i>08:34:11</i></li>
-
-    <li><b>Periodic:</b> If selected, data of time internval for each day within the date interval will be selected. If not, all records between absolute start and end date/time will be selected.</li>
-  </ul>  
+      <li><b>Date:</b> YY-MM-DD. <b>*</b><br>
+      Example: <i>20-03-14</i></li>
   
-
-
+    
+  </ul>  
+    
+   
 </div>
 
 

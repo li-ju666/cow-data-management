@@ -3,21 +3,19 @@
 {% block content %}
 <div class="SplitLeft">
     
-    <h2>Swedish Milk data</h2><br>
+    <h2>Swedish Cow information data</h2><br>
 
-    <p>Specify requirements of data:</p>
-    <br>
+    <p style="font-size: 18px;">Specify requirements of data:</p>
+      <br>
     <div class='qtop'>
       <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
 
 
       <div class='quodrant1'>
-        <label for="cow_id"><b>Cow id:</b></label>
-        <input type="text" id="cow_id" name="cow_id" size="10">
 
-        <!-- <label for="Tag nr"><b>Tag nr:</b></label>
-        <input type="text" id="Tag nr" name="Tag nr" size="10"> -->
+        <label for="cow_id"><b>Cow id(s):</b></label>
+        <input type="text" id="cow_id" name="cow_id" size="10">
 
         <label for="group_nr"><b>Group number:</b></label>
         <input type="text" id="group_nr" name="group_nr" size="10">
@@ -31,6 +29,7 @@
         <label for="tag_str"><b>Tag string:</b></label>
         <input type="text" id="tag_str" name="tag_str" size="10">
 
+  
       </div>
 
 
@@ -69,29 +68,57 @@
 
         <label for="end_date"><b>End date:</b></label>
         <input type="text" id="end_date" name="end_date" size="10">
+        <br>
+        <br>
       </div>
 
       <div class='quodrant4'>
-        <button class="button button2" type="submit">Fetch data</button>
+
+        
+        <b>Requested output:</b><br>
+        <!-- # order: "resp", "grp", "stat", "lakt", "kalvn_date"  -->
+        <input type="checkbox" id="resp_nr" name="resp_nr" value="resp_nr">
+        <label for="resp_nr"> Resp number </label><br>  
+
+        <input type="checkbox" id="Group" name="Group" value="Group">
+        <label for="Group"> Group </label><br>
+
+        <input type="checkbox" id="status" name="status" value="status">
+        <label for="status"> Status </label><br>
+
+        <input type="checkbox" id="lactation_nr" name="lactation_nr" value="lactation_nr">
+        <label for="lactation_nr"> Lactation number </label><br>
+
+        <input type="checkbox" id="kalvn_date" name="kalvn_date" value="kalvn_date">
+        <label for="kalvn_date"> Kalvn date </label><br>  
         
       </div>
 
       <div class="quodrant5">
-      
+        <label for="cars"><b>Special fields:</b></label>
 
+        <select name="special_field" id="special_field" style="max-width:85%;">
+          <option value="0">0. General info</option>
+          <option value="1">1. Health data</option>
+          <option value="2">2. Insemination data</option>
+        </select>
+        
+
+
+
+        
       </div>
 
       <div class='quodrant6'>
-        
+        <button class="button button2" type="submit">Fetch data</button>
       </div>
       
       {% csrf_token %}
 
-      
-
      
-    </form>    
+    </form>
   </div>
+
   <div class="div_border" style="margin-top:  0cm; margin-bottom: 0.5cm;">
   </div>
 
@@ -109,26 +136,26 @@
 
 
 <div class="SplitRight">
-    
-    
-    <p>Inputs marked with <b>*</b> are mandatory.</p>
 
-    <ul>
-      <li><b>Cow ID(s):</b> Only integers, seperate serval IDs by commas only.<br> 
-      Example: <i>411,324,799,122</i></li>
-      <li><b>Group number:</b> Only integers, seperate serveral group numbers by commas only.<br>
-      Example: <i>10,12,14</i></li>
-      <li><b>Tag string:</b> Can <b>ONLY</b> be combined with specified time. Do not query with any other options!<br> 
-      Example: <i>0021F512, 0032B530</i></li>
-      <li><b>Status*</b><br>
+  <p>Inputs marked with <b>*</b> are mandatory.</p>
+  <ul>
+    
+    <li><b>Cow ID(s):</b> Only integers, seperate serval IDs by commas only.<br> 
+    Example: <i>411,324,799,122</i></li>
+    <li><b>Group number:</b> Only integers, seperate serveral group numbers by commas only.<br>
+    Example: <i>10,12,14</i></li>
+    <li><b>Tag string:</b> Can <b>ONLY</b> be combined with specified date. Do not query with any other options except date!<br> 
+    Example: <i>0021F512, 0032B530</i></li>
+    <li><b>Status:*</b><br>
       Chose <i>"All types"</i> to not query for specific status type.</li>
-      <li><b>Date:</b> YY-MM-DD. <b>*</b><br>
-      Example: <i>20-03-14</i></li>
+    <li><b>Date:</b> YY-MM-DD. <b>*</b><br>
+    Example: <i>20-03-14</i></li>
+
+    <li><b>Time:</b> hh:mm:ss. <b>*</b><br>
+    Example: <i>08:34:11</i></li>
+</ul>  
   
-    
-  </ul>  
-    
-   
+
 </div>
 
 

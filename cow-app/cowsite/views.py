@@ -33,53 +33,78 @@ def file_scan(request):
    return render(request, 'file_scan.html', context)
 
 
+# ---- Upload to database views ----------
 def upload_swedish(request):
    file_names = []
    context = {}
    form = UploadFileForm()
+   size_sum = 0
+   context['status'] = 'Waiting for user input.'
    if request.method == 'POST':
-      form = UploadFileForm(request.POST, request.FILES)
-      files = request.FILES.getlist('files')
-      if form.is_valid():
-         for f in files:
-            handle_uploaded_file(f,'se/')
-            file_names.append(f.name)
-         try:
-            print('--------------------------------------------------------!!!!!!!!!!!!!!!!')
-            bgScanSe() # Scan for swedish files to upload
-            print('after bgScan')
-            context['msg'] = 'Success! The following files have been passed to the database:'
+      try:
+         form = UploadFileForm(request.POST, request.FILES)
+         files = request.FILES.getlist('files')
+         if form.is_valid():
+            for f in files:
+               handle_uploaded_file(f,'se/')
+               file_names.append(f.name)
             context['file_names'] = file_names
-         except Exception as error:
-            print('Error occured in upload_swedish:')#somethingelse
-            print(error)
-         return render(request, 'upload/upload_swedish.html', context)
-      else:
+            
+            #Estimate size of files
+            for f in files:
+               size_sum = size_sum + f.size
+
+            #upload to dutch database here
+            bgScanSe() # Scan for swedish files to upload
+            context['size_sum'] = 'Total size of files: {} MB'.format(size_sum/1000000)
+            context['msg'] = 'The following files have been passed to the database:'
+            context['status'] = 'Success!'
+            
+      except Exception as error:
          form = UploadFileForm()
-   return render(request, 'upload/upload_swedish.html', {})
+         print('Error occured in upload_swe:')
+         print(error)
+         context['status'] = 'Error occured! The following message was past: "{}".'.format(error)
+      finally:
+         return render(request, 'upload/upload_swedish.html', context)
+   return render(request, 'upload/upload_swedish.html', context)
+
 
 def upload_dutch(request):
    file_names = []
    context = {}
    form = UploadFileForm()
+   size_sum = 0
+   context['status'] = 'Waiting for user input.'
    if request.method == 'POST':
-      form = UploadFileForm(request.POST, request.FILES)
-      files = request.FILES.getlist('files')
+      try:
+         form = UploadFileForm(request.POST, request.FILES)
+         files = request.FILES.getlist('files')
 
-      print(request.POST.get('files'))
-      if request.POST.get('files') == 'upload':
          if form.is_valid():
-            print('in valid')
             for f in files:
                handle_uploaded_file(f,'nl/')
                file_names.append(f.name)
-            context['msg'] = 'Success! The following files have been passed to the database:'
             context['file_names'] = file_names
-            context['file_size'] = files.size
-            return render(request, 'upload/upload_dutch.html', context)
-         else:
-            form = UploadFileForm()
-   return render(request, 'upload/upload_dutch.html', {})
+
+         #Estimate size of files
+         for f in files:
+            size_sum = size_sum + f.size
+
+         #upload to dutch database here
+         context['size_sum'] = 'Total size of files: {} MB'.format(size_sum/1000000)
+         context['msg'] = 'The following files have been passed to the database:'
+         context['status'] = 'Success!'
+      except Exception as error:
+         form = UploadFileForm()
+         print('Error occured in upload_dutch:')
+         print(error)
+         context['status'] = 'Error occured! The following message was past: "{}".'.format(error)
+         
+      
+      finally:
+         return render(request, 'upload/upload_dutch.html', context)
+   return render(request, 'upload/upload_dutch.html', context)
 
 
 def overview(request):
@@ -87,8 +112,6 @@ def overview(request):
    try:
       over = overview_func()
       list_info, list_pos = format_overview(over)
-
-      # list_size = [['CowInfo', 1489, '0.09 MB'], ['HealthInfo', 244, '0.05 MB'], ['FA', 0, '0.02 MB'], ['InsemInfo', 277, '0.02 MB'], ['MilkInfo', 0, '0.02 MB'], ['PA', 0, '0.02 MB'], ['PAA', 0, '0.02 MB'], ['PC', 0, '0.02 MB'], ['Reference', 249, '0.02 MB']]
       list_size = size_overview()
       print("Overview function working fine")
       context = {
@@ -99,7 +122,6 @@ def overview(request):
          'list_info': list_info,
          'list_size': list_size,
       }
-      # context['status_messsage'] = "Database connected"
    except Exception as error:
       print('Error: ')
       print(error)
@@ -119,11 +141,11 @@ def overview(request):
 
 
 # --------- SWEDISH DATABASE ------------ #
-def dblist(request):  
-   return render(request, "dblist/dblist_blank.html",{})
+def swe_db(request):  
+   return render(request, "swe_data/swe_db.html",{})
 
 
-def dblist_position(request):
+def swe_position(request):
 
    if request.method == 'POST':
   
@@ -138,9 +160,11 @@ def dblist_position(request):
                grp = []
             else:
                grp = list(map(int, context['group_nr'].split(',')))
-            print('TAG:::--------------')
-            tag_str = context['tag_str']
-            print(tag_str)
+            if context['tag_str'] == '':
+               tag_strs = []
+            else:
+               tag_strs = list(map(str, context['tag_strs'].split(',')))
+
             stats = context['status_list']
             types = context['position_list']
             start_date = context['start_date']
@@ -150,23 +174,23 @@ def dblist_position(request):
             periodic = context['periodic']
             #bgPosQuery(cow_id, grp, stats, types,
                      #start_date, end_date, start_time, end_time, periodic)
-            positionQuery(cow_id, grp, stats, types, start_date, end_date, start_time, end_time, periodic)
+            positionQuery(cow_id, grp, stats, types, start_date, end_date, start_time, end_time, periodic) # AND TAG STR
             context['status_message'] = 'Query was successful, file has been generated.'
          except Exception as error:
                print('Error: ')
                print(error)
                context['status_message'] = 'Failed to query, the following error message were passed: ' + str(error)
          finally:
-            return render(request, "dblist/dblist_position.html", context)
+            return render(request, "swe_data/swe_position.html", context)
       else:
          context['status_message'] = 'Mandatory input fields are missing, please try again.'
-         return render(request, "dblist/dblist_position.html", context)
+         return render(request, "swe_data/swe_position.html", context)
    
    else:
-      return render(request, "dblist/dblist_position.html", {})
+      return render(request, "swe_data/swe_position.html", {})
 
 
-def dblist_milkdata(request):
+def swe_milkdata(request):
 
    if request.method == 'POST':
       context, query_successful = milkdata_context(request)
@@ -188,15 +212,15 @@ def dblist_milkdata(request):
             print(error)
             context['status_message'] = 'Failed to query, the following error message were passed: ' + str(error)
          finally:
-            return render(request, "dblist/dblist_milkdata.html", context)
+            return render(request, "swe_data/swe_milkdata.html", context)
       else:
          context['status_message'] = 'Mandatory input fields are missing, please try again.'
-         return render(request, "dblist/dblist_milkdata.html", context)
+         return render(request, "swe_data/swe_milkdata.html", context)
    else:
-      return render(request, "dblist/dblist_milkdata.html", {})
+      return render(request, "swe_data/swe_milkdata.html", {})
 
 
-def dblist_cowinfo(request):
+def swe_cowinfo(request):
  
    if request.method == 'POST':
       context, query_successful = cowinfo_context(request)
@@ -223,14 +247,48 @@ def dblist_cowinfo(request):
             print(error)
             context['status_message'] = 'Failed to query, the following error message were passed: ' + str(error)
          finally:
-            return render(request, "dblist/dblist_cowinfo.html", context)
+            return render(request, "swe_data/swe_cowinfo.html", context)
       else:
          context['status_message'] = 'Mandatory input fields are missing, please try again.'
-         return render(request, "dblist/dblist_cowinfo.html", context)
+         return render(request, "swe_data/swe_cowinfo.html", context)
 
    else:
-      return render(request, "dblist/dblist_cowinfo.html", {})
+      return render(request, "swe_data/swe_cowinfo.html", {})
 
+
+
+def swe_mapping_info(request):
+   context = {}
+
+   if request.method == 'POST':
+      cow_id = request.POST['cow_id']
+      if cow_id == '':
+         context['msg'] = 'Cow ID is required to render table, try again!'
+      else:
+         try:
+            cow_id = int(cow_id)
+         except:
+            context['msg'] = 'Incorrect format, Cow ID must be an integer! Your input:'
+            context['msg_id'] = '{}'.format(cow_id)
+            return render(request,'swe_data/swe_mapping_info.html', context)
+         try:
+            #query list = fetch from back end
+            context['map_LoL'] = [['tag1','date1','date1'],['tag2','date2','date2'],['tag3','date3','date3']]
+            context['map_header'] = ['Tag Nr', 'Start date', 'End date']
+            context['msg'] = 'Mapping info found!'
+            context['msg_id'] = 'Rendering table using cow id = {}.'.format(cow_id)
+         except Exception as error:
+            context['msg'] = 'Error occured: {}'.format(error)
+         finally:
+            return render(request,'swe_data/swe_mapping_info.html', context)
+
+
+   return render(request,'swe_data/swe_mapping_info.html', context)
+
+
+
+
+# -------- DUTCH DATABASE -------------
 
 def dutch_data(request):
    return render(request, "dutch_data/dutch_select.html",{})

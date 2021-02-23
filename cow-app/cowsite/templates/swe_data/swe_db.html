@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="SplitLeft">
+    
+    <h2>Swedish database</h2>
+
+    <p style="font-size: 18px;">Please chose what kind of Swedish data you want to query:</p>
+      <div style="margin-bottom: 0.75cm; margin-top: 0.75cm;">
+        <button class="button button1" onclick="location.href = '/swe_position'">Position data</button>
+      </div>
+      
+
+      <div style="margin-bottom: 0.75cm;">
+        <button class="button button1" onclick="location.href = '/swe_milkdata'">Milk data</button>
+      </div>
+    
+
+      <div style="margin-bottom: 0.75cm;">
+        <button class="button button1" onclick="location.href = '/swe_cowinfo'">Cow info</button>
+      </div>
+  
+
+      <div style="margin-bottom: 0.75cm;">
+        <button class="button button1" onclick="location.href = '/swe_mapping_info'">Mapping info</button>
+      </div>
+
+</div>
+
+      
+
+<div class="SplitRight">
+    
+    <h4>Instructions:</h4>
+ 
+    Choose what part of the database you want to query.
+
+</div>
+
+
+{% endblock %}
