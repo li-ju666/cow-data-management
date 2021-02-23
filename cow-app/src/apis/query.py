@@ -144,21 +144,28 @@ def getDays(start, end):
     return days
 
 
-
 ############################### Query functions #############################################
-
-######### position query function ####################
+# position query function
+def refQuery(cow_id):
+    tagRanges = tagQuery([cow_id], ['REDO','INSEM','DRÄKT','SKAUT','SINLD','RÅMLK','TIDIG'],
+                         "00-01-01", datetime.datetime.now().strftime("%y-%m-%d"))
+    return tagRanges
 
 # arg1 = cow_id: [int], arg2 = group_no: [int], arg3 = status: [string], arg4 = position_type: [string],
 # arg5 = start_date: string (yy-mm-dd), arg6 = end_date: string(yy-mm-dd), arg7 = start_time:string(hour:min:sec),
 # arg8 = end_time:string(hour:min:sec), arg9 = periodic:bool
-# ----
-## return value: a list of tuples, each tuple is consisted of (filename, number of rows)
-def positionQuery(cow_id, grp, stats, types, start_date, end_date, start_time, end_time, periodic):
+# return value: a list of tuples, each tuple is consisted of (filename, number of rows)
+# TODO: add parameter before start_date -> tag_strs
+def positionQuery(cow_id, grp, stats, types, tags, start_date, end_date, start_time, end_time, periodic):
     print("Position query started")
     suffix = datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
     path = "result_files/"
-    tagRanges = tagQuery(cow_id, grp, stats, start_date, end_date)
+    if tags:
+        start = datetime.datetime.strptime("%Y-%m-%d-%H:%M:%S", "-".join([start_date, start_time]))
+        end = datetime.datetime.strptime("%Y-%m-%d-%H:%M:%S", "-".join([end_date, end_time]))
+        tagRanges = list(map(lambda x: ("NA", x, start, end), tags))
+    else:
+        tagRanges = tagQuery(cow_id, grp, stats, start_date, end_date)
     queryDict = {}
     queryDict['FA'] = 'measure_time'
     queryDict['PA'] = 'start_time'
@@ -176,6 +183,16 @@ def positionQuery(cow_id, grp, stats, types, start_date, end_date, start_time, e
             os.remove(path+filename)
         except IOError:
             print("No old files exist")
+        if not tagRanges:
+            f = open(path+filename, "w")
+            f.write("No records fetched")
+        else:
+            f = open(path+filename, "w")
+            for tag in tagRanges:
+                start = tag[2].strftime("%y-%m-%d")
+                end = tag[3].strftime("%y-%m-%d")
+                f.write("  ".join([str(tag[0]), str(tag[1]), start, end]))
+        f.close()
 
         for tag in tagRanges:
             # print(tag)
@@ -202,13 +219,14 @@ def positionQuery(cow_id, grp, stats, types, start_date, end_date, start_time, e
             else:
                 num_rows += len(data.index)
                 data.to_csv(path+filename, index=False, header=False, mode='a')
-        try:
-            f = open(path+filename)
-        except IOError:
-            f = open(path+filename, "w")
-            f.write("No records fetched")
-        finally:
-            f.close()
+
+        # try:
+        #     f = open(path+filename)
+        # except IOError:
+        #     f = open(path+filename, "w")
+        #     f.write("No records fetched")
+        # finally:
+        #     f.close()
         result.append((filename, num_rows)) #list of tupile
     return result
 
