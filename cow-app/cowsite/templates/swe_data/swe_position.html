@@ -61,7 +61,7 @@
     
 
       <div class='quodrant3'>
-        <b>Position data:</b><br>
+        <b>*Position data:</b><br>
         <input type="checkbox" id="PA" name="PA" value="PA">
         <label for="PA"> PA </label><br>
         <input type="checkbox" id="PAA" name="PAA" value="PAA">
@@ -73,18 +73,18 @@
       </div>
 
       <div class='quodrant4'>
-        <label for="start_date"><b>Start date:</b></label>
+        <label for="start_date"><b>*Start date:</b></label>
         <input type="text" id="start_date" name="start_date" size="10">
 
-        <label for="end_date"><b>End date:</b></label>
+        <label for="end_date"><b>*End date:</b></label>
         <input type="text" id="end_date" name="end_date" size="10">
       </div>
 
       <div class='quodrant5'>
-        <label for="start_time"><b>Start time:</b></label>
+        <label for="start_time"><b>*Start time:</b></label>
         <input type="text" id="start_time" name="start_time" size="10">
 
-        <label for="end_time"><b>End time:</b></label>
+        <label for="end_time"><b>*End time:</b></label>
         <input type="text" id="end_time" name="end_time" size="10">
         
           <div style="margin-top: 20px; margin-left: 10px;">
@@ -131,16 +131,16 @@
     Example: <i>411,324,799,122</i></li>
     <li><b>Group number:</b> Only integers, seperate serveral group numbers by commas only.<br>
     Example: <i>10,12,14</i></li>
-    <li><b>Tag string:</b> Can <b>ONLY</b> be combined with specified date. Do not query with any other options except date!<br> 
+    <li><b>Tag string:</b> Tag string can only combined with position data and time interval. All other fields will be ignored when using tag string.<br> 
       Example: <i>0021F512, 0032B530</i></li>
-    <li><b>Status:*</b><br>
+    <li><b>Status:</b><br>
       Chose <i>"All types"</i> to not query for specific status type.</li>
-    <li><b>Position data:</b><br>
-    Chose what kind of position data should be queried.</li>
-    <li><b>Date:</b> YY-MM-DD. <b>*</b><br>
+    <li><b>*Position data:</b><br>
+    Chose what type of position data that should be queried.</li>
+    <li><b>*Date:</b> YY-MM-DD. <br>
     Example: <i>20-03-14</i></li>
 
-    <li><b>Time:</b> hh:mm:ss. <b>*</b><br>
+    <li><b>*Time:</b> hh:mm:ss. <br>
     Example: <i>08:34:11</i></li>
 
     <li><b>Periodic:</b> If selected, data of time internval for each day within the date interval will be selected. If not, all records between absolute start and end date/time will be selected.</li>
