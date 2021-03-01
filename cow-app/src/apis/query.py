@@ -175,7 +175,7 @@ def positionQuery(cow_id, grp, stats, types, tags, start_date, end_date, start_t
     queryDict['PAA'] = 'measure_time'
     queryDict['PC'] = 'start_time'
     db = connect_se()
-    result = []
+    query_result = []
     for pType in types:
         num_rows = 0
         filename = pType + suffix + '.csv'
@@ -222,8 +222,8 @@ def positionQuery(cow_id, grp, stats, types, tags, start_date, end_date, start_t
             else:
                 num_rows += len(data.index)
                 data.to_csv(path+filename, index=False, header=False, mode='a')
-        result.append((filename, num_rows)) #list of tupile
-    return result
+        query_result.append((filename, num_rows)) #list of tupile
+    return query_result
 
 
 ########### info query function #################

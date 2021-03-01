@@ -14,7 +14,7 @@ def size_overview():
                 'ROUND(((data_length + index_length) / 1024 / 1024), 2) AS "Size (MB)", ' +\
                 'table_rows as "Num" ' +\
                 'FROM information_schema.TABLES ' +\
-                'WHERE table_schema = "CowData"' +\
+                'WHERE table_schema = "se_cow"' +\
                 'ORDER BY (data_length + index_length) DESC'
     cur.execute(statement)
     result = cur.fetchall()

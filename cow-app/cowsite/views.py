@@ -114,6 +114,7 @@ def overview(request):
       over = overview_func()
       list_info, list_pos = format_overview(over)
       list_size = size_overview()
+      print(list_size, flush=True)
       print("Overview function working fine")
       context = {
          'info_header': ['KO','Health','Avkastn','Milk'],
@@ -175,11 +176,12 @@ def swe_position(request):
             periodic = context['periodic']
            
             files = positionQuery(cow_id, grp, stats, types, tag_strs, start_date, end_date, start_time, end_time, periodic)
+            print(files, flush=True)
             files = list(map(lambda x: x[0], files))
-            files = list(filter(lambda x: x, files))
+            # files = list(filter(lambda x: x is not "NA", files))
             # print(files, flush=True)
             files = ' '.join(files)
-            # print(files, flush=True)
+            print(files, flush=True)
             context['status_message'] = 'Query was successful, following files have been generated and can be found in '\
                'result_files/{}'.format(files)
          except Exception as error:
@@ -293,16 +295,13 @@ def swe_mapping_info(request):
          finally:
             return render(request,'swe_data/swe_mapping_info.html', context)
 
-
    return render(request,'swe_data/swe_mapping_info.html', context)
 
 
-
-
 # -------- DUTCH DATABASE -------------
-
 def dutch_data(request):
    return render(request, "dutch_data/dutch_select.html",{})
+
 
 def dutch_position(request):
    if request.method == 'POST':
