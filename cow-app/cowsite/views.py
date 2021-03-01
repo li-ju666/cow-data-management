@@ -57,7 +57,8 @@ def upload_swedish(request):
             #upload to swe database here
             bgScanSe() # Scan for swedish files to upload
             context['size_sum'] = 'Total size of files: {} MB'.format(size_sum/1000000)
-            context['msg'] = 'The following files have been passed to the database:'
+            context['msg'] = 'File(s) submitted. The file will be visible in the Overview tab when it is successfully uploaded (for position data, this may take a while).'
+            context['file_text'] = 'File(s) submitted:'
             context['status'] = 'Success!'
             
       except Exception as error:

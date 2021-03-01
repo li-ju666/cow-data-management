@@ -22,6 +22,8 @@
     <h4><b>Status:</b></h4> <p style="font-size: 17px;"><b>{{ status }}</p></b>
     <p style="font-size:17px">{{ size_sum }}</p>
     <p style="font-size:17px">{{ msg }}</p>
+    <br>
+    <p><b>{{ file_text }}</b></p>
  
     <ul>
         {% for file in file_names %}
@@ -33,6 +35,16 @@
 
 <div class="SplitRight">
     <h4>Instructions</h4>
+
+    <ol>
+      <li>Click on <i>Choose file</i> button to open up the computer's file browser and chose which file(s) you want to upload.</li>
+      <br>
+      <li>When the file(s) has been chosen, press the <i>Upload to database</i> button to send the files to the database.</li>
+      <br>
+      <li>Status message will be shown, indicating if the files has been passed successfully or not.</li>
+      <br>
+      <li>When the files has been uploaded, they should be visible in the <i>Overview</i> tab. Note that it may take some time for large files to be displayed.</li>
+    </ol>
 </div>
 
 
