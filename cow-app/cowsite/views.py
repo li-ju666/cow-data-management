@@ -173,8 +173,14 @@ def swe_position(request):
             end_time = context['end_time']
             periodic = context['periodic']
            
-            positionQuery(cow_id, grp, stats, types, tag_strs, start_date, end_date, start_time, end_time, periodic)
-            context['status_message'] = 'Query was successful, file has been generated.'
+            files = positionQuery(cow_id, grp, stats, types, tag_strs, start_date, end_date, start_time, end_time, periodic)
+            files = list(map(lambda x: x[0], files))
+            files = list(filter(lambda x: x, files))
+            # print(files, flush=True)
+            files = ' '.join(files)
+            # print(files, flush=True)
+            context['status_message'] = 'Query was successful, following files have been generated and can be found in '\
+               'result_files/{}'.format(files)
          except Exception as error:
                print('Error: ')
                print(error)
@@ -239,8 +245,13 @@ def swe_cowinfo(request):
             fields = context['output_list']
             type = int(context['special_field'])
             #bgInfoQuery(cow_id, grp, stats, start_date, end_date, fields, type)
-            infoQuery(cow_id, grp, stats, start_date, end_date, fields, type)
-            context['status_message'] = 'Query was successful, file has been generated.'
+            files = infoQuery(cow_id, grp, stats, start_date, end_date, fields, type)
+            files = list(map(lambda x: x[0], files))
+            files = list(filter(lambda x: x, files))
+            files = ' '.join(files)
+            context['status_message'] = 'Query was successful, following files have been generated and can be found in'\
+               ' result_files/ with names of {}'.format(files)
+            # context['status_message'] = 'Query was successful, file has been generated.'
          except Exception as error:
             print('Error: ')
             print(error)

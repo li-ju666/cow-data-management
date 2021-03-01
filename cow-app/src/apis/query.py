@@ -149,6 +149,7 @@ def getDays(start, end):
 def refQuery(cow_id):
     tagRanges = tagQuery([cow_id],[], ['REDO','INSEM','DRÄKT','SKAUT','SINLD','RÅMLK','TIDIG'],
                          "00-01-01", datetime.datetime.now().strftime("%y-%m-%d"))
+    tagRanges = list(map(lambda x: x[1:], tagRanges))
     return tagRanges
 
 
@@ -164,7 +165,7 @@ def positionQuery(cow_id, grp, stats, types, tags, start_date, end_date, start_t
     if tags:
         start = datetime.datetime.strptime(start_date, "%y-%m-%d")
         end = datetime.datetime.strptime(end_date, "%y-%m-%d")
-        tagRanges = list(map(lambda x: ("NA", x, start, end), tags))
+        tagRanges = list(map(lambda x: ("NA", x.replace(" ", ""), start, end), tags))
         print("Tag formatted")
     else:
         tagRanges = tagQuery(cow_id, grp, stats, start_date, end_date)
@@ -197,7 +198,7 @@ def positionQuery(cow_id, grp, stats, types, tags, start_date, end_date, start_t
         f.close()
 
         for tag in tagRanges:
-            # print(tag)
+            print(tag, flush=True)
             start = tag[2].strftime("%y-%m-%d")
             end = tag[3].strftime("%y-%m-%d")
             if periodic:
@@ -221,14 +222,6 @@ def positionQuery(cow_id, grp, stats, types, tags, start_date, end_date, start_t
             else:
                 num_rows += len(data.index)
                 data.to_csv(path+filename, index=False, header=False, mode='a')
-
-        # try:
-        #     f = open(path+filename)
-        # except IOError:
-        #     f = open(path+filename, "w")
-        #     f.write("No records fetched")
-        # finally:
-        #     f.close()
         result.append((filename, num_rows)) #list of tupile
     return result
 
