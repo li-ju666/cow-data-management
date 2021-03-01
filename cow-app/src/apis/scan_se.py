@@ -80,8 +80,8 @@ def positionScan(path):
 #                return "Position file inserting starts in new thread"
         except:
             print("Failed to insert position file", flush=True)
-        saveLog(file)
-    print("Time cost: {}".format(time.time()-start), flush=True)
+        # saveLog(file)
+    # print("Time cost: {}".format(time.time()-start), flush=True)
     # print("All position files have been submitted", flush=True)
 
 

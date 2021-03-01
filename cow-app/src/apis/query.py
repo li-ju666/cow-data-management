@@ -151,6 +151,7 @@ def refQuery(cow_id):
                          "00-01-01", datetime.datetime.now().strftime("%y-%m-%d"))
     return tagRanges
 
+
 # arg1 = cow_id: [int], arg2 = group_no: [int], arg3 = status: [string], arg4 = position_type: [string],
 # arg5 = start_date: string (yy-mm-dd), arg6 = end_date: string(yy-mm-dd), arg7 = start_time:string(hour:min:sec),
 # arg8 = end_time:string(hour:min:sec), arg9 = periodic:bool
@@ -161,9 +162,10 @@ def positionQuery(cow_id, grp, stats, types, tags, start_date, end_date, start_t
     suffix = datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
     path = "result_files/"
     if tags:
-        start = datetime.datetime.strptime("%Y-%m-%d-%H:%M:%S", "-".join([start_date, start_time]))
-        end = datetime.datetime.strptime("%Y-%m-%d-%H:%M:%S", "-".join([end_date, end_time]))
+        start = datetime.datetime.strptime(start_date, "%y-%m-%d")
+        end = datetime.datetime.strptime(end_date, "%y-%m-%d")
         tagRanges = list(map(lambda x: ("NA", x, start, end), tags))
+        print("Tag formatted")
     else:
         tagRanges = tagQuery(cow_id, grp, stats, start_date, end_date)
     queryDict = {}
@@ -191,7 +193,7 @@ def positionQuery(cow_id, grp, stats, types, tags, start_date, end_date, start_t
             for tag in tagRanges:
                 start = tag[2].strftime("%y-%m-%d")
                 end = tag[3].strftime("%y-%m-%d")
-                f.write("  ".join([str(tag[0]), str(tag[1]), start, end]))
+                f.write("  ".join([str(tag[0]), str(tag[1]), start, end])+"\n")
         f.close()
 
         for tag in tagRanges:
