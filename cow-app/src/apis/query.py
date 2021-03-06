@@ -300,6 +300,41 @@ def infoQuery(cow_id, grp, stats, start_date, end_date, fields, type):
         data.to_csv(path+filename, index=False, header=fieldnames)
     return [(filename, len(data.index))]
 
+
+############## milk query function ###########################
+######## TOBE Verified!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+def milkQuery(cow_id, grp, stats, start_date, end_date, type):
+    path = "result_files/"
+    suffix = datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
+    db = connect_se()
+    cowDateRanges = cowQuery(cow_id, grp, stats, start_date, end_date)
+    if type:
+        recordType = "production"
+    else:
+        recordType = "time"
+    results = []
+    for cow, dates in cowDateRanges.items():
+        for each in dates:
+            start = (each[0]-datetime.timedelta(days=7)).strftime("%y-%m-%d")
+            end = each[1].strftime("%y-%m-%d")
+            cur = db.cursor()
+            statement = "SELECT * FROM MilkInfo WHERE cowID = {} AND recordType = {} AND " \
+                        "fileDate between {} and {}".format(cow, recordType, quote(start), quote(end))
+            cur.execute(statement)
+            results += cur.fetchall()
+            cur.close()
+    data = df(results)
+    prefix = ["time", "production"]
+    filename = prefix[type] + suffix + ".csv"
+    if data.empty:
+        text_file = open(path + filename, "w")
+        text_file.write("No records fetched")
+        text_file.close()
+    else:
+        data.to_csv(path+filename, index=False, header=False)
+    return [(filename, len(data.index))]
+
+
 ############## direct query function #########################
 
 

@@ -1,4 +1,4 @@
-from src.lib.insertor.infoInsert_se import insertHealth, insertInfo, insertRef, insertMilk
+from src.lib.insertor.infoInsert_se import insertHealth, insertInfo, insertRef, insertMilkAV, insertMilkPlats
 from src.lib.insertor.positionInsert import insertPos
 from os import listdir
 from src.lib.logmanager.logManage_se import readLog, saveLog
@@ -26,9 +26,16 @@ def infoScan(path):
 
     records = readLog()
     # print(records, flush=True)
-    # TODO: milk data insertion is not finished
-    # for i in range(len(AvFiles)):
-    #     insertMilk(path+AvFiles[i], path+MilkFiles[i])
+    for file in AvFiles:
+        if file not in records:
+            insertMilkAV(path+file, db)
+            saveLog(file)
+
+    for file in MilkFiles:
+        if file not in records:
+            insertMilkPlats(path+file, db)
+            saveLog(file)
+
     print(KOFiles)
     for file in KOFiles:
         if file not in records:

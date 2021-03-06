@@ -25,13 +25,18 @@ def insertHealth(fileName, db):
     health.insert(db, (data, insertDate))
 
 
-def insertMilk(fileNames, db):
-    ## Arguments: insertMilk(("Avfile", "mjolkfile"), db)
-    file1, file2 = fileNames
-    f1 = readAvkastfile(file1)
-    f2 = readMjolkplatsfile(file2)
-    milk = Milk()
-    milk.insert(db, (f1, f2))
+def insertMilkAV(fileName, db):
+    data = readAvkastfile(fileName)
+    milkav = Milk()
+    insertDate = findall("\d+", fileName)[1]
+    milkav.insert(db, (data, insertDate))
+
+
+def insertMilkPlats(fileName, db):
+    data = readMjolkplatsfile(fileName)
+    milkplat = Milk()
+    insertDate = findall("\d+", fileName)[0]
+    milkplat.insert(db, (data, insertDate))
 
 
 def insertRef(fileName, db):
@@ -171,26 +176,18 @@ class Milk(InsertorBase):
     def __init__(self):
         super().__init__()
         self.type = "MilkInfo"
-        self.fields = " (cowID, measure_time, station, volume)" \
+        self.fields = " (cowID, filetDate, recordType, record)" \
                       " VALUES (%s, %s, %s, %s)"
 
     def convert(self, data):
-        volumes, milk = data
-        volumes = numpy.array(volumes)
-        milk = numpy.array(milk)
-        volumeDict = dict(map(lambda x: (x[0]+'-'+x[1][:10], x[2]), volumes))
+        data, insertDate = data
+        fileDate = datetime.datetime.strptime(insertDate, "%y%m%d")
+        fileDate = fileDate.strftime("%y-%m-%d")
 
         def volHandle(x):
-            try:
-                return volumeDict[x[0]+'-'+x[1][:10]]
-            except:
-                return 'NULL'
-        vols = numpy.array(list(map(volHandle, milk)))
-        milkWithVol = numpy.column_stack((milk, vols))
-        def handleMilkWithVol(x):
-            x = list(x)
-            return tuple(None if v == 'NULL' else v for v in x)
-        return tuple(map(handleMilkWithVol, milkWithVol))
+            return x[0], fileDate, x[1], x[2]
+
+        return tuple(map(volHandle, data))
 
     def insert(self, database, data):
         vals = self.convert(data)

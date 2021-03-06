@@ -96,12 +96,18 @@ def checkInfoTables_se(database):
                       " comments VARCHAR(500), " \
                       " PRIMARY KEY (cowID, insertDate))"
 
+    # MilkPstatement = "CREATE TABLE IF NOT EXISTS MilkProduction " \
+    #                 "(cowID SMALLINT," \
+    #                 " insert_date Date," \
+    #                 " record VARCHAR," \
+    #                 " PRIMARY KEY (cowID, insert_date))"
+
     Milkstatement = "CREATE TABLE IF NOT EXISTS MilkInfo " \
                     "(cowID SMALLINT," \
-                    " measure_time TIMESTAMP," \
-                    " station SMALLINT," \
-                    " volume FLOAT," \
-                    " PRIMARY KEY (cowID, measure_time))"
+                    " fileDate Date," \
+                    " recordType VARCHAR(15)," \
+                    " record VARCHAR(1000)," \
+                    " PRIMARY KEY (cowID, insertDate, recordType))"
 
     statements = [Milkstatement, Infostatement, Driedstatement, Healthstatement, Mapstatement]
     for statement in statements:
