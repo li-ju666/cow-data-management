@@ -115,6 +115,7 @@ def overview(request):
       over = overview_func()
       list_info, list_pos = format_overview(over)
       list_size = size_overview()
+      print(list_size, flush=True)
       print("Overview function working fine")
       context = {
          'info_header': ['KO','Health','Avkastn','Milk'],
@@ -181,6 +182,15 @@ def swe_position(request):
             context['status_message'] = 'Query was successful, file has been generated.'
             context['hyper_message'] = 'Click here to download the files:'
             context['hyper_link'] = '123'
+            files = positionQuery(cow_id, grp, stats, types, tag_strs, start_date, end_date, start_time, end_time, periodic)
+            print(files, flush=True)
+            files = list(map(lambda x: x[0], files))
+            # files = list(filter(lambda x: x is not "NA", files))
+            # print(files, flush=True)
+            files = ' '.join(files)
+            print(files, flush=True)
+            context['status_message'] = 'Query was successful, following files have been generated and can be found in '\
+               'result_files/{}'.format(files)
          except Exception as error:
                print('Error: ')
                print(error)
@@ -252,8 +262,19 @@ def swe_cowinfo(request):
             end_date = context['end_date']
             fields = context['output_list']
             type = int(context['special_field'])
+<<<<<<< HEAD
             infoQuery(cow_id, grp, stats, start_date, end_date, fields, type)
             context['status_message'] = 'Query was successful, file has been generated.'
+=======
+            #bgInfoQuery(cow_id, grp, stats, start_date, end_date, fields, type)
+            files = infoQuery(cow_id, grp, stats, start_date, end_date, fields, type)
+            files = list(map(lambda x: x[0], files))
+            files = list(filter(lambda x: x, files))
+            files = ' '.join(files)
+            context['status_message'] = 'Query was successful, following files have been generated and can be found in'\
+               ' result_files/ with names of {}'.format(files)
+            # context['status_message'] = 'Query was successful, file has been generated.'
+>>>>>>> 60fa046a2331f4e962261b35f256258500b19ad2
          except Exception as error:
             print('Error: ')
             print(error)
@@ -297,16 +318,13 @@ def swe_mapping_info(request):
          finally:
             return render(request,'swe_data/swe_mapping_info.html', context)
 
-
    return render(request,'swe_data/swe_mapping_info.html', context)
 
 
-
-
 # -------- DUTCH DATABASE -------------
-
 def dutch_data(request):
    return render(request, "dutch_data/dutch_select.html",{})
+
 
 def dutch_position(request):
    if request.method == 'POST':

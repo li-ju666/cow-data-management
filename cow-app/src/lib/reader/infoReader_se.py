@@ -1,6 +1,5 @@
 from pandas import read_csv
 import numpy as np
-import datetime as dt
 
 
 def readKO(filename):
@@ -59,6 +58,7 @@ def readKO(filename):
     # return two parts in numpy array
     return np.array(kolista), np.array(skaut+sinld)
 
+
 def readHealth(filename):
     # read health data from files and return results in numpy array
     file = open(filename, encoding="ISO-8859-1")
@@ -85,244 +85,31 @@ def readHealth(filename):
     return np.array(lines)
 
 
-def readAvkastfile(textfile, first_upload=False):
-    # add date 0 2345 7 each time
-    # exception first time upload?
-    # 1st time Pattern: mon, - ,sat, fri, thu, wed, tue, - , sun, sat, fri, thu, wed, tue, mon, sun, sat
-    # other Pattern: mon, - ,sat, fri, thu, wed, tue, - ,sun
-
-    textfile_arr = textfile.split()
-    date_str = textfile_arr[3]
-    year = int("20" + date_str[0:2])
-    month = int(date_str[2:4])
-    day = int(date_str[4:6])
-
-    tuple_list = []
-
-    if not first_upload:
-        # Currently assuming no data is missing
-        array = np.genfromtxt(textfile, dtype=None, skip_header=4, skip_footer=5, missing_values='missing',
-                              autostrip=True, encoding="ISO-8859-1")
-        for arr in array:
-            cow_id = arr[0]
-            delay = [0, 2, 3, 4, 5, 6, 8]
-            for i in range(7):
-                d = dt.datetime(year, month, day) - dt.timedelta(days=delay[i])
-                tuple_list.append((str(cow_id), str(d), str(arr[i + 3])))
-
-    else:
-        array = np.genfromtxt(textfile, dtype=None, skip_header=4, skip_footer=5, missing_values='missing',
-                              autostrip=True)
-        for arr in array:
-            cow_id = arr[0]
-            delay = [0, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-            for i in range(15):
-                d = dt.datetime(year, month, day) - dt.timedelta(days=delay[i])
-                tuple_list.append((str(cow_id), str(d), str(arr[i + 3])))
-    return tuple_list
-
-
-def readMjolkplatsfile(textfile):
-    # Save file date
-    textfile_arr = textfile.split()
-    date_str = textfile_arr[1]
-    year = int("20" + date_str[0:2])
-    month = int(date_str[2:4])
-    day = int(date_str[4:6])
-
-    # Read lines, ignoring å ä ö
-    file1 = open(textfile, 'r', errors='ignore', encoding="ISO-8859-1")
+# Reads "Avkastn" file and returns a list of lists containing CowID and 15 production records as 1 string
+def readAvkastfile(filename):
+    file1 = open(filename, 'r', errors='ignore', encoding="ISO-8859-1")
     lines = file1.readlines()
-
-    n_max = len(lines) - 6
-    n_line = 0
-
-    # Use only wanted rows (skip 5 first and 5 last)
-    # Creating list of cow_dicts with info + array
-    tuple_list = []
-
-    for line in lines:
-        if (n_line > 4 and n_line < n_max):
-            entry_list = line.split()
-            if not entry_list:
-                break  # Break if run out of lines
-            cow_id = int(entry_list[0])
-            status = entry_list[1]
-            dim = int(entry_list[2])  # DIM not interesting?
-            data = entry_list[3:]  # Get milking data in list
-            milk_info_input = []  # List/array to upload
-
-            missing = False  # not used
-            wrong_order = False  # not used
-            # CHECK THE DATA AND SET MISSING/WRONG_ORDER TRUE
-            # Check status
-
-            if (status == "SINLD"):  # Skip cows marked as dried off (status is updated when done milking)
-                n_line += 1
-                continue
-            elif (status == "TIDIG"):
-                milkPlace = True
-                delay = 0.5
-                newRecords = []
-                if not (len(data) == 30):
-                    for elem in data:
-                        if milkPlace:
-                            mp = elem
-                            milkPlace = False
-                        else:
-                            # Split timestamp into hours & minutes
-                            split_str = elem.split(':')
-
-                            # Check for shifted values
-                            if (delay % 1 == 0):
-                                if (int(split_str[0]) < 12):
-                                    # print("small forbidden time value:",elem,"for TIDIG cow",cow_id)
-                                    break
-                            else:
-                                if (int(split_str[0]) > 12):
-                                    # print("large forbidden time value:",elem,"for TIDIG cow",cow_id)
-                                    break
-
-                            # Construct timestamp, counting backwards for date
-                            # and reading timestamp for time.
-                            d = dt.datetime(year, month, day) - dt.timedelta(days=np.floor(delay))
-                            t = dt.time(int(split_str[0]), minute=int(split_str[1]))
-                            milktime = dt.datetime.combine(d.date(), t)
-                            newRecords.append((str(cow_id), str(milktime), str(mp)))
-                            delay += 0.5
-                            milkPlace = True
-                    tuple_list.extend(newRecords)  # Add non-shifted entries to list
-
-                else:
-                    for elem in data[:-2]:
-                        if milkPlace:
-                            mp = elem
-                            milkPlace = False
-                            newRecords = []
-                        else:
-                            # Split timestamp into hours & minutes
-                            split_str = elem.split(':')
-
-                            # Check for shifted values
-                            if (delay % 1 == 0):
-                                if (int(split_str[0]) < 12):
-                                    # print("small forbidden time value:",elem,"for TIDIG cow",cow_id)
-                                    break
-                            else:
-                                if (int(split_str[0]) > 12):
-                                    # print("large forbidden time value:",elem,"for TIDIG cow",cow_id)
-                                    break
-
-                            # Construct timestamp, counting backwards for date
-                            # and reading timestamp for time.
-                            d = dt.datetime(year, month, day) - dt.timedelta(days=np.floor(delay))
-                            t = dt.time(int(split_str[0]), minute=int(split_str[1]))
-                            milktime = dt.datetime.combine(d.date(), t)
-                            newRecords.append((str(cow_id), str(milktime), str(mp)))
-                            delay += 0.5
-                            milkPlace = True
-                    tuple_list.extend(newRecords)  # If no data was shifted, add to list
-            elif (status == "DRKT"):
-                # Check for 2-3 initial morning milkings -> assume to be dried off
-                milkPlace = True
-                delay = 0.5
-                entry_index = 0
-                sinld = False
-                newRecords = []
-                if not (len(data) == 30):
-                    continue  # If not full columns, skip cow data assuming something's wrong
-                for elem in data[:-2]:
-                    if milkPlace:
-                        mp = int(elem)
-                        milkPlace = False
-                    else:
-
-                        # Split time into hours & minutes
-                        split_str = elem.split(':')
-
-                        # Check for shifted values
-                        if (delay % 1 == 0):
-                            if (int(split_str[0]) < 12):
-                                # print("small forbidden time value:",elem,"for cow",cow_id)
-                                if (entry_index == 1):
-                                    sinld = True
-                                else:
-                                    break
-                        else:
-                            if (int(split_str[0]) > 12):
-                                # print("large forbidden time value:",elem,"for cow",cow_id)
-                                break
-
-                        if (sinld):
-                            # Construct timestamp, counting backwards for date
-                            # following the dry-off scheme for a maximum of 3 entries
-                            if (entry_index == 1):
-                                d = dt.datetime(year, month, day) - dt.timedelta(days=3)
-                                t = dt.time(int(split_str[0]), minute=int(split_str[1]))
-                                milktime = dt.datetime.combine(d.date(), t)
-                                newRecords.append((str(cow_id), str(milktime), str(mp)))
-                                delay += 0.5
-                                milkPlace = True
-                            elif (entry_index == 2):
-                                d = dt.datetime(year, month, day) - dt.timedelta(days=5)
-                                t = dt.time(int(split_str[0]), minute=int(split_str[1]))
-                                milktime = dt.datetime.combine(d.date(), t)
-                                newRecords.append((str(cow_id), str(milktime), str(mp)))
-                                delay += 0.5
-                                milkPlace = True
-                            else:
-                                break
-
-                        else:
-                            # Construct timestamp, counting backwards for date
-                            # and reading timestamp for time.
-                            d = dt.datetime(year, month, day) - dt.timedelta(days=np.floor(delay))
-                            t = dt.time(int(split_str[0]), minute=int(split_str[1]))
-                            milktime = dt.datetime.combine(d.date(), t)
-                            newRecords.append((str(cow_id), str(milktime), str(mp)))
-                            delay += 0.5
-                            milkPlace = True
-                        entry_index += 1
-                tuple_list.extend(newRecords)  # Add non-shifted data to list
-            else:
-                milkPlace = True
-                delay = 0.5
-                newRecords = []
-                if not (len(data) == 30):
-                    continue  # If not full columns, skip cow data assuming something's wrong
-                for elem in data[:-1]:
-                    if milkPlace:
-                        mp = int(elem)
-                        milkPlace = False
-                    else:
-                        # Split time into hours & minutes
-                        split_str = elem.split(':')
-
-                        # Check for shifted values
-                        if (delay % 1 == 0):
-                            if (int(split_str[0]) < 12):
-                                # print("small forbidden time value:",elem,"for cow",cow_id)
-                                break
-                        else:
-                            if (int(split_str[0]) > 12):
-                                # print("large forbidden time value:",elem,"for cow",cow_id)
-                                break
-
-                        # Construct timestamp, counting backwards for date
-                        # and reading timestamp for time.
-                        d = dt.datetime(year, month, day) - dt.timedelta(days=np.floor(delay))
-                        t = dt.time(int(split_str[0]), minute=int(split_str[1]))
-                        milktime = dt.datetime.combine(d.date(), t)
-                        newRecords.append((str(cow_id), str(milktime), str(mp)))
-                        delay += 0.5
-                        milkPlace = True
-                tuple_list.extend(newRecords)  # Add non-shifted data to list
-        n_line += 1  # Count rows in for loop
-    return tuple_list
+    file1.close()
+    records = []
+    for line in lines[4:-4]:
+        line = line.split()
+        number_strings = [str(num) for num in line[3:18]]
+        other_string = " ".join(number_strings)
+        record = [line[0], "production", other_string]
+        records.append(record)
+    return records
 
 
-# a = readAvkastfile('data/info/Avkastn 14 dag 200914.txt') #, first_upload=True) First file uploaded? set true to upload all entries
-# c = readMjolkplatsfile('data/info/Mjölkplats 201026.txt')
-#
-# for i in c:
-#     print(i)
+# Reads "Mjolkplats" file and returns a list of lists containing CowID and 15 milkings (station and time) as 1 string
+def readMjolkplatsfile(filename):
+    file1 = open(filename, 'r', errors='ignore', encoding="ISO-8859-1")
+    lines = file1.readlines()
+    file1.close()
+    records = []
+    for line in lines[5:-4]:
+        line = line.split()
+        number_strings = [str(num) for num in line[3:33]]
+        other_string = " ".join(number_strings)
+        record = [line[0], "time", other_string]
+        records.append(record)
+    return records

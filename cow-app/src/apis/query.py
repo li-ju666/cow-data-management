@@ -149,6 +149,7 @@ def getDays(start, end):
 def refQuery(cow_id):
     tagRanges = tagQuery([cow_id],[], ['REDO','INSEM','DRÄKT','SKAUT','SINLD','RÅMLK','TIDIG'],
                          "00-01-01", datetime.datetime.now().strftime("%y-%m-%d"))
+    tagRanges = list(map(lambda x: x[1:], tagRanges))
     return tagRanges
 
 
@@ -164,7 +165,7 @@ def positionQuery(cow_id, grp, stats, types, tags, start_date, end_date, start_t
     if tags:
         start = datetime.datetime.strptime(start_date, "%y-%m-%d")
         end = datetime.datetime.strptime(end_date, "%y-%m-%d")
-        tagRanges = list(map(lambda x: ("NA", x, start, end), tags))
+        tagRanges = list(map(lambda x: ("NA", x.replace(" ", ""), start, end), tags))
         print("Tag formatted")
     else:
         tagRanges = tagQuery(cow_id, grp, stats, start_date, end_date)
@@ -174,7 +175,7 @@ def positionQuery(cow_id, grp, stats, types, tags, start_date, end_date, start_t
     queryDict['PAA'] = 'measure_time'
     queryDict['PC'] = 'start_time'
     db = connect_se()
-    result = []
+    query_result = []
     for pType in types:
         num_rows = 0
         filename = pType + suffix + '.csv'
@@ -197,7 +198,7 @@ def positionQuery(cow_id, grp, stats, types, tags, start_date, end_date, start_t
         f.close()
 
         for tag in tagRanges:
-            # print(tag)
+            print(tag, flush=True)
             start = tag[2].strftime("%y-%m-%d")
             end = tag[3].strftime("%y-%m-%d")
             if periodic:
@@ -221,16 +222,8 @@ def positionQuery(cow_id, grp, stats, types, tags, start_date, end_date, start_t
             else:
                 num_rows += len(data.index)
                 data.to_csv(path+filename, index=False, header=False, mode='a')
-
-        # try:
-        #     f = open(path+filename)
-        # except IOError:
-        #     f = open(path+filename, "w")
-        #     f.write("No records fetched")
-        # finally:
-        #     f.close()
-        result.append((filename, num_rows)) #list of tupile
-    return result
+        query_result.append((filename, num_rows)) #list of tupile
+    return query_result
 
 
 ########### info query function #################
@@ -306,6 +299,41 @@ def infoQuery(cow_id, grp, stats, start_date, end_date, fields, type):
     else:
         data.to_csv(path+filename, index=False, header=fieldnames)
     return [(filename, len(data.index))]
+
+
+############## milk query function ###########################
+######## TOBE Verified!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+def milkQuery(cow_id, grp, stats, start_date, end_date, type):
+    path = "result_files/"
+    suffix = datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
+    db = connect_se()
+    cowDateRanges = cowQuery(cow_id, grp, stats, start_date, end_date)
+    if type:
+        recordType = "production"
+    else:
+        recordType = "time"
+    results = []
+    for cow, dates in cowDateRanges.items():
+        for each in dates:
+            start = (each[0]-datetime.timedelta(days=7)).strftime("%y-%m-%d")
+            end = each[1].strftime("%y-%m-%d")
+            cur = db.cursor()
+            statement = "SELECT * FROM MilkInfo WHERE cowID = {} AND recordType = {} AND " \
+                        "fileDate between {} and {}".format(cow, recordType, quote(start), quote(end))
+            cur.execute(statement)
+            results += cur.fetchall()
+            cur.close()
+    data = df(results)
+    prefix = ["time", "production"]
+    filename = prefix[type] + suffix + ".csv"
+    if data.empty:
+        text_file = open(path + filename, "w")
+        text_file.write("No records fetched")
+        text_file.close()
+    else:
+        data.to_csv(path+filename, index=False, header=False)
+    return [(filename, len(data.index))]
+
 
 ############## direct query function #########################
 
