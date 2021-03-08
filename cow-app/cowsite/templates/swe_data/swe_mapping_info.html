@@ -3,7 +3,7 @@
 {% block content %}
 <div class="SplitLeft">
     <h2>Swedish Mapping info</h2>
-    <p style="margin-top: 0.5cm; font-size: 18px;">Query mapping information by Cow ID:</p>
+    <p style="margin-top: 0.5cm; font-size: 18px;">Query mapping information by Cow ID, <br> to see the tag string of a specific cow.</p>
     
     <div class="qtop" style="height: 25vh;">
         <form method="post" enctype="multipart/form-data">
@@ -25,6 +25,7 @@
 
     <div class="div_border style=margin-top:  0cm; margin-bottom: 0.5cm;">
         <br>
+        <h4>Status: {{ status }}</h4>
         <h5>{{ msg }}</h5>
         <p style="font-size: 16;"><i>{{ msg_id }}</i></p>
 
@@ -59,7 +60,8 @@
 
 
 <div class="SplitRight">
-    <p>Info</p>
+    <h3>Content</h3>
+    Using a Cow ID (one per search), you can query for the tag(s) that belongs to a cow. If successful search, a table with the cow's tag string and the date when the tag has been used will be displayed in a table.
 </div>
 
 

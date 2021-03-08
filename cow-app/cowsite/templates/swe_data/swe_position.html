@@ -33,28 +33,28 @@
       <div class='quodrant2'>
 
         <b>Status:</b><br>
-        <input type="checkbox" id="all_types" name="all_types" value="all_types">
-        <label for="all_types"> All types </label><br>
+        <!--<input type="checkbox" id="all_types" name="all_types" value="all_types">
+        <label for="all_types"> All types </label><br>-->
 
-        <input type="checkbox" id="REDO" name="REDO" value="REDO">
+        <input type="checkbox" id="REDO" name="REDO" value="REDO" Checked>
         <label for="REDO"> REDO </label><br>
 
-        <input type="checkbox" id="INSEM" name="INSEM" value="INSEM">
+        <input type="checkbox" id="INSEM" name="INSEM" value="INSEM" Checked>
         <label for="INSEM"> INSEM </label><br>
 
-        <input type="checkbox" id="DRÄKT" name="DRÄKT" value="DRÄKT">
+        <input type="checkbox" id="DRÄKT" name="DRÄKT" value="DRÄKT" Checked>
         <label for="DRÄKT"> DRÄKT </label><br>
 
-        <input type="checkbox" id="SKAUT" name="SKAUT" value="SKAUT">
+        <input type="checkbox" id="SKAUT" name="SKAUT" value="SKAUT" Checked>
         <label for="SKAUT"> SKAUT </label><br>
 
-        <input type="checkbox" id="SINLD" name="SINLD" value="SINLD">
+        <input type="checkbox" id="SINLD" name="SINLD" value="SINLD" Checked>
         <label for="SINLD"> SINLD </label><br>
 
-        <input type="checkbox" id="RÅMLK" name="RÅMLK" value="RÅMLK">
+        <input type="checkbox" id="RÅMLK" name="RÅMLK" value="RÅMLK" Checked>
         <label for="RÅMLK"> RÅMLK </label><br>
 
-        <input type="checkbox" id="TIDIG" name="TIDIG" value="TIDIG">
+        <input type="checkbox" id="TIDIG" name="TIDIG" value="TIDIG" Checked>
         <label for="TIDIG"> TIDIG </label><br>
       </div>
 
@@ -110,6 +110,7 @@
 
   <p style="font-size:24px"><b>Query status:</b> {{ status_message }}</p>
   <p style="font-size:24px">{{ fetch_message }}</p>
+  <a href="../../result_files/hej1.pdf" download>Hello</a>
   <ul>
   {% for list in user_inputs %}
     <li>{{ list }}</li>

@@ -134,6 +134,9 @@ FUNCTIONS_ROOT = os.path.join(BASE_DIR, '/functions')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'staticfiles/mediafiles')
 
+RESULT_URL= '/result_files/'
+RESULT_root = os.path.join(BASE_DIR, '/result_files')
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "staticfiles"),
 ]

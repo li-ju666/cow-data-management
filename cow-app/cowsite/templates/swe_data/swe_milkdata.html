@@ -35,48 +35,53 @@
 
       <div class='quodrant2'>
         <b>Status:</b><br>
-        <input type="checkbox" id="all_types" name="all_types" value="all_types">
-        <label for="all_types"> All types </label><br>
+        <!--<input type="checkbox" id="all_types" name="all_types" value="all_types">
+        <label for="all_types"> All types </label><br>-->
 
-        <input type="checkbox" id="REDO" name="REDO" value="REDO">
+        <input type="checkbox" id="REDO" name="REDO" value="REDO" Checked>
         <label for="REDO"> REDO </label><br>
 
-        <input type="checkbox" id="INSEM" name="INSEM" value="INSEM">
+        <input type="checkbox" id="INSEM" name="INSEM" value="INSEM" Checked> 
         <label for="INSEM"> INSEM </label><br>
 
-        <input type="checkbox" id="DRÄKT" name="DRÄKT" value="DRÄKT">
+        <input type="checkbox" id="DRÄKT" name="DRÄKT" value="DRÄKT" Checked>
         <label for="DRÄKT"> DRÄKT </label><br>
         
-        <input type="checkbox" id="SKAUT" name="SKAUT" value="SKAUT">
+        <input type="checkbox" id="SKAUT" name="SKAUT" value="SKAUT" Checked>
         <label for="SKAUT"> SKAUT </label><br>
 
-        <input type="checkbox" id="SINLD" name="SINLD" value="SINLD">
+        <input type="checkbox" id="SINLD" name="SINLD" value="SINLD" Checked>
         <label for="SINLD"> SINLD </label><br>
 
-        <input type="checkbox" id="RÅMLK" name="RÅMLK" value="RÅMLK">
+        <input type="checkbox" id="RÅMLK" name="RÅMLK" value="RÅMLK" Checked>
         <label for="RÅMLK"> RÅMLK </label><br>
 
-        <input type="checkbox" id="TIDIG" name="TIDIG" value="TIDIG">
+        <input type="checkbox" id="TIDIG" name="TIDIG" value="TIDIG" Checked>
         <label for="TIDIG"> TIDIG </label><br>
       </div>
 
     
 
       <div class='quodrant3'>
+        <p><b>Requested Output:</b></p>
+        <input type="checkbox" id="milking_station" name="milking_station" value="milking_station" Checked>
+        <label for="milking_station"> Milking Station </label><br>
+
+        <input type="checkbox" id="produced_milk" name="produced_milk" value="produced_milk" Checked>
+        <label for="produced_milk"> Produced Milk </label><br>
+      </div>
+
+      <div class='quodrant4'>
         <label for="start_date"><b>Start date:</b></label>
         <input type="text" id="start_date" name="start_date" size="10">
 
         <label for="end_date"><b>End date:</b></label>
         <input type="text" id="end_date" name="end_date" size="10">
-      </div>
-
-      <div class='quodrant4'>
-        <button class="button button2" type="submit">Fetch data</button>
         
       </div>
 
       <div class="quodrant5">
-      
+        <button class="button button2" type="submit">Fetch data</button>
 
       </div>
 
@@ -125,6 +130,10 @@
       Chose <i>"All types"</i> to not query for specific status type.</li>
       <li><b>Date:</b> YY-MM-DD. <b>*</b><br>
       Example: <i>20-03-14</i></li>
+
+      <li><b>Requested output*</b><br>
+      Chose which kind of information that the file will generate as output.</li>
+      
   
     
   </ul>  

@@ -6,6 +6,7 @@ from src.apis.overview import overview_func, size_overview
 from functions import format_overview, milkdata_context, position_context, cowinfo_context, handle_uploaded_file, dutch_position_context, dutch_milkdata_context, dutch_cowinfo_context
 from src.apis.query import positionQuery, infoQuery, refQuery
 from form import UploadFileForm
+from cows.settings import RESULT_root
 import os
 
 #=======
@@ -147,7 +148,9 @@ def swe_db(request):
 
 
 def swe_position(request):
-
+   print(RESULT_root)
+   context = {}
+   context['status_message'] = 'Waiting for user input.'
    if request.method == 'POST':
   
       context, query_successful = position_context(request)
@@ -174,8 +177,10 @@ def swe_position(request):
             end_time = context['end_time']
             periodic = context['periodic']
            
-            positionQuery(cow_id, grp, stats, types, tag_strs, start_date, end_date, start_time, end_time, periodic)
+            #positionQuery(cow_id, grp, stats, types, tag_strs, start_date, end_date, start_time, end_time, periodic)
             context['status_message'] = 'Query was successful, file has been generated.'
+            context['hyper_message'] = 'Click here to download the files:'
+            context['hyper_link'] = '123'
          except Exception as error:
                print('Error: ')
                print(error)
@@ -187,11 +192,12 @@ def swe_position(request):
          return render(request, "swe_data/swe_position.html", context)
    
    else:
-      return render(request, "swe_data/swe_position.html", {})
+      return render(request, "swe_data/swe_position.html", context)
 
 
 def swe_milkdata(request):
-
+   context = {}
+   context['status_message'] = 'Waiting for user input.'
    if request.method == 'POST':
       context, query_successful = milkdata_context(request)
       if query_successful == True:
@@ -204,8 +210,14 @@ def swe_milkdata(request):
                grp = []
             else:
                grp = list(map(int, context['group_nr'].split(',')))
+
             
-            # No function to query
+            stats = context['status_list']
+            start_date = context['start_date']
+            end_date = context['end_date']
+            output_list = context['output_list']
+
+            # Query the function here!
             context['status_message'] = 'Query was successful, file has been generated.'
          except Exception as error:
             print('Error: ')
@@ -217,11 +229,12 @@ def swe_milkdata(request):
          context['status_message'] = 'Mandatory input fields are missing, please try again.'
          return render(request, "swe_data/swe_milkdata.html", context)
    else:
-      return render(request, "swe_data/swe_milkdata.html", {})
+      return render(request, "swe_data/swe_milkdata.html", context)
 
 
 def swe_cowinfo(request):
- 
+   context = {}
+   context['status_message'] = 'Waiting for user input.'
    if request.method == 'POST':
       context, query_successful = cowinfo_context(request)
       if query_successful == True:
@@ -239,7 +252,6 @@ def swe_cowinfo(request):
             end_date = context['end_date']
             fields = context['output_list']
             type = int(context['special_field'])
-            #bgInfoQuery(cow_id, grp, stats, start_date, end_date, fields, type)
             infoQuery(cow_id, grp, stats, start_date, end_date, fields, type)
             context['status_message'] = 'Query was successful, file has been generated.'
          except Exception as error:
@@ -253,12 +265,13 @@ def swe_cowinfo(request):
          return render(request, "swe_data/swe_cowinfo.html", context)
 
    else:
-      return render(request, "swe_data/swe_cowinfo.html", {})
+      return render(request, "swe_data/swe_cowinfo.html", context)
 
 
 
 def swe_mapping_info(request):
    context = {}
+   context['status'] = 'Waiting for user to input Cow ID.'
 
    if request.method == 'POST':
       cow_id = request.POST['cow_id']
@@ -273,11 +286,13 @@ def swe_mapping_info(request):
             return render(request,'swe_data/swe_mapping_info.html', context)
          try:
             context['map_LoL'] = refQuery(cow_id)
-            #context['map_LoL'] = [['tag1','date1','date1'],['tag2','date2','date2'],['tag3','date3','date3']]
+            #context['map_LoL'] = [['tag1','date1','date1'],['tag2','date2','date2'],['tag3','date3','date3']] #test data
             context['map_header'] = ['Tag Nr', 'Start date', 'End date']
+            context['status'] = 'Success!'
             context['msg'] = 'Mapping info found!'
             context['msg_id'] = 'Rendering table using cow id = {}.'.format(cow_id)
          except Exception as error:
+            context['status'] = 'Something went wrong!'
             context['msg'] = 'Error occured: {}'.format(error)
          finally:
             return render(request,'swe_data/swe_mapping_info.html', context)

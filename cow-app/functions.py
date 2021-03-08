@@ -2,7 +2,7 @@ def handle_uploaded_file(f,temp_dest):
     temp_dest = 'upload_files/' + temp_dest
     print(temp_dest)
     with open(temp_dest + f.name, 'wb+') as destination:
-        print(destination)
+        #print(destination)
         for chunk in f.chunks():
             destination.write(chunk)
 
@@ -39,11 +39,25 @@ def milkdata_context(request):
     group_nr = request.POST['group_nr']
     start_date = request.POST['start_date']
     end_date = request.POST['end_date']
-    #tag_str = request.POST['tag_str']
+    output_list = []
+    requested_list = []
 
     query_successful = True
     fetch_message = ''
     user_inputs = []
+
+
+    if "milking_station" in request.POST:
+        output_list.append(True)
+        requested_list.append('milking_station')
+    else:
+        output_list.append(False)
+
+    if "produced_milk" in request.POST:
+        output_list.append(True)
+        requested_list.append('produced_milk')
+    else:
+        output_list.append(False)
     
     
     if "all_types" in request.POST:
@@ -81,7 +95,7 @@ def milkdata_context(request):
 
     # User feedback when "Fetch data" is pressed. Check for invalid inputs.
     #if tag_str == '':
-    if status_list == [] or start_date == '' or end_date == '':
+    if status_list == [] or start_date == '' or end_date == '' or not any(output_list):
         query_successful = False
         fetch_message = 'User input missing: '
         if status_list == []:
@@ -90,8 +104,11 @@ def milkdata_context(request):
             user_inputs.append('start date')
         if end_date == '':
             user_inputs.append('end date')
+        if not any(output_list):
+            user_inputs.append('requested output')
     else:
-        user_inputs = ['Cow id: ' + cow_id, 'Group number: ' + group_nr,",".join(['Status types selected: '] + status_list),'Start date: ' + start_date, 'End date: ' + end_date]
+        user_inputs = ['Cow id: ' + cow_id, 'Group number: ' + group_nr,",".join(['Status types selected: '] + status_list),
+        'Start date: ' + start_date, 'End date: ' + end_date, ", ".join(['Requested outputs: '] + requested_list)]
         fetch_message = 'User input:'
     #else:
         #if start_date == '' or end_date == '':
@@ -114,6 +131,7 @@ def milkdata_context(request):
         'status_list': status_list,
         'fetch_message': fetch_message,
         'user_inputs': user_inputs,
+        'output_list': output_list
     }
     
     return context, query_successful
