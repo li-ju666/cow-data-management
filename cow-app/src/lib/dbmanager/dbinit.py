@@ -57,7 +57,7 @@ def checkPositionTables(database):
 
 
 def checkInfoTables_se(database):
-    Mapstatement = "CREATE TABLE IF NOT EXISTS Reference " \
+    Mapstatement = "CREATE TABLE IF NOT EXISTS Mapping " \
                    "(cowID SMALLINT, " \
                    " tagStr VARCHAR(10)," \
                    " startDate DATE, " \
@@ -104,7 +104,7 @@ def checkInfoTables_se(database):
 
     Milkstatement = "CREATE TABLE IF NOT EXISTS MilkInfo " \
                     "(cowID SMALLINT," \
-                    " fileDate Date," \
+                    " insertDate Date," \
                     " recordType VARCHAR(15)," \
                     " record VARCHAR(1000)," \
                     " PRIMARY KEY (cowID, insertDate, recordType))"
@@ -121,7 +121,7 @@ def checkInfoTables_se(database):
 # Suggestion: iso and levnr in Mapstatement and Milkstatement, werknr in Driedstatement.
 
 def checkInfoTables_nl(database):
-    Mapstatement = 'CREATE TABLE IF NOT EXISTS Reference ' \
+    Mapstatement = 'CREATE TABLE IF NOT EXISTS Mapping ' \
                    '(diernr SMALLINT, ' \
                    ' tagstr VARCHAR(10),' \
                    ' iso INT, ' \

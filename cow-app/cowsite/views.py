@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from src.apis.bgAPIs import bgScanSe, bgPosQuery, bgInfoQuery
 from src.apis.overview import overview_func, size_overview
 from functions import format_overview, milkdata_context, position_context, cowinfo_context, handle_uploaded_file, dutch_position_context, dutch_milkdata_context, dutch_cowinfo_context
-from src.apis.query import positionQuery, infoQuery, refQuery
+from src.apis.query import positionQuery, infoQuery, refQuery, milkQuery
 from form import UploadFileForm
 from cows.settings import RESULT_root
 import os
@@ -226,7 +226,7 @@ def swe_milkdata(request):
             start_date = context['start_date']
             end_date = context['end_date']
             output_list = context['output_list']
-
+            return_info = milkQuery(cow_id, grp, stats, start_date, end_date, output_list)
             # Query the function here!
             context['status_message'] = 'Query was successful, file has been generated.'
          except Exception as error:
@@ -262,10 +262,6 @@ def swe_cowinfo(request):
             end_date = context['end_date']
             fields = context['output_list']
             type = int(context['special_field'])
-<<<<<<< HEAD
-            infoQuery(cow_id, grp, stats, start_date, end_date, fields, type)
-            context['status_message'] = 'Query was successful, file has been generated.'
-=======
             #bgInfoQuery(cow_id, grp, stats, start_date, end_date, fields, type)
             files = infoQuery(cow_id, grp, stats, start_date, end_date, fields, type)
             files = list(map(lambda x: x[0], files))
@@ -274,7 +270,6 @@ def swe_cowinfo(request):
             context['status_message'] = 'Query was successful, following files have been generated and can be found in'\
                ' result_files/ with names of {}'.format(files)
             # context['status_message'] = 'Query was successful, file has been generated.'
->>>>>>> 60fa046a2331f4e962261b35f256258500b19ad2
          except Exception as error:
             print('Error: ')
             print(error)

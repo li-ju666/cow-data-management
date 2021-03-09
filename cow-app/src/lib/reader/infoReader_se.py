@@ -110,6 +110,6 @@ def readMjolkplatsfile(filename):
         line = line.split()
         number_strings = [str(num) for num in line[3:33]]
         other_string = " ".join(number_strings)
-        record = [line[0], "time", other_string]
+        record = [line[0], "station", other_string]
         records.append(record)
     return records

@@ -116,7 +116,7 @@ def tagQuery(cow_id, grp, stats, start_date, end_date):
     results = []
     for i in cow_dateRange:
         # print(cow_dateRange[i])
-        statement = 'SELECT * FROM Reference WHERE cowID = ' + str(i)
+        statement = 'SELECT * FROM Mapping WHERE cowID = ' + str(i)
         cur = db.cursor()
         cur.execute(statement)
         refs = cur.fetchall()
@@ -308,31 +308,36 @@ def milkQuery(cow_id, grp, stats, start_date, end_date, type):
     suffix = datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
     db = connect_se()
     cowDateRanges = cowQuery(cow_id, grp, stats, start_date, end_date)
-    if type:
-        recordType = "production"
-    else:
-        recordType = "time"
-    results = []
-    for cow, dates in cowDateRanges.items():
-        for each in dates:
-            start = (each[0]-datetime.timedelta(days=7)).strftime("%y-%m-%d")
-            end = each[1].strftime("%y-%m-%d")
-            cur = db.cursor()
-            statement = "SELECT * FROM MilkInfo WHERE cowID = {} AND recordType = {} AND " \
-                        "fileDate between {} and {}".format(cow, recordType, quote(start), quote(end))
-            cur.execute(statement)
-            results += cur.fetchall()
-            cur.close()
-    data = df(results)
-    prefix = ["time", "production"]
-    filename = prefix[type] + suffix + ".csv"
-    if data.empty:
-        text_file = open(path + filename, "w")
-        text_file.write("No records fetched")
-        text_file.close()
-    else:
-        data.to_csv(path+filename, index=False, header=False)
-    return [(filename, len(data.index))]
+    requested_types = []
+    if type[0]:
+        requested_types.append("production")
+    if type[1]:
+        requested_types.append("station")
+    print("Parameters into query function{}".format(requested_types), flush=True)
+    return_value = []
+    for recordType in requested_types:
+        results = []
+        for cow, dates in cowDateRanges.items():
+            for each in dates:
+                start = (each[0]-datetime.timedelta(days=7)).strftime("%y-%m-%d")
+                end = each[1].strftime("%y-%m-%d")
+                cur = db.cursor()
+                statement = "SELECT * FROM MilkInfo WHERE cowID = {} AND recordType = {} AND " \
+                            "insertDate between {} and {}".format(cow, quote(recordType), quote(start), quote(end))
+                # print(statement, flush=True)
+                cur.execute(statement)
+                results += cur.fetchall()
+                cur.close()
+        data = df(results)
+        filename = recordType + suffix + ".csv"
+        if data.empty:
+            text_file = open(path + filename, "w")
+            text_file.write("No records fetched")
+            text_file.close()
+        else:
+            data.to_csv(path+filename, index=False, header=False, sep=" ")
+        return_value.append((filename, len(data.index)))
+    return return_value
 
 
 ############## direct query function #########################

@@ -45,14 +45,14 @@ def insertRef(fileName, db):
     driedOffDict = dict(zip(list(dried[0]), list(dried[4])))
     for i in kolista:
         # select all references binded to the cow
-        statement = "SELECT * FROM Reference WHERE cowID = " + i[0] + " ORDER BY startDate"
+        statement = "SELECT * FROM Mapping WHERE cowID = " + i[0] + " ORDER BY startDate"
         cur = db.cursor()
         cur.execute(statement)
         results = cur.fetchall()
 
         # if result list is empty: add record
         if len(results) == 0 and i[2] != 'NULL':
-            statement = "INSERT INTO Reference (cowID, tagStr, startDate, endDate)" \
+            statement = "INSERT INTO Mapping (cowID, tagStr, startDate, endDate)" \
                       " VALUES (%s, %s, %s, %s)"
             calvnDate = datetime.datetime.strptime(i[6], "%d-%m-%y")
             calvnDate = calvnDate.strftime("%y-%m-%d")
@@ -73,7 +73,7 @@ def insertRef(fileName, db):
             except:
                 driedOffDate = datetime.datetime.strptime(insertDate, "%y%m%d")
             driedOffDate = driedOffDate.strftime("%y-%m-%d")
-            statement = "UPDATE Reference SET endDate='" + driedOffDate + "' WHERE cowID='" + i[0] + \
+            statement = "UPDATE Mapping SET endDate='" + driedOffDate + "' WHERE cowID='" + i[0] + \
                         "' AND tagStr='" + results[-1][1] + "'"
             cur.execute(statement)
             db.commit()
@@ -88,7 +88,7 @@ def insertRef(fileName, db):
             except:
                 driedOffDate = datetime.datetime.strptime(insertDate, "%y%m%d")
             driedOffDate = driedOffDate.strftime("%y-%m-%d")
-            statement = "UPDATE Reference SET endDate='" + driedOffDate + "' WHERE cowID='" + i[0] + \
+            statement = "UPDATE Mapping SET endDate='" + driedOffDate + "' WHERE cowID='" + i[0] + \
                         "' AND tagStr='" + results[-1][1] + "'"
             # print(statement)
             cur.execute(statement)
@@ -96,7 +96,7 @@ def insertRef(fileName, db):
             cur.close()
             cur = db.cursor()
             # Insert new record
-            statement = "INSERT INTO Reference (cowID, tagStr, startDate, endDate)" \
+            statement = "INSERT INTO Mapping (cowID, tagStr, startDate, endDate)" \
                       " VALUES (%s, %s, %s, %s)"
             cur.execute(statement, (i[0], i[2], driedOffDate, None))
             db.commit()
@@ -176,7 +176,7 @@ class Milk(InsertorBase):
     def __init__(self):
         super().__init__()
         self.type = "MilkInfo"
-        self.fields = " (cowID, filetDate, recordType, record)" \
+        self.fields = " (cowID, insertDate, recordType, record)" \
                       " VALUES (%s, %s, %s, %s)"
 
     def convert(self, data):
@@ -194,10 +194,10 @@ class Milk(InsertorBase):
         self.insertWithFields(database, vals, self.type, self.fields)
 
 
-class Reference(InsertorBase):
+class Mapping(InsertorBase):
     def __init__(self):
         super().__init__()
-        self.type = "Reference"
+        self.type = "Mapping"
         self.fields = " (cowID, tagStr, startDate, endDate)" \
                       " VALUES (%s, %s, %s, %s)"
 
