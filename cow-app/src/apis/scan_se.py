@@ -9,6 +9,7 @@ import threading
 import time
 
 def infoScan(path):
+    print("Scan for info files has started -----------------------------------------------------------", flush=True)
     db = connect_se()
     files = listdir(path)
 
@@ -28,23 +29,27 @@ def infoScan(path):
     # print(records, flush=True)
     for file in AvFiles:
         if file not in records:
+            print("{} inserting. ".format(file), flush=True)
             insertMilkAV(path+file, db)
             saveLog(file)
 
     for file in MilkFiles:
         if file not in records:
+            print("{} inserting. ".format(file), flush=True)
             insertMilkPlats(path+file, db)
             saveLog(file)
 
-    print(KOFiles)
+    # print(KOFiles)
     for file in KOFiles:
         if file not in records:
+            print("{} inserting. ".format(file), flush=True)
             insertInfo(path+file, db)
             insertRef(path+file, db)
             saveLog(file)
 
     for file in HealthFiles:
         if file not in records:
+            print("{} inserting. ".format(file), flush=True)
             insertHealth(path+file, db)
             saveLog(file)
     print("Info scan has completed", flush=True)
