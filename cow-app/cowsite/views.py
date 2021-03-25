@@ -6,7 +6,8 @@ from src.apis.overview import overview_func, size_overview
 from functions import format_overview, milkdata_context, position_context, cowinfo_context, handle_uploaded_file, dutch_position_context, dutch_milkdata_context, dutch_cowinfo_context
 from src.apis.query import positionQuery, infoQuery, refQuery, milkQuery
 from form import UploadFileForm
-from cows.settings import RESULT_root
+from cows.settings import BASE_DIR
+from django.core.files.storage import FileSystemStorage
 import os
 
 #=======
@@ -32,6 +33,28 @@ def file_scan(request):
          context['info'] = bgScanSe()
 
    return render(request, 'file_scan.html', context)
+
+def download_after_query(request):
+   from os import listdir
+   from os.path import isfile, join
+   
+   context = {}
+   files = [f for f in listdir('result_files') if isfile(join('result_files', f))]
+   context['file_names'] = files
+
+   if request.method == 'POST':
+      if request.POST['action'] == 'Clear files':
+         print('kill them ALL')
+      else:
+         file_to_download = request.POST['action']
+         path = 'result_files/'+file_to_download
+
+         response = HttpResponse(open(path,'rb').read())
+         response['Content-Disposition'] = 'attachment; filename='+file_to_download
+         response['Content-Type'] = 'text/plain'
+         return response
+
+   return render(request, 'swe_data/download_after_query.html', context)
 
 
 # ---- Upload to database views ----------
@@ -149,57 +172,62 @@ def swe_db(request):
 
 
 def swe_position(request):
-   print(RESULT_root)
    context = {}
    context['status_message'] = 'Waiting for user input.'
-   if request.method == 'POST':
-  
-      context, query_successful = position_context(request)
-      if query_successful == True:
-         try:
-            if context['cow_id'] == '':
-               cow_id = []
-            else:
-               cow_id = list(map(int, context['cow_id'].split(',')))
-            if context['group_nr'] == '':
-               grp = []
-            else:
-               grp = list(map(int, context['group_nr'].split(',')))
-            if context['tag_str'] == '':
-               tag_strs = []
-            else:
-               tag_strs = list(map(str, context['tag_str'].split(',')))
+   from pathlib import Path
 
-            stats = context['status_list']
-            types = context['position_list']
-            start_date = context['start_date']
-            end_date = context['end_date']
-            start_time = context['start_time']
-            end_time = context['end_time']
-            periodic = context['periodic']
-           
-            #positionQuery(cow_id, grp, stats, types, tag_strs, start_date, end_date, start_time, end_time, periodic)
-            context['status_message'] = 'Query was successful, file has been generated.'
-            context['hyper_message'] = 'Click here to download the files:'
-            context['hyper_link'] = '123'
-            files = positionQuery(cow_id, grp, stats, types, tag_strs, start_date, end_date, start_time, end_time, periodic)
-            print(files, flush=True)
-            files = list(map(lambda x: x[0], files))
-            # files = list(filter(lambda x: x is not "NA", files))
-            # print(files, flush=True)
-            files = ' '.join(files)
-            print(files, flush=True)
-            context['status_message'] = 'Query was successful, following files have been generated and can be found in '\
-               'result_files/{}'.format(files)
-         except Exception as error:
-               print('Error: ')
-               print(error)
-               context['status_message'] = 'Failed to query, the following error message were passed: ' + str(error)
-         finally:
+   #path = Path(__file__).parent.absolute()
+   #print(path)
+
+   if request.method == 'POST':
+
+
+      if request.POST['action'] == 'query':
+         context, query_successful = position_context(request)
+         if query_successful == True:
+            try:
+               if context['cow_id'] == '':
+                  cow_id = []
+               else:
+                  cow_id = list(map(int, context['cow_id'].split(',')))
+               if context['group_nr'] == '':
+                  grp = []
+               else:
+                  grp = list(map(int, context['group_nr'].split(',')))
+               if context['tag_str'] == '':
+                  tag_strs = []
+               else:
+                  tag_strs = list(map(str, context['tag_str'].split(',')))
+
+               stats = context['status_list']
+               types = context['position_list']
+               start_date = context['start_date']
+               end_date = context['end_date']
+               start_time = context['start_time']
+               end_time = context['end_time']
+               periodic = context['periodic']
+            
+               #positionQuery(cow_id, grp, stats, types, tag_strs, start_date, end_date, start_time, end_time, periodic)
+
+               #files = positionQuery(cow_id, grp, stats, types, tag_strs, start_date, end_date, start_time, end_time, periodic)
+               #print(files, flush=True)
+               #files = list(map(lambda x: x[0], files))
+     
+               #files = ' '.join(files)
+               #print(files, flush=True)
+               context['download_link'] = True
+               
+               context['status_message'] = 'Query was successful, following files have been generated and can be found in '\
+                  'result_files/{}'.format('hej')
+            except Exception as error:
+                  print('Error: ')
+                  print(error)
+                  context['status_message'] = 'Failed to query, the following error message were passed: ' + str(error)
+            finally:
+               return render(request, "swe_data/swe_position.html", context)
+         else:
+            context['status_message'] = 'Mandatory input fields are missing, please try again.'
             return render(request, "swe_data/swe_position.html", context)
-      else:
-         context['status_message'] = 'Mandatory input fields are missing, please try again.'
-         return render(request, "swe_data/swe_position.html", context)
    
    else:
       return render(request, "swe_data/swe_position.html", context)

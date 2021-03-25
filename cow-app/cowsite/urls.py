@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.index, name="index"),
@@ -16,5 +17,8 @@ urlpatterns = [
     path('dutch_cowinfo/', views.dutch_cowinfo, name='dutch_cowinfo'),
     path('overview/', views.overview, name='overview'),
     path('about/', views.about, name='about'),
-    path('swe_mapping_info', views.swe_mapping_info, name='se_mapping_info')
+    path('swe_mapping_info', views.swe_mapping_info, name='se_mapping_info'),
+    path('download_after_query', views.download_after_query, name='download_after_query')
 ]
+
+urlpatterns += static(settings.RESULT_URL, document_root=settings.RESULT_ROOT)

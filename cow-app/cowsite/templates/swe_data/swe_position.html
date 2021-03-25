@@ -94,7 +94,7 @@
       </div>
 
       <div class='quodrant6'>
-        <button class="button button2" type="submit">Fetch data</button>
+        <button class="button button2" type="submit" name="action" value="query">Fetch data</button>
       </div>
       
       {% csrf_token %}
@@ -109,8 +109,13 @@
  
 
   <p style="font-size:24px"><b>Query status:</b> {{ status_message }}</p>
+  {% if download_link %}
+    <a href="/download_after_query">Click here to go to the download page.</a>
+   
+  {% endif %}
+  <br>
   <p style="font-size:24px">{{ fetch_message }}</p>
-  <a href="../../result_files/hej1.pdf" download>Hello</a>
+
   <ul>
   {% for list in user_inputs %}
     <li>{{ list }}</li>

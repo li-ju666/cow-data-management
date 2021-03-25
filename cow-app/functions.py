@@ -1,6 +1,5 @@
 def handle_uploaded_file(f,temp_dest):
     temp_dest = 'upload_files/' + temp_dest
-    print(temp_dest)
     with open(temp_dest + f.name, 'wb+') as destination:
         #print(destination)
         for chunk in f.chunks():
