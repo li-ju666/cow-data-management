@@ -37,12 +37,20 @@ def download_after_query(request):
 
    if request.method == 'POST':
       if request.POST['action'] == 'Clear files':
-         print('kill them ALL')
+         # print('kill them ALL', flush=True)
+         for file in files:
+            file = "result_files/"+file
+            if os.path.exists(file):
+               os.remove(file)
+            else:
+               pass
+         context['file_names'] = []
+
       else:
          file_to_download = request.POST['action']
          path = 'result_files/'+file_to_download
 
-         response = HttpResponse(open(path,'rb').read())
+         response = HttpResponse(open(path, 'rb').read())
          response['Content-Disposition'] = 'attachment; filename='+file_to_download
          response['Content-Type'] = 'text/plain'
          return response
@@ -200,18 +208,18 @@ def swe_position(request):
                end_time = context['end_time']
                periodic = context['periodic']
             
-               #positionQuery(cow_id, grp, stats, types, tag_strs, start_date, end_date, start_time, end_time, periodic)
+               positionQuery(cow_id, grp, stats, types, tag_strs, start_date, end_date, start_time, end_time, periodic)
 
-               #files = positionQuery(cow_id, grp, stats, types, tag_strs, start_date, end_date, start_time, end_time, periodic)
-               #print(files, flush=True)
-               #files = list(map(lambda x: x[0], files))
+               files = positionQuery(cow_id, grp, stats, types, tag_strs, start_date, end_date, start_time, end_time, periodic)
+               print(files, flush=True)
+               files = list(map(lambda x: x[0], files))
      
-               #files = ' '.join(files)
-               #print(files, flush=True)
+               files = ' '.join(files)
+               # print(files, flush=True)
                context['download_link'] = True
                
                context['status_message'] = 'Query was successful, following files have been generated and can be found in '\
-                  'result_files/{}'.format('hej')
+                  'result_files/{}'.format(files)
             except Exception as error:
                   print('Error: ')
                   print(error)
