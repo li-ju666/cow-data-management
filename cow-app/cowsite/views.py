@@ -1,7 +1,6 @@
 from django.shortcuts import render
-#<<<<<<< HEAD
 from django.http import HttpResponse
-from src.apis.bgAPIs import bgScanSe, bgPosQuery, bgInfoQuery
+from src.apis.bgAPIs import bgPosQuery, bgInfoQuery, bgScanSe
 from src.apis.overview import overview_func, size_overview
 from functions import format_overview, milkdata_context, position_context, cowinfo_context, handle_uploaded_file, dutch_position_context, dutch_milkdata_context, dutch_cowinfo_context
 from src.apis.query import positionQuery, infoQuery, refQuery, milkQuery
@@ -9,12 +8,6 @@ from form import UploadFileForm
 from cows.settings import RESULT_root
 import os
 
-#=======
-#from src.apis.bgAPIs import bgScanSe, bgPosQuery, bgInfoQuery
-#from src.apis.overview import overview_func, size_overview
-#from functions import format_overview, milkdata_context, position_context, cowinfo_context
-#from src.apis.query import positionQuery, infoQuery
-#>>>>>>> b3ef5e0d19c70da209e6bdc4730c8e1b3357a2e2
 
 
 def index(request):

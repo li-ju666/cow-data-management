@@ -118,7 +118,7 @@ class KO(InsertorBase):
     def convert(self, data):
         """Input: (kolista, dried, insertDate)"""
         kolista, dried, insertDate = data
-        print("Converting data", flush=True)
+        # print("Converting data", flush=True)
         fileDate = datetime.datetime.strptime(insertDate, "%y%m%d")
         fileDate = fileDate.strftime("%y-%m-%d")
         def kalvnDate(x):
@@ -154,7 +154,7 @@ class Health(InsertorBase):
 
     def convert(self, data):
         data, insertDate = data
-        print("Converting data", flush=True)
+        # print("Converting data", flush=True)
         # print(data[0,4])
         # print(data[0,5])
         fileDate = datetime.datetime.strptime(insertDate, "%y%m%d")
