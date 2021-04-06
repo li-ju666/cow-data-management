@@ -1,15 +1,24 @@
 import threading
-from src.apis.scan_se import scan
 from src.apis.query import positionQuery, infoQuery, directQuery
 
 
 def bgScanSe():
+    from src.apis.scan_se import scan
     try:
         thread = threading.Thread(target=scan)
         thread.start()
         return "Swedish files scan started... "
     except:
         return "Failed to scan Swedish files"
+
+def bgScanNl():
+    from src.apis.scan_nl import scan
+    try:
+        thread = threading.Thread(target=scan)
+        thread.start()
+        return "Dutch files scan started... "
+    except:
+        return "Failed to scan Dutch files"
 
 
 def bgPosQuery(cow_id, grp, stats, types, start_date, end_date, start_time, end_time, periodic):

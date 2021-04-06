@@ -2,7 +2,6 @@ from src.lib.reader.positionReader import readPos
 from .insertor import InsertorBase
 import numpy
 from src.lib.dbmanager.dbinit import connect_se, connect_nl
-from src.lib.logmanager.logManage_se import saveLog
 
 def insertPos(filePath, db):
     if db == "se":
@@ -33,6 +32,10 @@ def insertPos(filePath, db):
             break
 
     database.close()
+    if db == "se":
+        from src.lib.logmanager.logManage_se import saveLog
+    else:
+        from src.lib.logmanager.logManage_nl import saveLog
     saveLog(fileName)
     print("File inserted: {}".format(fileName), flush=True)
 

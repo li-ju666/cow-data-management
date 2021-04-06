@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-import datetime as dt
 import math
 
 #Reads non-empty rows of "Cow Data mmm - Vim.xlsx"
@@ -74,7 +73,7 @@ def readMilkData(filename):
         LW = row[25]
         
         returnList.append([
-                        date, 
+                        # date,
                         cow_id, 
                         name, 
                         Levnr, 
@@ -104,6 +103,9 @@ def readMilkData(filename):
         ])
     return returnList
 
-
+milk = readMilkData("data/2020-09-11 - Wim milk control.xlsx")
+info = readCowData("data/Cow data Oct - Wim.xlsx")
+print(milk[:5])
+print(info[:5])
 
 

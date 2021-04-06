@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from src.apis.bgAPIs import bgPosQuery, bgInfoQuery, bgScanSe
+from src.apis.bgAPIs import bgPosQuery, bgInfoQuery, bgScanSe, bgScanNl
 from src.apis.overview import overview_func, size_overview
 from functions import format_overview, milkdata_context, position_context, cowinfo_context, handle_uploaded_file, dutch_position_context, dutch_milkdata_context, dutch_cowinfo_context
 from src.apis.query import positionQuery, infoQuery, refQuery, milkQuery
@@ -127,6 +127,7 @@ def upload_dutch(request):
          for f in files:
             size_sum = size_sum + f.size
 
+         bgScanNl() # Scan for swedish files to upload
          #upload to dutch database here
          context['size_sum'] = 'Total size of files: {} MB'.format(size_sum/1000000)
          context['msg'] = 'The following files have been passed to the database:'

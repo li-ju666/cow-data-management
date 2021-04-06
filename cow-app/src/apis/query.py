@@ -101,20 +101,38 @@ def cowQuery(cow_id, grp, stats, start_date, end_date):
 # query tags with valid ranges
 def tagQuery(cow_id, grp, stats, start_date, end_date):
     db = connect_se()
-    cow_dateRange = cowQuery(cow_id, grp, stats, start_date, end_date)
+    cows = cowQuery(cow_id, grp, stats, start_date, end_date)
 
     # fetch reference table for tags
     results = []
-    for i in cow_dateRange:
+    for i in cows:
         # print(cow_dateRange[i])
         statement = 'SELECT * FROM Mapping WHERE cowID = ' + str(i) + " ORDER BY startDate"
         cur = db.cursor()
         cur.execute(statement)
-        refs = cur.fetchall()
+        refs = list(map(list, cur.fetchall()))
         # results += [tagRangeInsect(r, t) for r in cow_dateRange[i] for t in refs]
-        results += refs
+        results += refsMerge(refs)
         cur.close()
     return results
+
+
+def refsMerge(refs):
+    tagRanges = refs
+    results = []
+    if tagRanges:
+        cur_tag = "Init"
+        for record in tagRanges:
+            if record[1] != cur_tag:
+                results.append(record)
+                cur_tag = record[1]
+            elif record[2] <= results[-1][3]:
+                results[-1][3] = record[3]
+            else:
+                results.append(record)
+            # print(results[-1], flush=True)
+    return results
+
 
 
 # get the insersection of two date ranges
@@ -139,24 +157,10 @@ def getDays(start, end):
 ############################### Query functions #############################################
 # mapping query function
 def refQuery(cow_id):
-    tagRanges = tagQuery([cow_id],[], ['REDO','INSEM','DRÄKT','SKAUT','SINLD','RÅMLK','TIDIG'],
-                         "00-01-01", datetime.datetime.now().strftime("%y-%m-%d"))
-    tagRanges = list(map(lambda x: x[1:], tagRanges))
-    # print("Results fetched: ", flush=True)
-    # print(tagRanges, flush=True)
-    results = []
-    if tagRanges:
-        cur_tag = "Init"
-        for record in tagRanges:
-            if record[0] != cur_tag:
-                results.append([record[0], record[1], record[2]])
-                cur_tag = record[0]
-            elif record[1] <= results[-1][2]:
-                results[-1][2] = record[2]
-            else:
-                results.append([record[0], record[1], record[2]])
-            print(results[-1], flush=True)
-    return results
+    refs = tagQuery([cow_id],[], ['REDO','INSEM','DRÄKT','SKAUT','SINLD','RÅMLK','TIDIG'],
+                    "00-01-01", datetime.datetime.now().strftime("%y-%m-%d"))
+    return list(map(lambda x: x[1:], refs))
+
 
 # position query function
 # arg1 = cow_id: [int], arg2 = group_no: [int], arg3 = status: [string], arg4 = position_type: [string],
