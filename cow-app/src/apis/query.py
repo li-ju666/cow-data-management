@@ -103,14 +103,14 @@ def tagQuery(cow_id, grp, stats, start_date, end_date):
     db = connect_se()
     cow_dateRange = cowQuery(cow_id, grp, stats, start_date, end_date)
 
-    def tagRangeInsect(range, tagInfo):
-        if tagInfo[3] is None:
-            tagEnd = datetime.date.today()
-        else:
-            tagEnd = tagInfo[3]
-        start, end = dateIntersect(range[0], range[1], tagInfo[2], tagEnd)
-        # print(tagEnd)
-        return tagInfo[0], tagInfo[1], start, end
+    # def tagRangeInsect(range, tagInfo):
+    #     if tagInfo[3] is None:
+    #         tagEnd = datetime.date.today()
+    #     else:
+    #         tagEnd = tagInfo[3]
+    #     start, end = dateIntersect(range[0], range[1], tagInfo[2], tagEnd)
+    #     # print(tagEnd)
+    #     return tagInfo[0], tagInfo[1], start, end
 
     # fetch reference table for tags
     results = []
@@ -120,7 +120,8 @@ def tagQuery(cow_id, grp, stats, start_date, end_date):
         cur = db.cursor()
         cur.execute(statement)
         refs = cur.fetchall()
-        results += [tagRangeInsect(r, t) for r in cow_dateRange[i] for t in refs]
+        # results += [tagRangeInsect(r, t) for r in cow_dateRange[i] for t in refs]
+        results += refs
         cur.close()
     return results
 

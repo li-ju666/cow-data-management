@@ -62,7 +62,7 @@ def checkInfoTables_se(database):
                    " tagStr VARCHAR(10)," \
                    " startDate DATE, " \
                    " endDate DATE, " \
-                   " PRIMARY KEY (cowID, startDate))"
+                   " PRIMARY KEY (cowID, startDate, endDate))"
 
     Infostatement = "CREATE TABLE IF NOT EXISTS CowInfo " \
                     "(cowID SMALLINT, " \
