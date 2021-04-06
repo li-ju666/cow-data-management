@@ -113,6 +113,11 @@
   </div>
 
   <p style="font-size:24px"><b>Query status:</b> {{ status_message }}</p>
+  {% if download_link %}
+    <a href="/download_after_query">Click here to go to the download page.</a>
+   
+  {% endif %}
+  <br>
   <p style="font-size:24px">{{ fetch_message }}</p>
   <ul>
   {% for list in user_inputs %}
@@ -138,8 +143,8 @@
     <li><b>Tag string:</b> Can <b>ONLY</b> be combined with specified date. Do not query with any other options except date!<br> 
     Example: <i>0021F512, 0032B530</i></li>
     -->
-    <li><b>Status:*</b><br>
-      Chose <i>"All types"</i> to not query for specific status type.</li>
+    <li><b>Status:</b><br>
+      Query for specific status of cow.</li>
     <li><b>Date:</b> YY-MM-DD. <b>*</b><br>
     Example: <i>20-03-14</i></li>
 

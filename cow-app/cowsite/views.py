@@ -34,10 +34,11 @@ def download_after_query(request):
    context = {}
    files = [f for f in listdir('result_files') if isfile(join('result_files', f))]
    context['file_names'] = files
+   cleared_folder = False
+   
 
    if request.method == 'POST':
       if request.POST['action'] == 'Clear files':
-         # print('kill them ALL', flush=True)
          for file in files:
             file = "result_files/"+file
             if os.path.exists(file):
@@ -45,6 +46,7 @@ def download_after_query(request):
             else:
                pass
          context['file_names'] = []
+         cleared_folder = True
 
       else:
          file_to_download = request.POST['action']
@@ -54,6 +56,14 @@ def download_after_query(request):
          response['Content-Disposition'] = 'attachment; filename='+file_to_download
          response['Content-Type'] = 'text/plain'
          return response
+      
+   if cleared_folder:
+      context['status_message'] = 'All files has been cleared from the "result_files" folder.'
+   elif files == []:
+      context['status_message'] ='Looks like there are no files in the "result_files" folder! To generate data files, go to:'
+      context['data_link'] = True
+   else:
+      context['status_message'] =''
 
    return render(request, 'swe_data/download_after_query.html', context)
 
@@ -175,10 +185,8 @@ def swe_db(request):
 def swe_position(request):
    context = {}
    context['status_message'] = 'Waiting for user input.'
-   from pathlib import Path
 
-   #path = Path(__file__).parent.absolute()
-   #print(path)
+
 
    if request.method == 'POST':
 
@@ -215,7 +223,6 @@ def swe_position(request):
                files = list(map(lambda x: x[0], files))
      
                files = ' '.join(files)
-               # print(files, flush=True)
                context['download_link'] = True
                
                context['status_message'] = 'Query was successful, following files have been generated and can be found in '\
@@ -257,6 +264,7 @@ def swe_milkdata(request):
             output_list = context['output_list']
             return_info = milkQuery(cow_id, grp, stats, start_date, end_date, output_list)
             # Query the function here!
+            context['download_link'] = True
             context['status_message'] = 'Query was successful, file has been generated.'
          except Exception as error:
             print('Error: ')
@@ -296,9 +304,9 @@ def swe_cowinfo(request):
             files = list(map(lambda x: x[0], files))
             files = list(filter(lambda x: x, files))
             files = ' '.join(files)
+            context['download_link'] = True
             context['status_message'] = 'Query was successful, following files have been generated and can be found in'\
                ' result_files/ with names of {}'.format(files)
-            # context['status_message'] = 'Query was successful, file has been generated.'
          except Exception as error:
             print('Error: ')
             print(error)
