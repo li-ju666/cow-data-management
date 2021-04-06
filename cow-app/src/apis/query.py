@@ -278,7 +278,7 @@ def infoQuery(cow_id, grp, stats, start_date, end_date, fields, type):
             cur.close()
     allfields = ["cowID", "insertDate", "resp", "grp", "stat", "lakt", "kalvn_date"]
     fieldnames = [[], ["cowID", "insertDate", "7dag", "100dag", "handelse_day", "comments"],
-                  ["insertDate", "gp", "avsinad", "insem_date", "sedan_insem", "insem_tjur", "forv_kalvn", "tid_ins",
+                  ["cowID", "insertDate", "gp", "avsinad", "insem_date", "sedan_insem", "insem_tjur", "forv_kalvn", "tid_ins",
                    "tid_mellan"]]
     fieldnames = list(map(lambda x: allfields + x, fieldnames))
     mask = [True, True] + fields + [False] + [True] * 20

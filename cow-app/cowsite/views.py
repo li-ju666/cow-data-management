@@ -216,7 +216,7 @@ def swe_position(request):
                end_time = context['end_time']
                periodic = context['periodic']
             
-               positionQuery(cow_id, grp, stats, types, tag_strs, start_date, end_date, start_time, end_time, periodic)
+               # positionQuery(cow_id, grp, stats, types, tag_strs, start_date, end_date, start_time, end_time, periodic)
 
                files = positionQuery(cow_id, grp, stats, types, tag_strs, start_date, end_date, start_time, end_time, periodic)
                print(files, flush=True)
