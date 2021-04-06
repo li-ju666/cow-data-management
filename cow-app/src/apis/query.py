@@ -103,20 +103,11 @@ def tagQuery(cow_id, grp, stats, start_date, end_date):
     db = connect_se()
     cow_dateRange = cowQuery(cow_id, grp, stats, start_date, end_date)
 
-    # def tagRangeInsect(range, tagInfo):
-    #     if tagInfo[3] is None:
-    #         tagEnd = datetime.date.today()
-    #     else:
-    #         tagEnd = tagInfo[3]
-    #     start, end = dateIntersect(range[0], range[1], tagInfo[2], tagEnd)
-    #     # print(tagEnd)
-    #     return tagInfo[0], tagInfo[1], start, end
-
     # fetch reference table for tags
     results = []
     for i in cow_dateRange:
         # print(cow_dateRange[i])
-        statement = 'SELECT * FROM Mapping WHERE cowID = ' + str(i)
+        statement = 'SELECT * FROM Mapping WHERE cowID = ' + str(i) + " ORDER BY startDate"
         cur = db.cursor()
         cur.execute(statement)
         refs = cur.fetchall()
@@ -146,14 +137,28 @@ def getDays(start, end):
 
 
 ############################### Query functions #############################################
-# position query function
+# mapping query function
 def refQuery(cow_id):
     tagRanges = tagQuery([cow_id],[], ['REDO','INSEM','DRÄKT','SKAUT','SINLD','RÅMLK','TIDIG'],
                          "00-01-01", datetime.datetime.now().strftime("%y-%m-%d"))
     tagRanges = list(map(lambda x: x[1:], tagRanges))
-    return tagRanges
+    # print("Results fetched: ", flush=True)
+    # print(tagRanges, flush=True)
+    results = []
+    if tagRanges:
+        cur_tag = "Init"
+        for record in tagRanges:
+            if record[0] != cur_tag:
+                results.append([record[0], record[1], record[2]])
+                cur_tag = record[0]
+            elif record[1] <= results[-1][2]:
+                results[-1][2] = record[2]
+            else:
+                results.append([record[0], record[1], record[2]])
+            print(results[-1], flush=True)
+    return results
 
-
+# position query function
 # arg1 = cow_id: [int], arg2 = group_no: [int], arg3 = status: [string], arg4 = position_type: [string],
 # arg5 = start_date: string (yy-mm-dd), arg6 = end_date: string(yy-mm-dd), arg7 = start_time:string(hour:min:sec),
 # arg8 = end_time:string(hour:min:sec), arg9 = periodic:bool
@@ -363,9 +368,3 @@ def directQuery(statement):
     else:
         result.to_csv(path+filename, header=False, index=False)
     return filename
-
-
-# a = infoQuery([], [], ["DRÄKT"], "20-10-01", "20-10-12",
-#               [True, False, True, False, True], 1)
-
-# a = positionQuery([], [], ["DRÄKT"], ["FA"], "20-09-22", "20-09-29", "08:00:00", "09:00:00", False)
