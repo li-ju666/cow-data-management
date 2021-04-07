@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="SplitLeft">
+    <h2>Dutch Mapping info</h2>
+    <p style="margin-top: 0.5cm; font-size: 18px;">Query mapping information by Cow ID, <br> to see the tag string of a specific cow.</p>
+    
+    <div class="qtop" style="height: 25vh;">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="quodrant1">
+                <br>
+                <label for="cow_id"><b>Cow ID:</b></label>
+                <input type="text" id="cow_id" name="cow_id" size="10">
+            </div>
+
+            <div class='quodrant2'>
+                <button class="button button2" type="submit">Render Table</button>
+              </div>
+              
+              {% csrf_token %}
+        </form>
+    </div>
+
+    <div class="div_border style=margin-top:  0cm; margin-bottom: 0.5cm;">
+        <br>
+        <h4>Status: {{ status }}</h4>
+        <h5>{{ msg }}</h5>
+        <p style="font-size: 16;"><i>{{ msg_id }}</i></p>
+
+        <div id="map_table">
+            <table>
+              <thead>
+                <tr>
+                  {% for header in map_header %}
+                    <th>{{ header }}</th>
+                  {% endfor %}
+                </tr>
+              </thead>
+              <tbody>
+                  {% for l1 in map_LoL %}
+                <tr>
+  
+                    {% for l2 in l1 %}
+                        <td>{{ l2 }}</td>
+                    {% endfor %}
+  
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+            </div>
+
+    </div>
+
+</div>
+
+
+
+
+<div class="SplitRight">
+    <h3>Content</h3>
+    Using a Cow ID (one per search), you can query for the tag(s) that belongs to a cow. If successful search, a table with the cow's tag string and the date when the tag has been used will be displayed in a table.
+</div>
+
+
+{% endblock %}

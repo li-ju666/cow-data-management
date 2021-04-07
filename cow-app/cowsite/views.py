@@ -353,7 +353,7 @@ def swe_mapping_info(request):
    return render(request,'swe_data/swe_mapping_info.html', context)
 
 
-# -------- DUTCH DATABASE -------------
+# -------- DUTCH DATABASE ------------- #
 def dutch_data(request):
    return render(request, "dutch_data/dutch_select.html",{})
 
@@ -419,6 +419,38 @@ def dutch_milkdata(request):
          return render(request, "dutch_data/dutch_milkdata.html", context)
    else:
       return render(request, "dutch_data/dutch_milkdata.html", {})
+
+
+
+def dutch_mapping_info(request):
+   context = {}
+   context['status'] = 'Waiting for user to input Cow ID.'
+
+   if request.method == 'POST':
+      cow_id = request.POST['cow_id']
+      if cow_id == '':
+         context['msg'] = 'Cow ID is required to render table, try again!'
+      else:
+         try:
+            cow_id = int(cow_id)
+         except:
+            context['msg'] = 'Incorrect format, Cow ID must be an integer! Your input:'
+            context['msg_id'] = '{}'.format(cow_id)
+            return render(request,'swe_data/swe_mapping_info.html', context)
+         try:
+            #context['map_LoL'] = refQuery(cow_id) DUTCH FUNCTION CALL
+            context['map_LoL'] = [['tag1','date1','date1'],['tag2','date2','date2'],['tag3','date3','date3']] #test data
+            context['map_header'] = ['Tag Nr', 'Start date', 'End date']
+            context['status'] = 'Success!'
+            context['msg'] = 'Mapping info found!'
+            context['msg_id'] = 'Rendering table using cow id = {}.'.format(cow_id)
+         except Exception as error:
+            context['status'] = 'Something went wrong!'
+            context['msg'] = 'Error occured: {}'.format(error)
+         finally:
+            return render(request,'dutch_data/dutch_mapping_info.html', context)
+
+   return render(request,'dutch_data/dutch_mapping_info.html', context)
 
 def dutch_cowinfo(request):
  

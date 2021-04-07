@@ -412,13 +412,15 @@ def cowinfo_context(request):
 
 def dutch_position_context(request):
 
-    status_list = []
+    #status_list = []
     position_list = []
     cow_id = request.POST['cow_id']
     start_time = request.POST['start_time']
     end_time = request.POST['end_time']
     start_date = request.POST['start_date']
     end_date = request.POST['end_date']
+
+    tag_str = request.POST['tag_str']
 
     fetch_message = ''
     user_inputs = []
@@ -463,25 +465,44 @@ def dutch_position_context(request):
 
 
         # User feedback when "Fetch data" is pressed. Check for invalid inputs.
-    if status_list == [] or start_date == '' or end_date == '' or start_time=='' or end_time == '' or position_list == []:
-        query_successful = False
-        fetch_message = 'User input missing: '
-        if status_list == []:
-            user_inputs.append('status type')
-        if position_list == []:
-            user_inputs.append('position data')
-        if start_date == '':
-            user_inputs.append('start date'),
-        if end_date == '':
-            user_inputs.append('end date')
-        if start_time == '':
-            user_inputs.append('start time')
-        if end_time == '':
-            user_inputs.append('end time')
+    if tag_str == '':
+        if  start_date == '' or end_date == '' or start_time=='' or end_time == '' or position_list == []:
+            query_successful = False
+            fetch_message = 'User input missing: '
+            #if status_list == []:
+                #user_inputs.append('status type')
+            if position_list == []:
+                user_inputs.append('position data')
+            if start_date == '':
+                user_inputs.append('start date'),
+            if end_date == '':
+                user_inputs.append('end date')
+            if start_time == '':
+                user_inputs.append('start time')
+            if end_time == '':
+                user_inputs.append('end time')
+        else:
+            user_inputs = ['Cow id: ' + cow_id, ['Position type(s): '] + position_list,'Start date: ' + start_date, 'End date: ' + end_date,
+            'Start time: ' + start_time, 'End time: ' + end_time, 'Periodic: ' + str(periodic)]
+            fetch_message = 'User inputs:'
     else:
-        user_inputs = ['Cow id: ' + cow_id,",".join(['Status types selected: '] + status_list), ['Position type(s): '] + position_list,'Start date: ' + start_date, 'End date: ' + end_date,
-        'Start time: ' + start_time, 'End time: ' + end_time, 'Periodic: ' + str(periodic)]
-        fetch_message = 'User inputs:'
+        if start_date == '' or end_date == '' or start_time == '' or end_time == '' or position_list == []:
+            query_successful = False
+            fetch_message = 'When querying with Tag string date and time are required! User input missing: '
+            if start_date == '':
+                user_inputs.append('start date'),
+            if end_date == '':
+                user_inputs.append('end date')
+            if start_time == '':
+                user_inputs.append('start time')
+            if end_time == '':
+                user_inputs.append('end time')
+            if position_list == []:
+                user_inputs.append('position data')
+            else:
+                user_inputs = ['Tag string: ' + tag_str, 'Start date: ' + start_date, 'End date: ' + end_date,
+                'Start time: ' + start_time, 'End time: ' + end_time,  ['Position type(s): '] + position_list]
+                fetch_message = 'User inputs:'
         
 
     
@@ -494,7 +515,7 @@ def dutch_position_context(request):
         'end_date': end_date,
         'periodic': periodic,
         'position_list': position_list,
-        'status_list': status_list,
+        #'status_list': status_list,
         'fetch_message': fetch_message,
         'user_inputs': user_inputs,
     }
