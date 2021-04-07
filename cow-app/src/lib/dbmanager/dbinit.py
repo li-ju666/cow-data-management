@@ -62,7 +62,7 @@ def checkInfoTables_se(database):
                    " tagStr VARCHAR(10)," \
                    " startDate DATE, " \
                    " endDate DATE, " \
-                   " PRIMARY KEY (cowID, startDate))"
+                   " PRIMARY KEY (cowID, startDate, endDate))"
 
     Infostatement = "CREATE TABLE IF NOT EXISTS CowInfo " \
                     "(cowID SMALLINT, " \
@@ -123,44 +123,32 @@ def checkInfoTables_se(database):
 def checkInfoTables_nl(database):
     Mapstatement = 'CREATE TABLE IF NOT EXISTS Mapping ' \
                    '(diernr SMALLINT, ' \
-                   ' tagstr VARCHAR(10),' \
-                   ' iso INT, ' \
-                   ' startdate DATE, ' \
-                   ' comment VARCHAR(30), ' \
-                   ' enddate DATE, ' \
-                   ' PRIMARY KEY (diernr, startdate))'
+                   ' tagStr VARCHAR(10),' \
+                   ' ISO INT, ' \
+                   ' startDate DATE, ' \
+                   ' endDate DATE, ' \
+                   ' PRIMARY KEY (ISO, startdate))'
 
-    Driedstatement = 'CREATE TABLE IF NOT EXISTS InsemInfo ' \
-                   '(diernr SMALLINT, ' \
-                   ' name VARCHAR(50), ' \
-                   ' werknr SMALLINT, ' \
-                   ' dekdatum DATE, ' \
-                   ' insemnr SMALLINT, ' \
-                   ' strnm VARCHAR(50), ' \
-                   ' verkw DATE, ' \
-                   ' dekinfo VARCHAR(30), ' \
-                   ' lactnr SMALLINT, ' \
-                   ' status VARCHAR(20), ' \
-                   ' PRIMARY KEY (diernr, dekdatum))'
 
     Milkstatement = 'CREATE TABLE IF NOT EXISTS MilkInfo ' \
                     '(diernr SMALLINT, ' \
                     ' insertdate DATE, ' \
-                    ' levnr INT, ' \
+                    ' naam VARCHAR(30), ' \
+                    ' levnr VARCHAR(15), ' \
                     ' kgmelk FLOAT, ' \
                     ' isk FLOAT, ' \
                     ' percentv FLOAT, ' \
                     ' eiw FLOAT, ' \
                     ' lact FLOAT, ' \
-                    ' ur FLOAT, ' \
-                    ' celget FLOAT, ' \
+                    ' ur SMALLINT, ' \
+                    ' celget INT, ' \
                     ' klfdat DATE, ' \
                     ' lftafk FLOAT, ' \
                     ' mprlft FLOAT, ' \
                     ' lactnr SMALLINT, ' \
-                    ' lactatiedagen SMALLINT, ' \
-                    ' kgmelklact FLOAT, ' \
-                    ' kgmelk305 FLOAT, ' \
+                    ' lactatiedagen INT, ' \
+                    ' kgmelklact INT, ' \
+                    ' kgmelk305 INT, ' \
                     ' vetlact FLOAT, ' \
                     ' vet305 FLOAT, ' \
                     ' eiwlact FLOAT, ' \
@@ -170,9 +158,9 @@ def checkInfoTables_nl(database):
                     ' kgeiwlact FLOAT, ' \
                     ' kgeiw305 FLOAT, ' \
                     ' lw SMALLINT, ' \
-                    ' PRIMARY KEY (diernr, insertdate))'
+                    ' PRIMARY KEY (levnr, insertdate))'
 
-    statements = [Milkstatement, Driedstatement, Mapstatement]
+    statements = [Milkstatement, Mapstatement]
     for statement in statements:
         # print(statement, flush=True)
         cursor = database.cursor()

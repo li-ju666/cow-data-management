@@ -42,65 +42,86 @@ def insertMilkPlats(fileName, db):
 def insertRef(fileName, db):
     kolista, dried = readKO(fileName)
     insertDate = findall("\d+", fileName)[0]
+    startDateFile = datetime.datetime.strptime(insertDate, '%y%m%d') - datetime.timedelta(days=7)
+    endDateFile = datetime.datetime.strptime(insertDate, '%y%m%d')
     driedOffDict = dict(zip(list(dried[0]), list(dried[4])))
+    # for i in kolista:
+    #     # select all references binded to the cow
+    #     statement = "SELECT * FROM Mapping WHERE cowID = " + i[0] + " ORDER BY startDate"
+    #     cur = db.cursor()
+    #     cur.execute(statement)
+    #     results = cur.fetchall()
+    #
+    #     # if result list is empty: add record
+    #     if len(results) == 0 and i[2] != 'NULL':
+    #         statement = "INSERT INTO Mapping (cowID, tagStr, startDate, endDate)" \
+    #                   " VALUES (%s, %s, %s, %s)"
+    #         calvnDate = datetime.datetime.strptime(i[6], "%d-%m-%y")
+    #         calvnDate = calvnDate.strftime("%y-%m-%d")
+    #         cur.execute(statement, (i[0], i[2], calvnDate, None))
+    #         db.commit()
+    #         cur.close()
+    #     # if no previous records exist + no tag carried on the cow, continue
+    #     elif len(results) == 0 and i[2] == 'NULL':
+    #         continue
+    #     # if previous record is the same as current tag, continue
+    #     elif results[-1][1] == i[2]:
+    #         continue
+    #     # if tag is not carried anymore, update records
+    #     elif i[2] == 'NULL':
+    #         ######### dried off date as end date (???????????????????????????
+    #         try:
+    #             driedOffDate = datetime.datetime.strptime(driedOffDict[i[0]], "%d-%m-%y")
+    #         except:
+    #             driedOffDate = datetime.datetime.strptime(insertDate, "%y%m%d")
+    #         driedOffDate = driedOffDate.strftime("%y-%m-%d")
+    #         statement = "UPDATE Mapping SET endDate='" + driedOffDate + "' WHERE cowID='" + i[0] + \
+    #                     "' AND tagStr='" + results[-1][1] + "'"
+    #         cur.execute(statement)
+    #         db.commit()
+    #         cur.close()
+    #     else:
+    #         # Update previous record
+    #         # print("Unexpected remove")
+    #         # print(i[2])
+    #         # print(results)
+    #         try:
+    #             driedOffDate = datetime.datetime.strptime(driedOffDict[i[0]], "%d-%m-%y")
+    #         except:
+    #             driedOffDate = datetime.datetime.strptime(insertDate, "%y%m%d")
+    #         driedOffDate = driedOffDate.strftime("%y-%m-%d")
+    #         statement = "UPDATE Mapping SET endDate='" + driedOffDate + "' WHERE cowID='" + i[0] + \
+    #                     "' AND tagStr='" + results[-1][1] + "'"
+    #         # print(statement)
+    #         cur.execute(statement)
+    #         db.commit()
+    #         cur.close()
+    #         cur = db.cursor()
+    #         # Insert new record
+    #         statement = "INSERT INTO Mapping (cowID, tagStr, startDate, endDate)" \
+    #                   " VALUES (%s, %s, %s, %s)"
+    #         cur.execute(statement, (i[0], i[2], driedOffDate, None))
+    #         db.commit()
+    #         cur.close()
     for i in kolista:
-        # select all references binded to the cow
-        statement = "SELECT * FROM Mapping WHERE cowID = " + i[0] + " ORDER BY startDate"
-        cur = db.cursor()
-        cur.execute(statement)
-        results = cur.fetchall()
+        # print("`" + i[2] + "`")
+        if i[2] == "NULL":
+            continue
+        calvnDate = datetime.datetime.strptime(i[6], "%d-%m-%y")
+        try:
+            driedOffDate = datetime.datetime.strptime(driedOffDict[i[0]], "%d-%m-%y")
+        except:
+            driedOffDate = datetime.datetime.strptime(insertDate, "%y%m%d")
+        startDate = startDateFile if calvnDate < startDateFile else calvnDate
+        endDate = driedOffDate if startDateFile < driedOffDate < endDateFile else endDateFile
 
-        # if result list is empty: add record
-        if len(results) == 0 and i[2] != 'NULL':
-            statement = "INSERT INTO Mapping (cowID, tagStr, startDate, endDate)" \
-                      " VALUES (%s, %s, %s, %s)"
-            calvnDate = datetime.datetime.strptime(i[6], "%d-%m-%y")
-            calvnDate = calvnDate.strftime("%y-%m-%d")
-            cur.execute(statement, (i[0], i[2], calvnDate, None))
-            db.commit()
-            cur.close()
-        # if no previous records exist + no tag carried on the cow, continue
-        elif len(results) == 0 and i[2] == 'NULL':
-            continue
-        # if previous record is the same as current tag, continue
-        elif results[-1][1] == i[2]:
-            continue
-        # if tag is not carried anymore, update records
-        elif i[2] == 'NULL':
-            ######### dried off date as end date (???????????????????????????
-            try:
-                driedOffDate = datetime.datetime.strptime(driedOffDict[i[0]], "%d-%m-%y")
-            except:
-                driedOffDate = datetime.datetime.strptime(insertDate, "%y%m%d")
-            driedOffDate = driedOffDate.strftime("%y-%m-%d")
-            statement = "UPDATE Mapping SET endDate='" + driedOffDate + "' WHERE cowID='" + i[0] + \
-                        "' AND tagStr='" + results[-1][1] + "'"
-            cur.execute(statement)
-            db.commit()
-            cur.close()
-        else:
-            # Update previous record
-            # print("Unexpected remove")
-            # print(i[2])
-            # print(results)
-            try:
-                driedOffDate = datetime.datetime.strptime(driedOffDict[i[0]], "%d-%m-%y")
-            except:
-                driedOffDate = datetime.datetime.strptime(insertDate, "%y%m%d")
-            driedOffDate = driedOffDate.strftime("%y-%m-%d")
-            statement = "UPDATE Mapping SET endDate='" + driedOffDate + "' WHERE cowID='" + i[0] + \
-                        "' AND tagStr='" + results[-1][1] + "'"
-            # print(statement)
-            cur.execute(statement)
-            db.commit()
-            cur.close()
-            cur = db.cursor()
-            # Insert new record
-            statement = "INSERT INTO Mapping (cowID, tagStr, startDate, endDate)" \
-                      " VALUES (%s, %s, %s, %s)"
-            cur.execute(statement, (i[0], i[2], driedOffDate, None))
-            db.commit()
-            cur.close()
+        cur = db.cursor()
+        statement = "INSERT INTO Mapping (cowID, tagStr, startDate, endDate)" \
+                  " VALUES (%s, %s, %s, %s)"
+        # print(startDate.strftime("%y-%m-%d"), endDate.strftime("%y-%m-%d"))
+        cur.execute(statement, (i[0], i[2].upper(), startDate.strftime("%y-%m-%d"), endDate.strftime("%y-%m-%d")))
+        db.commit()
+        cur.close()
 
 
 """" Insertor definitions for info tables for Swedish data """
