@@ -150,6 +150,7 @@ def overview(request):
       over = overview_func()
       list_info, list_pos = format_overview(over)
       list_size = size_overview()
+      #dutch function callls here
       print(list_size, flush=True)
       print("Overview function working fine")
       context = {
@@ -159,7 +160,14 @@ def overview(request):
          'list_pos': list_pos,
          'list_info': list_info,
          'list_size': list_size,
+         'dutch_info_header': ['File'],
+         'dutch_position_header': ['FA','PA','PAA','PC'],
+         'dutch_size_header': ['Table name', 'Nr of Records', 'Size (MB)'],
+         'dutch_list_pos': [],
+         'dutch_list_info': [],
+         'dutch_list_size': [],
       }
+      context['status_message'] = 'Successfully connected to the database.'
    except Exception as error:
       print('Error: ')
       print(error)
@@ -170,6 +178,12 @@ def overview(request):
          'list_pos': [],
          'list_info': [],
          'list_size': [],
+         'dutch_info_header': ['File'],
+         'dutch_position_header': ['FA','PA','PAA','PC'],
+         'dutch_size_header': ['Table name', 'Nr of Records', 'Size (MB)'],
+         'dutch_list_pos': [],
+         'dutch_list_info': [],
+         'dutch_list_size': [],
       }
       context['status_message'] = 'Failed to connect to database, the following error message were passed: ' + str(error)
    finally:

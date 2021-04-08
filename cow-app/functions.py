@@ -457,11 +457,11 @@ def dutch_position_context(request):
     #        'TIDIG',
     #    ]
 
-    if "DRACHTIG" in request.POST:
-        status_list.append('DRACHTIG')
+    #if "DRACHTIG" in request.POST:
+        #status_list.append('DRACHTIG')
 
-    if "GEDEKT" in request.POST:
-        status_list.append('GEDEKT')
+    #if "GEDEKT" in request.POST:
+        #status_list.append('GEDEKT')
 
 
         # User feedback when "Fetch data" is pressed. Check for invalid inputs.
@@ -523,7 +523,7 @@ def dutch_position_context(request):
 
 
 def dutch_milkdata_context(request):
-    status_list = []
+    #status_list = []
     cow_id = request.POST['cow_id']
     start_date = request.POST['start_date']
     end_date = request.POST['end_date']
@@ -544,32 +544,32 @@ def dutch_milkdata_context(request):
             #'TIDIG',
         #]
 
-    if "DRACHTIG" in request.POST:
-        status_list.append('DRACHTIG')
+    #if "DRACHTIG" in request.POST:
+        #status_list.append('DRACHTIG')
 
-    if "GEDEKT" in request.POST:
-        status_list.append('GEDEKT')
+    #if "GEDEKT" in request.POST:
+        #status_list.append('GEDEKT')
     
 
     # User feedback when "Fetch data" is pressed. Check for invalid inputs.
-    if status_list == [] or start_date == '' or end_date == '':
+    if start_date == '' or end_date == '':
         query_successful = False
         fetch_message = 'User input missing: '
-        if status_list == []:
-            user_inputs.append('status type')
+        #if status_list == []:
+            #user_inputs.append('status type')
         if start_date == '':
             user_inputs.append('start date')
         if end_date == '':
             user_inputs.append('end date')
     else:
-        user_inputs = ['Cow id: ' + cow_id, ",".join(['Status types selected: '] + status_list),'Start date: ' + start_date, 'End date: ' + end_date]
+        user_inputs = ['Cow id: ' + cow_id,'Start date: ' + start_date, 'End date: ' + end_date]
         fetch_message = 'User input:'
 
     context = {
         'cow_id': cow_id,
         'start_date': start_date,
         'end_date': end_date,
-        'status_list': status_list,
+        #'status_list': status_list,
         'fetch_message': fetch_message,
         'user_inputs': user_inputs,
     }
@@ -578,7 +578,7 @@ def dutch_milkdata_context(request):
 
 
 
-def dutch_cowinfo_context(request):
+def dutch_cowinfo_context(request): # Currently not in use
   
     STATUS = []
     output_list = []

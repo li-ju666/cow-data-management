@@ -17,8 +17,7 @@
         <input type="text" id="cow_id" name="cow_id" size="10">
       </div>
 
-
-      <div class='quodrant2'>
+      <!--      <div class='quodrant2'>
         <b>Status:</b><br>
         <input type="checkbox" id="DRACHTIG" name="DRACHTIG" value="DRACHTIG">
         <label for="DRACHTIG"> Drachtig+ </label><br>
@@ -27,10 +26,11 @@
         <label for="GEDEKT"> Gedekt </label><br>
         
       </div>
+      -->
 
     
 
-      <div class='quodrant3'>
+      <div class='quodrant2'>
         <label for="start_date"><b>Start date:</b></label>
         <input type="text" id="start_date" name="start_date" size="10">
         
@@ -38,23 +38,24 @@
         <label for="end_date"><b>End date:</b></label>
         <input type="text" id="end_date" name="end_date" size="10">
 
-        <br>
-        <br>
-        <input type="checkbox" id="most_recent" name="most_recent" value="most_recent">
-        <label for="most_recent"> Most recent record </label><br>
+    
       </div>
 
-      <div class='quodrant4'>
+      <div class='quodrant3'>
         <button class="button button2" type="submit">Fetch data</button>
         
       </div>
 
-      <div class="quodrant5">
+      <div class="quodrant4">
 
       </div>
 
-      <div class='quodrant6'>
+      <div class='quodrant5'>
         
+      </div>
+
+      <div class="quidrant6">
+
       </div>
       
       {% csrf_token %}
@@ -85,15 +86,27 @@
     
     <h4>Instructions:</h4>
  
-    <p>be kind</p><br>
+    <p>Inputs marked with <b>*</b> are mandatory.</p>
 
-    <p>be kind</p>
-    <p>cow_id: {{ cow_id }}</p>
-    <p>group_nr: {{ group_nr }}</p>
-    <p>start_date: {{ start_date }}</p>
-    <p>end_date: {{ end_date }}</p>
+    <ul>
+      <li><b>Cow ID(s):</b> Only integers, seperate serval IDs by commas only.<br> 
+      Example: <i>411,324,799,122</i></li>
 
-    <p>s: {{ status_list }}</p>
+      <!-- Group number has been commented out becuase we only implement naive solution to dutch data
+      <li><b>Group number:</b> Only integers, seperate serveral group numbers by commas only.<br>
+      Example: <i>10,12,14</i></li>
+
+     <li><b>Status</b><br>
+        Query for specific status of cow.</li>
+        -->
+      <li><b>Date:</b> YY-MM-DD. <b>*</b><br>
+      Example: <i>20-03-14</i></li>
+
+
+      
+  
+    
+  </ul>  
 
 </div>
 

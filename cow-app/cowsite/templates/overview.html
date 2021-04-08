@@ -4,17 +4,24 @@
 
 
 
+<div style="max-width: 60%; margin-top: 14px;">
+  <h2>Overview</h2>
+<p style="font-size: 18px;">Welcome to Overview! Here you can view meta data of the files stored in the Swedish and Dutch databases.</p>
+<p style="font-size: 16px;"><b>Status message:</b> {{ status_message }} </p>
+</div>
+<div class="div_border" style="margin-top:  0cm; margin-bottom: 0.5cm; width: 100%;">
+
+</div>
 
 
-    <div class="SplitLeft" style="max-width:50%; word-wrap:break-word; font-size: 18px;">
-        <h2>Overview</h2>
-    <p> {{ status_message }} </p>
-        <br>
+     <!-- Swedish Tables -->
+    <div class="SplitLeft" style="width:49%; word-wrap:break-word; font-size: 18px;">
+    
 
 
-        <h4>Database size</h4>
+        <h4>Swedish Database size</h4>
         <div id="size_table">
-          <table border=0>
+          <table>
             <thead>
               <tr>
                 {% for header in size_header %}
@@ -38,9 +45,9 @@
 
           <br>
 
-        <h4>Information data table</h4>
+        <h4>Swedish Information table</h4>
         <div id="info_table">
-            <table border=0>
+            <table>
               <thead>
                 <tr>
                   {% for header in info_header %}
@@ -61,15 +68,12 @@
             </tbody>
             </table>
             </div>
-
-
-
     <br>
-    <h4>Position data table</h4>
+    <h4>Swedish Position table</h4>
 
 
     <div id="position_table">
-        <table border=0>
+        <table>
           <thead>
             <tr>
               {% for header in position_header %}
@@ -97,9 +101,90 @@
 
     </div>
 
-<div class="SplitRight">
-    <h4>Content</h4>
-    <p style="font-size: 17px; max-width: 90%;">Here you can view what files are currently in the database and the size of the respective tables.</p>
+
+  <!-- Dutch Tables -->
+<div class="SplitRight" style="width: 49%;">
+    
+  <h4>Dutch Database size</h4>
+  <div id="dutch_size_table">
+    <table>
+      <thead>
+        <tr>
+          {% for header in dutch_size_header %}
+            <th>{{ header }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+          {% for l1 in dutch_list_size %}
+        <tr>
+
+            {% for l2 in l1 %}
+                <td>{{ l2 }}</td>
+            {% endfor %}
+
+        </tr>
+        {% endfor %}
+    </tbody>
+    </table>
+    </div>
+
+    <br>
+
+  <h4>Dutch data table</h4>
+  <div id="dutch_info_table">
+      <table>
+        <thead>
+          <tr>
+            {% for header in dutch_info_header %}
+              <th>{{ header }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+            {% for l1 in dutch_list_info %}
+          <tr>
+
+              {% for l2 in l1 %}
+                  <td>{{ l2 }}</td>
+              {% endfor %}
+
+          </tr>
+          {% endfor %}
+      </tbody>
+      </table>
+      </div>
+<br>
+<h4>Dutch Position table</h4>
+
+
+<div id="dutch_position_table">
+  <table>
+    <thead>
+      <tr>
+        {% for header in dutch_position_header %}
+          <th>{{ header }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for l1 in dutch_list_pos %}
+      <tr>
+
+          {% for l2 in l1 %}
+              <td>{{ l2 }}</td>
+          {% endfor %}
+
+      </tr>
+      {% endfor %}
+
+  </tbody>
+  </table>
+  </div>
+
+
+  </div>
+
 
 </div>
 
