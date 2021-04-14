@@ -1,38 +1,25 @@
 import pandas as pd
 import numpy as np
 import math
-from re import findall
 
 
 # Reads non-empty rows of "Cow Data mmm - Vim.xlsx"
 # Returns [[cow_id, ISO, tag_str, start_date, comment]]
+
 def readCowData(filename):
-    WS = pd.read_excel(filename)
-    WS_np = np.array(WS)
-    returnList = []
-
-    for row in WS_np[0:]:
-        # Skip row if blank or lack info
-        if math.isnan(row[0]):
-            continue
-        if math.isnan(row[1]):
-            continue
-
-        cow_id = int(row[0])
-        ISO = int(row[1])
-        tag_str = row[2]
-        start_date = row[3].strftime("%Y-%m-%d")
-        comment = row[4]
-
-        returnList.append([
-            cow_id,
-            ISO,
-            tag_str,
-            start_date,
-            comment
-        ])
-
-    return returnList
+    WS = pd.read_excel(filename).values.tolist()
+    def nan_handler(value):
+        if isinstance(value, float):
+            return False
+        else:
+            return True
+    def row_handler(row):
+        if math.isnan(row[0]) or math.isnan(row[1]):
+            return None
+        else:
+            return [int(row[0]), int(row[1]), row[2].upper(),
+                    row[3].strftime("%y-%m-%d"), nan_handler(row[4])]
+    return list(filter(lambda x: x, list(map(row_handler, WS))))
 
 
 # Adds filedate as the first entry and then all other entries

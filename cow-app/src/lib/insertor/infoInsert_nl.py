@@ -53,19 +53,37 @@ class CowMap(InsertorBase):
     def __init__(self):
         super().__init__()
         self.type = "Mapping"
-        self.fields = " (diernr, tagStr, ISO, startDate, endDate)" \
+        self.fields = " (diernr, ISO, tagStr, startDate, endDate)" \
                       " VALUES (%s, %s, %s, %s, %s)"
 
     def convert(self, data):
         # TODO: implement the algorithm
-        # today = datetime.datetime.now()
-        # refs = {}
-        # for rec in data:
-
-        return
-        # today = datetime.datetime.now()
-        #
-        # return tuple(result)
+        diernrs, ISO, tagStr, startDates, endDates = [], [], [], [], []
+        today = datetime.datetime.now().strftime("%y-%m-%d")
+        for rec in data:
+            rec_diernr, rec_iso, rec_tag, rec_start, comment = tuple(rec)
+            if rec_diernr not in diernrs:
+                diernrs.append(rec_diernr)
+                ISO.append(rec_iso)
+                tagStr.append(rec_tag)
+                startDates.append(rec_start)
+                endDates.append(today)
+            else:
+                # find all occurance of this cow
+                indices = [i for i, x in enumerate(diernrs) if x == rec_diernr]
+                # update latest change
+                idx = indices[-1]
+                endDates[idx] = rec_start
+                # insert new tag record
+                diernrs.append(rec_diernr)
+                ISO.append(rec_iso)
+                tagStr.append(rec_tag)
+                startDates.append(rec_start)
+                endDates.append(today)
+        result = []
+        for i in range(len(diernrs)):
+            result.append((diernrs[i], ISO[i], tagStr[i], startDates[i], endDates[i]))
+        return tuple(result)
 
     def insert(self, database, data):
         vals = self.convert(data)

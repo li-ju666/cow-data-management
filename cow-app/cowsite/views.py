@@ -1,9 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from src.apis.bgAPIs import bgPosQuery, bgInfoQuery, bgScanSe, bgScanNl
+from src.apis.bgAPIs import bgScanSe, bgScanNl
 from src.apis.overview import overview_func, size_overview
 from functions import format_overview, milkdata_context, position_context, cowinfo_context, handle_uploaded_file, dutch_position_context, dutch_milkdata_context, dutch_cowinfo_context
-from src.apis.query import positionQuery, infoQuery, refQuery, milkQuery
 from form import UploadFileForm
 from cows.settings import BASE_DIR
 from django.core.files.storage import FileSystemStorage
@@ -230,9 +229,8 @@ def swe_position(request):
                start_time = context['start_time']
                end_time = context['end_time']
                periodic = context['periodic']
-            
-               # positionQuery(cow_id, grp, stats, types, tag_strs, start_date, end_date, start_time, end_time, periodic)
 
+               from src.apis.query_se import positionQuery
                files = positionQuery(cow_id, grp, stats, types, tag_strs, start_date, end_date, start_time, end_time, periodic)
                print(files, flush=True)
                files = list(map(lambda x: x[0], files))
@@ -277,6 +275,7 @@ def swe_milkdata(request):
             start_date = context['start_date']
             end_date = context['end_date']
             output_list = context['output_list']
+            from src.apis.query_se import milkQuery
             return_info = milkQuery(cow_id, grp, stats, start_date, end_date, output_list)
             # Query the function here!
             context['download_link'] = True
@@ -314,7 +313,8 @@ def swe_cowinfo(request):
             end_date = context['end_date']
             fields = context['output_list']
             type = int(context['special_field'])
-            #bgInfoQuery(cow_id, grp, stats, start_date, end_date, fields, type)
+
+            from src.apis.query_se import infoQuery
             files = infoQuery(cow_id, grp, stats, start_date, end_date, fields, type)
             files = list(map(lambda x: x[0], files))
             files = list(filter(lambda x: x, files))
@@ -353,6 +353,7 @@ def swe_mapping_info(request):
             context['msg_id'] = '{}'.format(cow_id)
             return render(request,'swe_data/swe_mapping_info.html', context)
          try:
+            from src.apis.query_se import refQuery
             context['map_LoL'] = refQuery(cow_id)
             #context['map_LoL'] = [['tag1','date1','date1'],['tag2','date2','date2'],['tag3','date3','date3']] #test data
             context['map_header'] = ['Tag Nr', 'Start date', 'End date']
@@ -382,9 +383,7 @@ def dutch_position(request):
                cow_id = []
             else:
                cow_id = list(map(int, context['cow_id'].split(',')))
-            
 
-            stats = context['status_list']
             types = context['position_list']
             start_date = context['start_date']
             end_date = context['end_date']
@@ -392,6 +391,12 @@ def dutch_position(request):
             end_time = context['end_time']
             periodic = context['periodic']
             #query function call
+            from src.apis.query_nl import positionQuery
+            # TODO: tags????????????
+            # TODO: file names?
+            tags = []
+            positionQuery(cow_id, tags, types, start_date, end_date, start_time, end_time, periodic)
+
             context['status_message'] = 'Query was successful, file has been generated.'
          except Exception as error:
                print('Error: ')
@@ -422,6 +427,9 @@ def dutch_milkdata(request):
                cow_id = list(map(int, context['cow_id'].split(',')))
             
             # No function to query
+            # TODO: start_date and end_date
+            from src.apis.query_nl import milkQuery
+            milkQuery(cow_id, start_date, end_date)
             context['status_message'] = 'Query was successful, file has been generated.'
          except Exception as error:
             print('Error: ')
@@ -453,12 +461,14 @@ def dutch_mapping_info(request):
             context['msg_id'] = '{}'.format(cow_id)
             return render(request,'swe_data/swe_mapping_info.html', context)
          try:
-            #context['map_LoL'] = refQuery(cow_id) DUTCH FUNCTION CALL
             context['map_LoL'] = [['tag1','date1','date1'],['tag2','date2','date2'],['tag3','date3','date3']] #test data
             context['map_header'] = ['Tag Nr', 'Start date', 'End date']
             context['status'] = 'Success!'
             context['msg'] = 'Mapping info found!'
             context['msg_id'] = 'Rendering table using cow id = {}.'.format(cow_id)
+            # TODO: get cow ids
+            from src.apis.query_nl import refQuery
+            refQuery(cow_id)
          except Exception as error:
             context['status'] = 'Something went wrong!'
             context['msg'] = 'Error occured: {}'.format(error)

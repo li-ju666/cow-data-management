@@ -123,11 +123,11 @@ def checkInfoTables_se(database):
 def checkInfoTables_nl(database):
     Mapstatement = 'CREATE TABLE IF NOT EXISTS Mapping ' \
                    '(diernr SMALLINT, ' \
-                   ' tagStr VARCHAR(10),' \
                    ' ISO INT, ' \
+                   ' tagStr VARCHAR(10),' \
                    ' startDate DATE, ' \
                    ' endDate DATE, ' \
-                   ' PRIMARY KEY (ISO, startdate))'
+                   ' PRIMARY KEY (ISO, startDate))'
 
 
     Milkstatement = 'CREATE TABLE IF NOT EXISTS MilkInfo ' \

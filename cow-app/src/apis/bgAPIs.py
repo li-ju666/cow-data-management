@@ -1,6 +1,4 @@
 import threading
-from src.apis.query import positionQuery, infoQuery, directQuery
-
 
 def bgScanSe():
     from src.apis.scan_se import scan
@@ -21,29 +19,29 @@ def bgScanNl():
         return "Failed to scan Dutch files"
 
 
-def bgPosQuery(cow_id, grp, stats, types, start_date, end_date, start_time, end_time, periodic):
-    try:
-        thread = threading.Thread(target=positionQuery,
-                                  args = (cow_id, grp, stats, types, start_date, end_date, start_time, end_time, periodic))
-        thread.start()
-        return "Querying... "
-    except:
-        return "Failed to start query"
+# def bgPosQuery(cow_id, grp, stats, types, start_date, end_date, start_time, end_time, periodic):
+#     try:
+#         thread = threading.Thread(target=positionQuery,
+#                                   args = (cow_id, grp, stats, types, start_date, end_date, start_time, end_time, periodic))
+#         thread.start()
+#         return "Querying... "
+#     except:
+#         return "Failed to start query"
+#
 
-
-def bgInfoQuery(cow_id, grp, stats, start_date, end_date, fields, type):
-    try:
-        thread = threading.Thread(target=infoQuery,
-                                  args=(cow_id, grp, stats, start_date, end_date, fields, type))
-        thread.start()
-        return "Querying... "
-    except:
-        return "Failed to start query"
-
-def bgDrctQuery(statement):
-    try:
-        thread = threading.Thread(target=directQuery, args=statement)
-        thread.start()
-        return "Querying... "
-    except:
-        return "Failed to start query"
+# def bgInfoQuery(cow_id, grp, stats, start_date, end_date, fields, type):
+#     try:
+#         thread = threading.Thread(target=infoQuery,
+#                                   args=(cow_id, grp, stats, start_date, end_date, fields, type))
+#         thread.start()
+#         return "Querying... "
+#     except:
+#         return "Failed to start query"
+#
+# def bgDrctQuery(statement):
+#     try:
+#         thread = threading.Thread(target=directQuery, args=statement)
+#         thread.start()
+#         return "Querying... "
+#     except:
+#         return "Failed to start query"
