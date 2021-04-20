@@ -518,6 +518,7 @@ def dutch_position_context(request):
         #'status_list': status_list,
         'fetch_message': fetch_message,
         'user_inputs': user_inputs,
+        'tag_str': tag_str,
     }
     return context, query_successful
 
