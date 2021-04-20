@@ -220,7 +220,7 @@ def swe_position(request):
                if context['tag_str'] == '':
                   tag_strs = []
                else:
-                  tag_strs = list(map(str, context['tag_str'].split(',')))
+                  tag_strs = list(map(str, context['tag_str'].replace(' ', '').split(',')))
 
                stats = context['status_list']
                types = context['position_list']
@@ -377,13 +377,17 @@ def dutch_data(request):
 def dutch_position(request):
    if request.method == 'POST':
       context, query_successful = dutch_position_context(request)
-      if query_successful == True:
+      if query_successful:
          try:
             if context['cow_id'] == '':
                cow_id = []
             else:
                cow_id = list(map(int, context['cow_id'].split(',')))
 
+            print("tag_str in context: {}".format(context['tag_str']), flush=True)
+
+            tag_strs = list(filter(lambda x: x != "", map(str, context['tag_str'].replace(' ', '').split(','))))
+            print(tag_strs, flush=True)
             types = context['position_list']
             start_date = context['start_date']
             end_date = context['end_date']
@@ -394,8 +398,8 @@ def dutch_position(request):
             from src.apis.query_nl import positionQuery
             # TODO: tags????????????
             # TODO: file names?
-            tags = []
-            positionQuery(cow_id, tags, types, start_date, end_date, start_time, end_time, periodic)
+            # tags = []
+            positionQuery(cow_id, tag_strs, types, start_date, end_date, start_time, end_time, periodic)
 
             context['status_message'] = 'Query was successful, file has been generated.'
          except Exception as error:
@@ -425,6 +429,8 @@ def dutch_milkdata(request):
                cow_id = []
             else:
                cow_id = list(map(int, context['cow_id'].split(',')))
+            start_date = context['start_date']
+            end_date = context['end_date']
             
             # No function to query
             # TODO: start_date and end_date

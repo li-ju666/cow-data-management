@@ -155,6 +155,7 @@ def positionQuery(cow_id, tags, types, start_date, end_date, start_time, end_tim
     if tags:
         # tagRanges: a list of tuple: (tag, startDate, endDate)
         tagRanges = list(map(lambda x: (x.replace(" ", ""), start, end), tags))
+        print(tagRanges, flush=True)
     else:
         tagRanges = []
         for each in tagQuery(cow_id):
@@ -206,7 +207,7 @@ def positionQuery(cow_id, tags, types, start_date, end_date, start_time, end_tim
                 statement = 'SELECT * FROM ' + pType + ' WHERE tag_str = ' + quote(tag[1]) + \
                             ' AND ' + queryDict[pType] + \
                             ' between' + quote(start + ' ' + start_time) + ' and ' + quote(end + ' ' + end_time)
-            # print(statement)
+            print(statement, flush=True)
             cur = db.cursor()
             cur.execute(statement)
             tmp = cur.fetchall()
@@ -232,7 +233,7 @@ def milkQuery(cow_id, start_date, end_date):
     results = []
     for cow in cow_id:
         cur = db.cursor()
-        statement = "SELECT * FROM  WHERE levnr = {} AND" \
+        statement = "SELECT * FROM MilkInfo WHERE levnr = {} AND " \
                     "insertDate between {} and {}".format(cow, quote(start_date), quote(end_date))
         print(statement, flush=True)
         cur.execute(statement)
@@ -245,7 +246,11 @@ def milkQuery(cow_id, start_date, end_date):
         text_file.write("No records fetched")
         text_file.close()
     else:
-        data.to_csv(path+filename, index=False, header=False, sep=" ")
+        data.columns = ["diernr", "insertdate", "naam", "levnr", "kgmelk",
+            "isk", "percentv", "eiw", "lact", "ur", "celget", "klfdat", "lftafk", "mprlft",
+            "lactnr", "lactatiedagen", "kgmelklact", "kgmelk305", "vetlact", "vet305",
+            "eiwlact", "eiw305", "kgvetlact", "kgvet305", "kgeiwlact", "kgeiw305", "lw"]
+        data.to_csv(path+filename, index=False, header=True, sep=",")
     return_value.append((filename, len(data.index)))
     return return_value
 

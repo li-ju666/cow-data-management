@@ -13,6 +13,7 @@ def infoScan(path):
 
     CowFiles = list(filter((lambda x: x.startswith("Cow")), files))
     CowFiles.sort()
+    CowFiles = []
 
     MilkFiles = list(filter((lambda x: "control" in x), files))
 
