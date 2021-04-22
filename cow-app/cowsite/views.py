@@ -2,7 +2,9 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from src.apis.bgAPIs import bgScanSe, bgScanNl
 from src.apis.overview import overview_func, size_overview
-from functions import format_overview, milkdata_context, position_context, cowinfo_context, handle_uploaded_file, dutch_position_context, dutch_milkdata_context, dutch_cowinfo_context
+from functions import format_overview_se, format_overview_nl
+from functions import milkdata_context, position_context, cowinfo_context
+from functions import handle_uploaded_file, dutch_position_context, dutch_milkdata_context, dutch_cowinfo_context
 from form import UploadFileForm
 from cows.settings import BASE_DIR
 from django.core.files.storage import FileSystemStorage
@@ -147,7 +149,8 @@ def overview(request):
    context = {}
    try:
       over = overview_func()
-      list_info, list_pos = format_overview(over)
+      list_info_se, list_pos_se = format_overview_se(over[0])
+      list_info_nl, list_pos_nl = format_overview_nl(over[1])
       list_size = size_overview()
       #dutch function callls here
       print(list_size, flush=True)
@@ -156,15 +159,15 @@ def overview(request):
          'info_header': ['KO','Health','Avkastn','Milk'],
          'position_header': ['FA','PA','PAA','PC'],
          'size_header': ['Table name', 'Nr of Records', 'Size (MB)'],
-         'list_pos': list_pos,
-         'list_info': list_info,
-         'list_size': list_size,
+         'list_pos': list_pos_se,
+         'list_info': list_info_se,
+         'list_size': list_size[0],
          'dutch_info_header': ['File'],
          'dutch_position_header': ['FA','PA','PAA','PC'],
          'dutch_size_header': ['Table name', 'Nr of Records', 'Size (MB)'],
-         'dutch_list_pos': [],
-         'dutch_list_info': [],
-         'dutch_list_size': [],
+         'dutch_list_pos': list_pos_nl,
+         'dutch_list_info': list_info_nl,
+         'dutch_list_size': list_size[1],
       }
       context['status_message'] = 'Successfully connected to the database.'
    except Exception as error:
@@ -384,10 +387,10 @@ def dutch_position(request):
             else:
                cow_id = list(map(int, context['cow_id'].split(',')))
 
-            print("tag_str in context: {}".format(context['tag_str']), flush=True)
+            # print("context dictionary: {}".format(context), flush=True)
 
             tag_strs = list(filter(lambda x: x != "", map(str, context['tag_str'].replace(' ', '').split(','))))
-            print(tag_strs, flush=True)
+
             types = context['position_list']
             start_date = context['start_date']
             end_date = context['end_date']
@@ -396,9 +399,7 @@ def dutch_position(request):
             periodic = context['periodic']
             #query function call
             from src.apis.query_nl import positionQuery
-            # TODO: tags????????????
-            # TODO: file names?
-            # tags = []
+
             positionQuery(cow_id, tag_strs, types, start_date, end_date, start_time, end_time, periodic)
             context['download_link'] = True
             context['status_message'] = 'Query was successful, file has been generated.'

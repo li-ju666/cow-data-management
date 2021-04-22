@@ -155,7 +155,6 @@ def positionQuery(cow_id, tags, types, start_date, end_date, start_time, end_tim
     if tags:
         # tagRanges: a list of tuple: (tag, startDate, endDate)
         tagRanges = list(map(lambda x: (x.replace(" ", ""), start, end), tags))
-        print(tagRanges, flush=True)
     else:
         tagRanges = []
         for each in tagQuery(cow_id):
@@ -172,6 +171,7 @@ def positionQuery(cow_id, tags, types, start_date, end_date, start_time, end_tim
     queryDict['PC'] = 'start_time'
     db = connect_nl()
     query_result = []
+
     for pType in types:
         num_rows = 0
         filename = pType + suffix + '.csv'
@@ -185,20 +185,21 @@ def positionQuery(cow_id, tags, types, start_date, end_date, start_time, end_tim
         if not tagRanges:
             f = open(path+filename, "w")
             f.write("No records fetched")
-        else:
-            f = open(path+filename, "w")
-            for tag in tagRanges:
-                start = tag[2].strftime("%y-%m-%d")
-                end = tag[3].strftime("%y-%m-%d")
-                f.write("  ".join([str(tag[0]), str(tag[1]), start, end])+"\n")
-        f.close()
+        # else:
+        #     f = open(path+filename, "w")
+        #     for tag in tagRanges:
+        #         print(tag, flush=True)
+        #         start = tag[1].strftime("%y-%m-%d")
+        #         end = tag[2].strftime("%y-%m-%d")
+        #         f.write("  ".join([str(tag[0]), str(tag[1]), start, end])+"\n")
+        # f.close()
 
         for tag in tagRanges:
             print(tag, flush=True)
-            start = tag[2].strftime("%y-%m-%d")
-            end = tag[3].strftime("%y-%m-%d")
+            start = tag[1].strftime("%y-%m-%d")
+            end = tag[2].strftime("%y-%m-%d")
             if periodic:
-                statement = 'SELECT * FROM ' + pType + ' WHERE tag_str = ' + quote(tag[1]) + \
+                statement = 'SELECT * FROM ' + pType + ' WHERE tag_str = ' + quote(tag[0]) + \
                             ' AND date(' + queryDict[pType] + \
                             ') between ' + quote(start) + ' and ' + quote(end) + \
                             ' AND time(' + queryDict[pType] + \
@@ -211,8 +212,8 @@ def positionQuery(cow_id, tags, types, start_date, end_date, start_time, end_tim
             cur = db.cursor()
             cur.execute(statement)
             tmp = cur.fetchall()
-            result = list(map(lambda x: [tag[0]] + list(x), tmp))
-            data = df(result)
+            # result = list(map(lambda x: [tag[0]] + list(x), tmp))
+            data = df(tmp)
             if data.empty:
                 continue
             else:

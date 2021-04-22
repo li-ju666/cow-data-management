@@ -5,7 +5,7 @@ def handle_uploaded_file(f,temp_dest):
         for chunk in f.chunks():
             destination.write(chunk)
 
-def format_overview(stat):
+def format_overview_se(stat):
     def get1(l, idx):
         if idx >= len(l):
             return None
@@ -21,6 +21,25 @@ def format_overview(stat):
         tmp.append(get1(stat['Avkastn'], i))
         tmp.append(get1(stat['Milk'], i))
         list1.append(tmp)
+    list2 = []
+    for i in range(maxPos):
+        tmp = []
+        tmp.append(get1(stat['FA'], i))
+        tmp.append(get1(stat['PA'], i))
+        tmp.append(get1(stat['PAA'], i))
+        tmp.append(get1(stat['PC'], i))
+        list2.append(tmp)
+    return list1, list2
+
+def format_overview_nl(stat):
+    def get1(l, idx):
+        if idx >= len(l):
+            return None
+        else:
+            return l[idx]
+    maxPos = max(len(stat['FA']), len(stat['PA']), len(stat['PAA']), len(stat['PC']))
+    list1 = [stat['Milk']]
+
     list2 = []
     for i in range(maxPos):
         tmp = []
