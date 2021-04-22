@@ -399,10 +399,13 @@ def dutch_position(request):
             periodic = context['periodic']
             #query function call
             from src.apis.query_nl import positionQuery
-
-            positionQuery(cow_id, tag_strs, types, start_date, end_date, start_time, end_time, periodic)
+            files = positionQuery(cow_id, tag_strs, types, start_date, end_date, start_time, end_time, periodic)
+            files = list(map(lambda x: x[0], files))
+            files = list(filter(lambda x: x, files))
+            files = ' '.join(files)
             context['download_link'] = True
-            context['status_message'] = 'Query was successful, file has been generated.'
+            context['status_message'] = 'Query was successful, following files have been generated and can be found in'\
+               ' result_files/ with names of {}'.format(files)
          except Exception as error:
                print('Error: ')
                print(error)
@@ -433,11 +436,15 @@ def dutch_milkdata(request):
             start_date = context['start_date']
             end_date = context['end_date']
             
-            # TODO: start_date and end_date
+            
             from src.apis.query_nl import milkQuery
-            milkQuery(cow_id, start_date, end_date)
+            files = milkQuery(cow_id, start_date, end_date)
+            files = list(map(lambda x: x[0], files))
+            files = list(filter(lambda x: x, files))
+            files = ' '.join(files)
             context['download_link'] = True
-            context['status_message'] = 'Query was successful, file has been generated.'
+            context['status_message'] = 'Query was successful, following files have been generated and can be found in'\
+               ' result_files/ with names of {}'.format(files)
          except Exception as error:
             print('Error: ')
             print(error)
@@ -473,7 +480,7 @@ def dutch_mapping_info(request):
             context['status'] = 'Success!'
             context['msg'] = 'Mapping info found!'
             context['msg_id'] = 'Rendering table using cow id = {}.'.format(cow_id)
-            # TODO: get cow ids
+      
             from src.apis.query_nl import refQuery
             refQuery(cow_id)
          except Exception as error:

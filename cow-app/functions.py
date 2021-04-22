@@ -522,7 +522,7 @@ def dutch_position_context(request):
                 user_inputs = ['Tag string: ' + tag_str, 'Start date: ' + start_date, 'End date: ' + end_date,
                 'Start time: ' + start_time, 'End time: ' + end_time,  ['Position type(s): '] + position_list]
                 fetch_message = 'User inputs:'
-        
+    
 
     
 
