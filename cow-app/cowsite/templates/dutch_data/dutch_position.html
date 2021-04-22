@@ -93,6 +93,10 @@
  
 
   <p style="font-size:24px"><b>Query status:</b> {{ status_message }}</p>
+  {% if download_link %}
+    <a href="/download_after_query">Click here to go to the download page.</a>
+  {% endif %}
+  <br>
   <p style="font-size:24px">{{ fetch_message }}</p>
   <ul>
   {% for list in user_inputs %}

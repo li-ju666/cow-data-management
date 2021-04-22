@@ -400,7 +400,7 @@ def dutch_position(request):
             # TODO: file names?
             # tags = []
             positionQuery(cow_id, tag_strs, types, start_date, end_date, start_time, end_time, periodic)
-
+            context['download_link'] = True
             context['status_message'] = 'Query was successful, file has been generated.'
          except Exception as error:
                print('Error: ')
@@ -432,10 +432,10 @@ def dutch_milkdata(request):
             start_date = context['start_date']
             end_date = context['end_date']
             
-            # No function to query
             # TODO: start_date and end_date
             from src.apis.query_nl import milkQuery
             milkQuery(cow_id, start_date, end_date)
+            context['download_link'] = True
             context['status_message'] = 'Query was successful, file has been generated.'
          except Exception as error:
             print('Error: ')
