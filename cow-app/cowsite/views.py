@@ -4,7 +4,7 @@ from src.apis.bgAPIs import bgScanSe, bgScanNl
 from src.apis.overview import overview_func, size_overview
 from functions import format_overview_se, format_overview_nl
 from functions import milkdata_context, position_context, cowinfo_context
-from functions import handle_uploaded_file, dutch_position_context, dutch_milkdata_context, dutch_cowinfo_context
+from functions import handle_uploaded_file, dutch_position_context, dutch_milkdata_context, dutch_cowinfo_context, sort_files_by_time
 from form import UploadFileForm
 from cows.settings import BASE_DIR
 from django.core.files.storage import FileSystemStorage
@@ -14,6 +14,7 @@ import os
 
 def index(request):
    return render(request, "base.html",{})
+
 
 def about(request):
    return render(request, 'about.html', {})
@@ -34,6 +35,7 @@ def download_after_query(request):
    
    context = {}
    files = [f for f in listdir('result_files') if isfile(join('result_files', f))]
+   files = sort_files_by_time(files)
    context['file_names'] = files
    cleared_folder = False
    
@@ -52,7 +54,6 @@ def download_after_query(request):
       else:
          file_to_download = request.POST['action']
          path = 'result_files/'+file_to_download
-
          response = HttpResponse(open(path, 'rb').read())
          response['Content-Disposition'] = 'attachment; filename='+file_to_download
          response['Content-Type'] = 'text/plain'

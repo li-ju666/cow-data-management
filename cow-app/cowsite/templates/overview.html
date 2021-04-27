@@ -6,7 +6,8 @@
 
 <div style="max-width: 60%; margin-top: 14px;">
   <h2>Overview</h2>
-<p style="font-size: 18px;">Welcome to Overview! Here you can view meta data of the files stored in the Swedish and Dutch databases.</p>
+<p style="font-size: 18px;">Welcome to Overview! Here you can view meta data of the files stored in the Swedish and Dutch databases after uploading.
+<br><b>Note:</b> If the a large file has been passed to the database using the <i>Upload</i> tabs, it may take a while before it is displayed here due to insertion time.</p>
 <p style="font-size: 16px;"><b>Status message:</b> {{ status_message }} </p>
 </div>
 <div class="div_border" style="margin-top:  0cm; margin-bottom: 0.5cm; width: 100%;">
@@ -140,15 +141,20 @@
           </tr>
         </thead>
         <tbody>
-            {% for l1 in dutch_list_info %}
-          <tr>
-
+          
+            
+            
+              {% for l1 in dutch_list_info %}
               {% for l2 in l1 %}
+              <tr>
                   <td>{{ l2 }}</td>
-              {% endfor %}
+                </tr>
+                {% endfor %}
+                  {% endfor %}
+            
+          
 
-          </tr>
-          {% endfor %}
+        </tr>
       </tbody>
       </table>
       </div>

@@ -1,3 +1,14 @@
+def sort_files_by_time(files):
+    import os
+    files_absolute = [] #with absolute path
+    for f in files:
+        files_absolute.append('result_files/' + f)
+    files_absolute.sort(key=os.path.getctime)
+    files_ordered = []
+    for f in files_absolute:
+        files_ordered.append(f.replace("result_files/",""))
+    return files_ordered[::-1]
+
 def handle_uploaded_file(f,temp_dest):
     temp_dest = 'upload_files/' + temp_dest
     with open(temp_dest + f.name, 'wb+') as destination:
