@@ -4,7 +4,7 @@ from src.apis.bgAPIs import bgScanSe, bgScanNl
 from src.apis.overview import overview_func, size_overview
 from functions import format_overview_se, format_overview_nl
 from functions import milkdata_context, position_context, cowinfo_context
-from functions import handle_uploaded_file, dutch_position_context, dutch_milkdata_context, dutch_cowinfo_context
+from functions import handle_uploaded_file, dutch_position_context, dutch_milkdata_context, dutch_cowinfo_context, sort_files_by_time
 from form import UploadFileForm
 from cows.settings import BASE_DIR
 from django.core.files.storage import FileSystemStorage
@@ -14,6 +14,7 @@ import os
 
 def index(request):
    return render(request, "base.html",{})
+
 
 def about(request):
    return render(request, 'about.html', {})
@@ -34,6 +35,7 @@ def download_after_query(request):
    
    context = {}
    files = [f for f in listdir('result_files') if isfile(join('result_files', f))]
+   files = sort_files_by_time(files)
    context['file_names'] = files
    cleared_folder = False
    
@@ -52,7 +54,6 @@ def download_after_query(request):
       else:
          file_to_download = request.POST['action']
          path = 'result_files/'+file_to_download
-
          response = HttpResponse(open(path, 'rb').read())
          response['Content-Disposition'] = 'attachment; filename='+file_to_download
          response['Content-Type'] = 'text/plain'
@@ -399,10 +400,13 @@ def dutch_position(request):
             periodic = context['periodic']
             #query function call
             from src.apis.query_nl import positionQuery
-
-            positionQuery(cow_id, tag_strs, types, start_date, end_date, start_time, end_time, periodic)
+            files = positionQuery(cow_id, tag_strs, types, start_date, end_date, start_time, end_time, periodic)
+            files = list(map(lambda x: x[0], files))
+            files = list(filter(lambda x: x, files))
+            files = ' '.join(files)
             context['download_link'] = True
-            context['status_message'] = 'Query was successful, file has been generated.'
+            context['status_message'] = 'Query was successful, following files have been generated and can be found in'\
+               ' result_files/ with names of {}'.format(files)
          except Exception as error:
                print('Error: ')
                print(error)
@@ -433,11 +437,15 @@ def dutch_milkdata(request):
             start_date = context['start_date']
             end_date = context['end_date']
             
-            # TODO: start_date and end_date
+            
             from src.apis.query_nl import milkQuery
-            milkQuery(cow_id, start_date, end_date)
+            files = milkQuery(cow_id, start_date, end_date)
+            files = list(map(lambda x: x[0], files))
+            files = list(filter(lambda x: x, files))
+            files = ' '.join(files)
             context['download_link'] = True
-            context['status_message'] = 'Query was successful, file has been generated.'
+            context['status_message'] = 'Query was successful, following files have been generated and can be found in'\
+               ' result_files/ with names of {}'.format(files)
          except Exception as error:
             print('Error: ')
             print(error)
@@ -473,7 +481,7 @@ def dutch_mapping_info(request):
             context['status'] = 'Success!'
             context['msg'] = 'Mapping info found!'
             context['msg_id'] = 'Rendering table using cow id = {}.'.format(cow_id)
-            # TODO: get cow ids
+      
             from src.apis.query_nl import refQuery
             refQuery(cow_id)
          except Exception as error:
