@@ -116,7 +116,14 @@ def tagQuery(cow_id, grp, stats, start_date, end_date):
         # results += [tagRangeInsect(r, t) for r in cow_dateRange[i] for t in refs]
         results += refsMerge(refs)
         cur.close()
-    return results
+    returnValue = []
+    for rec in results:
+        insecStart, insecEnd = dateIntersect(datetime.datetime.strptime(start_date, "%y-%m-%d").date(),
+                                             datetime.datetime.strptime(end_date, "%y-%m-%d").date(),
+                                             rec[2], rec[3])
+        if insecStart < insecEnd:
+            returnValue.append((rec[0], rec[1], insecStart, insecEnd))
+    return returnValue
 
 
 def refsMerge(refs):
