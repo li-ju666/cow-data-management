@@ -359,11 +359,16 @@ def swe_mapping_info(request):
          try:
             from src.apis.query_se import refQuery
             context['map_LoL'] = refQuery(cow_id)
-            #context['map_LoL'] = [['tag1','date1','date1'],['tag2','date2','date2'],['tag3','date3','date3']] #test data
-            context['map_header'] = ['Tag Nr', 'Start date', 'End date']
-            context['status'] = 'Success!'
-            context['msg'] = 'Mapping info found!'
-            context['msg_id'] = 'Rendering table using cow id = {}.'.format(cow_id)
+        
+            if not any(context['map_LoL']):
+               context['status'] = 'Failed'
+               context['msg'] = 'No mapping info exists for cow id = {}.'.format(cow_id)
+            else:
+               context['msg'] = 'Mapping info found!'
+               context['map_header'] = ['Tag Nr', 'Start date', 'End date']
+               context['status'] = 'Success!'
+               context['msg'] = 'Mapping info found!'
+               context['msg_id'] = 'Rendering table using cow id = {}.'.format(cow_id)
          except Exception as error:
             context['status'] = 'Something went wrong!'
             context['msg'] = 'Error occured: {}'.format(error)
