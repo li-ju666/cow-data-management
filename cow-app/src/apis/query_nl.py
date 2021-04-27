@@ -205,7 +205,7 @@ def positionQuery(cow_id, tags, types, start_date, end_date, start_time, end_tim
                             ' AND time(' + queryDict[pType] + \
                             ') between ' + quote(start_time) + ' and ' + quote(end_time)
             else:
-                statement = 'SELECT * FROM ' + pType + ' WHERE tag_str = ' + quote(tag[1]) + \
+                statement = 'SELECT * FROM ' + pType + ' WHERE tag_str = ' + quote(tag[0]) + \
                             ' AND ' + queryDict[pType] + \
                             ' between' + quote(start + ' ' + start_time) + ' and ' + quote(end + ' ' + end_time)
             print(statement, flush=True)
