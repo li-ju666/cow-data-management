@@ -1,10 +1,11 @@
 from src.lib.insertor.infoInsert_se import insertHealth, insertInfo, insertRef, insertMilkAV, insertMilkPlats
 from src.lib.insertor.positionInsert import insertPos
-from os import listdir
+from os import listdir, rename
 from src.lib.logmanager.logManage_se import readLog, saveLog
 from src.lib.dbmanager.dbinit import connect_se
-#from random import shuffle
-#import multiprocessing, psutil, threading
+from re import findall
+# from random import shuffle
+# import multiprocessing, psutil, threading
 import threading
 import time
 
@@ -16,13 +17,23 @@ def infoScan(path):
     KOFiles = list(filter((lambda x: x.startswith("KO")), files))
     KOFiles.sort()
 
-    HealthFiles = list(filter((lambda x: x.startswith("Översikt")), files))
+    rawHealthFiles = list(filter((lambda x: "versikt" in x), files))
+    HealthFiles = []
+    for file in rawHealthFiles:
+        targetName = "Översikt " + findall("\d+", file)[-1] + ".txt"
+        HealthFiles.append(targetName)
+        rename(path+file, path+targetName)
     HealthFiles.sort()
 
     AvFiles = list(filter((lambda x: x.startswith("Avkastn")), files))
     AvFiles.sort()
 
-    MilkFiles = list(filter((lambda x: x.startswith("Mjölkplats")), files))
+    rawMilkFiles = list(filter((lambda x: "lkplats" in x), files))
+    MilkFiles = []
+    for file in rawMilkFiles:
+        targetName = "Mjölkplats" + findall("\d+", file)[-1] + ".txt"
+        MilkFiles.append(targetName)
+        rename(path + file, path + targetName)
     MilkFiles.sort()
 
     records = readLog()
