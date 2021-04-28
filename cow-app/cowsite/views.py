@@ -479,9 +479,9 @@ def dutch_mapping_info(request):
          except:
             context['msg'] = 'Incorrect format, Cow ID must be an integer! Your input:'
             context['msg_id'] = '{}'.format(cow_id)
-            return render(request,'swe_data/swe_mapping_info.html', context)
+            return render(request,'dutch_data/dutch_mapping_info.html', context)
          try:
-            context['map_LoL'] = [['tag1','date1','date1'],['tag2','date2','date2'],['tag3','date3','date3']] #test data
+            #context['map_LoL'] = [['tag1','date1','date1'],['tag2','date2','date2'],['tag3','date3','date3']] #test data
             context['map_header'] = ['Tag Nr', 'Start date', 'End date']
             context['status'] = 'Success!'
             context['msg'] = 'Mapping info found!'
