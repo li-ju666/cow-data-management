@@ -3,10 +3,12 @@ import datetime
 from pandas import DataFrame as df
 from itertools import compress
 import os
+import pytz
 
 
 ################################# helper functions ###########################################
 # return a quoted string
+cur_timezone = pytz.timezone('Europe/Berlin')
 def quote(x):
     return '"' + x + '"'
 
@@ -114,7 +116,14 @@ def tagQuery(cow_id, grp, stats, start_date, end_date):
         # results += [tagRangeInsect(r, t) for r in cow_dateRange[i] for t in refs]
         results += refsMerge(refs)
         cur.close()
-    return results
+    returnValue = []
+    for rec in results:
+        insecStart, insecEnd = dateIntersect(datetime.datetime.strptime(start_date, "%y-%m-%d").date(),
+                                             datetime.datetime.strptime(end_date, "%y-%m-%d").date(),
+                                             rec[2], rec[3])
+        if insecStart < insecEnd:
+            returnValue.append((rec[0], rec[1], insecStart, insecEnd))
+    return returnValue
 
 
 def refsMerge(refs):
@@ -158,7 +167,7 @@ def getDays(start, end):
 # mapping query function
 def refQuery(cow_id):
     refs = tagQuery([cow_id],[], ['REDO','INSEM','DRÄKT','SKAUT','SINLD','RÅMLK','TIDIG'],
-                    "00-01-01", datetime.datetime.now().strftime("%y-%m-%d"))
+                    "00-01-01", datetime.datetime.now(cur_timezone).strftime("%y-%m-%d"))
     return list(map(lambda x: x[1:], refs))
 
 
@@ -170,7 +179,7 @@ def refQuery(cow_id):
 # TODO: add parameter before start_date -> tag_strs
 def positionQuery(cow_id, grp, stats, types, tags, start_date, end_date, start_time, end_time, periodic):
     print("Position query started")
-    suffix = datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
+    suffix = datetime.datetime.now(cur_timezone).strftime("%Y-%m-%d-%H:%M:%S")
     path = "result_files/"
     if tags:
         start = datetime.datetime.strptime(start_date, "%y-%m-%d")
@@ -246,7 +255,7 @@ def positionQuery(cow_id, grp, stats, types, tags, start_date, end_date, start_t
 def infoQuery(cow_id, grp, stats, start_date, end_date, fields, type):
     print("Info query started")
     path = "result_files/"
-    suffix = datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
+    suffix = datetime.datetime.now(cur_timezone).strftime("%Y-%m-%d-%H:%M:%S")
     db = connect_se()
     cow_dateRange = cowQuery(cow_id, grp, stats, start_date, end_date)
 
@@ -315,7 +324,7 @@ def infoQuery(cow_id, grp, stats, start_date, end_date, fields, type):
 ######## TOBE Verified!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 def milkQuery(cow_id, grp, stats, start_date, end_date, type):
     path = "result_files/"
-    suffix = datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
+    suffix = datetime.datetime.now(cur_timezone).strftime("%Y-%m-%d-%H:%M:%S")
     db = connect_se()
     cowDateRanges = cowQuery(cow_id, grp, stats, start_date, end_date)
     requested_types = []

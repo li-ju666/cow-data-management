@@ -3,10 +3,13 @@ import datetime
 from pandas import DataFrame as df
 from itertools import compress
 import os
+import pytz
 
 
 ################################# helper functions ###########################################
 # return a quoted string
+cur_timezone = pytz.timezone('Europe/Berlin')
+
 def quote(x):
     return '"' + x + '"'
 
@@ -147,7 +150,7 @@ def refQuery(cow_id):
 # return value: a list of tuples, each tuple is consisted of (filename, number of rows)
 def positionQuery(cow_id, tags, types, start_date, end_date, start_time, end_time, periodic):
     print("Position query started")
-    suffix = datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
+    suffix = datetime.datetime.now(cur_timezone).strftime("%Y-%m-%d-%H:%M:%S")
     path = "result_files/"
 
     start = datetime.datetime.strptime(start_date, "%y-%m-%d")
@@ -227,7 +230,7 @@ def positionQuery(cow_id, tags, types, start_date, end_date, start_time, end_tim
 ######## TOBE Verified!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 def milkQuery(cow_id, start_date, end_date):
     path = "result_files/"
-    suffix = datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
+    suffix = datetime.datetime.now(cur_timezone).strftime("%Y-%m-%d-%H:%M:%S")
     db = connect_nl()
 
     return_value = []
