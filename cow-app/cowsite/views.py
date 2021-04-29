@@ -4,11 +4,12 @@ from src.apis.bgAPIs import bgScanSe, bgScanNl
 from src.apis.overview import overview_func, size_overview
 from functions import format_overview_se, format_overview_nl
 from functions import milkdata_context, position_context, cowinfo_context
-from functions import handle_uploaded_file, dutch_position_context, dutch_milkdata_context, dutch_cowinfo_context, sort_files_by_time
+from functions import handle_uploaded_file, dutch_position_context, dutch_milkdata_context, dutch_cowinfo_context, sort_files_by_time, write_query_log, read_query_log, clear_query_log, query_log_isempty, download_log_file
 from form import UploadFileForm
 from cows.settings import BASE_DIR
 from django.core.files.storage import FileSystemStorage
 import os
+
 
 
 
@@ -19,20 +20,36 @@ def index(request):
 def about(request):
    return render(request, 'about.html', {})
 
-def file_scan(request):
+#def file_scan(request):
+   #context = {}
+   #if request.method == 'POST':
+      #if 'pos' in request.POST:
+         #context['pos'] = bgScanSe()
+      #if 'info' in request.POST:
+         #context['info'] = bgScanSe()
+
+   #return render(request, 'file_scan.html', context)
+def query_log(request):
    context = {}
    if request.method == 'POST':
-      if 'pos' in request.POST:
-         context['pos'] = bgScanSe()
-      if 'info' in request.POST:
-         context['info'] = bgScanSe()
+      if request.POST['action'] == 'Clear Query Log':
+         clear_query_log()
+         context['msg'] = 'The log file has been cleared.'
+      elif request.POST['action'] == 'Download Log File':
+         return download_log_file()
 
-   return render(request, 'file_scan.html', context)
+   if query_log_isempty():
+      context['msg'] = 'There are no logs to display, the file is empty.'
+   else:
+      context['msg'] = 'Contents of log file:'
+   
+   context['query_text_log'] = read_query_log()
+   return render(request, 'query_log.html', context)
 
 def download_after_query(request):
    from os import listdir
    from os.path import isfile, join
-   
+
    context = {}
    files = [f for f in listdir('result_files') if isfile(join('result_files', f))]
    files = sort_files_by_time(files)
@@ -153,9 +170,6 @@ def overview(request):
       list_info_se, list_pos_se = format_overview_se(over[0])
       list_info_nl, list_pos_nl = format_overview_nl(over[1])
       list_size = size_overview()
-      #dutch function callls here
-      print(list_size, flush=True)
-      print("Overview function working fine")
       context = {
          'info_header': ['KO','Health','Avkastn','Milk'],
          'position_header': ['FA','PA','PAA','PC'],
@@ -236,12 +250,12 @@ def swe_position(request):
 
                from src.apis.query_se import positionQuery
                files = positionQuery(cow_id, grp, stats, types, tag_strs, start_date, end_date, start_time, end_time, periodic)
-               print(files, flush=True)
+               #iles = ['1','2','3']
                files = list(map(lambda x: x[0], files))
-     
                files = ' '.join(files)
+
+               write_query_log('Swedish Position Data Query',context['user_inputs'],files)
                context['download_link'] = True
-               
                context['status_message'] = 'Query was successful, following files have been generated and can be found in '\
                   'result_files/{}'.format(files)
             except Exception as error:
@@ -280,8 +294,12 @@ def swe_milkdata(request):
             end_date = context['end_date']
             output_list = context['output_list']
             from src.apis.query_se import milkQuery
-            return_info = milkQuery(cow_id, grp, stats, start_date, end_date, output_list)
-            # Query the function here!
+            #return_info = milkQuery(cow_id, grp, stats, start_date, end_date, output_list)
+            files = milkQuery(cow_id, grp, stats, start_date, end_date, output_list)
+            #files = ['4311','212','331']
+            files = list(map(lambda x: x[0], files))
+            files = ' '.join(files)
+            write_query_log('Swedish MilkData Query',context['user_inputs'],files)
             context['download_link'] = True
             context['status_message'] = 'Query was successful, file has been generated.'
          except Exception as error:
@@ -323,6 +341,8 @@ def swe_cowinfo(request):
             files = list(map(lambda x: x[0], files))
             files = list(filter(lambda x: x, files))
             files = ' '.join(files)
+            write_query_log('Swedish Cow Data Query',context['user_inputs'],files)
+            
             context['download_link'] = True
             context['status_message'] = 'Query was successful, following files have been generated and can be found in'\
                ' result_files/ with names of {}'.format(files)
@@ -388,13 +408,6 @@ def dutch_position(request):
       context, query_successful = dutch_position_context(request)
       if query_successful:
          try:
-            if context['cow_id'] == '':
-               cow_id = []
-            else:
-               cow_id = list(map(int, context['cow_id'].split(',')))
-
-            # print("context dictionary: {}".format(context), flush=True)
-
             tag_strs = list(filter(lambda x: x != "", map(str, context['tag_str'].replace(' ', '').split(','))))
 
             types = context['position_list']
@@ -403,12 +416,16 @@ def dutch_position(request):
             start_time = context['start_time']
             end_time = context['end_time']
             periodic = context['periodic']
+      
+            
             #query function call
             from src.apis.query_nl import positionQuery
-            files = positionQuery(cow_id, tag_strs, types, start_date, end_date, start_time, end_time, periodic)
+            files = positionQuery([], tag_strs, types, start_date, end_date, start_time, end_time, periodic) 
             files = list(map(lambda x: x[0], files))
             files = list(filter(lambda x: x, files))
             files = ' '.join(files)
+            write_query_log('Dutch Position Query',context['user_inputs'],files)
+
             context['download_link'] = True
             context['status_message'] = 'Query was successful, following files have been generated and can be found in'\
                ' result_files/ with names of {}'.format(files)
@@ -448,6 +465,7 @@ def dutch_milkdata(request):
             files = list(map(lambda x: x[0], files))
             files = list(filter(lambda x: x, files))
             files = ' '.join(files)
+            write_query_log('Dutch Milk Data Query',context['user_inputs'],files)
             context['download_link'] = True
             context['status_message'] = 'Query was successful, following files have been generated and can be found in'\
                ' result_files/ with names of {}'.format(files)
@@ -497,7 +515,7 @@ def dutch_mapping_info(request):
 
    return render(request,'dutch_data/dutch_mapping_info.html', context)
 
-def dutch_cowinfo(request):
+def dutch_cowinfo(request): # Not in use
  
    if request.method == 'POST':
       context, query_successful = dutch_cowinfo_context(request)

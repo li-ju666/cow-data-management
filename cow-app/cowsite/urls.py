@@ -20,7 +20,8 @@ urlpatterns = [
     path('overview/', views.overview, name='overview'),
     path('about/', views.about, name='about'),
     path('swe_mapping_info', views.swe_mapping_info, name='se_mapping_info'),
-    path('download_after_query', views.download_after_query, name='download_after_query')
+    path('download_after_query', views.download_after_query, name='download_after_query'),
+    path('query_log', views.query_log, name='query_log')
 ]
 
 urlpatterns += static(settings.RESULT_URL, document_root=settings.RESULT_ROOT)
