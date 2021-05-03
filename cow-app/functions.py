@@ -1,7 +1,7 @@
 def write_query_log(query_type,user_inputs,file_names):
     import os
     with open('log/query_log.txt', 'a+') as f:
-        f.write(query_type + '\n' + 'Result files: '+file_names+'\n' +'Inputs: ' + ' '.join(user_inputs) + '\n======================================================================================\n')
+        f.write(query_type + '\n' + '[Result files]: '+file_names+'\n' +'[Inputs]: \n' + ' \n'.join(user_inputs) + '\n======================================================================================\n')
         f.close()
 
 def read_query_log():
