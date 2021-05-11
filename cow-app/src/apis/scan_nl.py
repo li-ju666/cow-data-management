@@ -4,7 +4,8 @@ from os import listdir, remove
 from src.lib.logmanager.logManage_nl import readLog, saveLog
 from src.lib.dbmanager.dbinit import connect_nl
 import threading
-import time
+from random import shuffle
+import psutil
 
 def infoScan(path):
     print("Scan for info files has started -----------------------------------------------------------", flush=True)
@@ -18,20 +19,22 @@ def infoScan(path):
     MilkFiles = list(filter((lambda x: "control" in x), files))
 
     records = readLog()
+    MilkFiles = list(filter(lambda file: file not in records, MilkFiles))
     # print(records, flush=True)
     for file in MilkFiles:
-        if file not in records:
-            print("{} inserting. ".format(file), flush=True)
+        print("{} inserting. ".format(file), flush=True)
+        try:
             insertMilk(path+file, db)
             saveLog(file)
-
+        except:
+            continue
     # print(KOFiles)
-    for file in CowFiles:
-        if file not in records:
-            print("{} inserting. ".format(file), flush=True)
-            insertMap(path+file, db)
-            saveLog(file)
-            remove(path+file)
+    # for file in CowFiles:
+    #     if file not in records:
+    #         print("{} inserting. ".format(file), flush=True)
+    #         insertMap(path+file, db)
+    #         saveLog(file)
+    #         remove(path+file)
 
     print("Info scan has completed", flush=True)
     db.close()
@@ -46,22 +49,28 @@ def positionScan(path):
     # select files which have not been inserted (i.e. not in log)
     records = readLog()
     files = list(filter(lambda x: x not in records, files))
+    files = list(map(lambda file: path+file, files))
+    shuffle(files)
+    n_threads = min(psutil.cpu_count(), len(files), int(psutil.virtual_memory()[1]/(1.5*1024*1024*1024)))
+    print("Number of cpu: {}".format(n_threads), flush=True)
+    tasks = [files[i::n_threads] for i in range(n_threads)]
 
-    start = time.time()
-    for file in files:
-        # if file not in records:
-        print("Inserting file: {}".format(file), flush=True)
-        # insertPos(path+file, db)
+    def thread_job(files):
+        for file in files:
+            try:
+                insertPos(file, "nl")
+            except Exception as e:
+                print(e, flush=True)
+                continue
+
+    for i in range(n_threads):
         try:
-            thread = threading.Thread(target=insertPos, args=[path+file, "nl"])
+            thread = threading.Thread(target=thread_job, args=[tasks[i]])
             thread.start()
             print("Position file inserting starts in new thread", flush=True)
-#                return "Position file inserting starts in new thread"
-        except:
-            print("Failed to insert position file", flush=True)
-        # saveLog(file)
-    # print("Time cost: {}".format(time.time()-start), flush=True)
-    # print("All position files have been submitted", flush=True)
+        except Exception as e:
+            print(e, flush=True)
+            continue
 
 
 def scan():
