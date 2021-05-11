@@ -161,8 +161,7 @@ def upload_dutch(request):
       finally:
          return render(request, 'upload/upload_dutch.html', context)
    return render(request, 'upload/upload_dutch.html', context)
-
-
+# [['hej','hej','hej','hej'],['hej','hej','hej','hej'],['hej','hej','hej','hej'],['hej','hej','hej','hej'],['hej','hej','hej','hej'],['hej','hej','hej','hej'],['hej','hej','hej','hej']]
 def overview(request):
    context = {}
    try:
