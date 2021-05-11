@@ -31,3 +31,4 @@ services:
     volumes: 
       - ./upload_files:/app/cow-app/upload_files
       - ./result_files:/app/cow-app/result_files
+      - ./log:/app/cow-app/log
