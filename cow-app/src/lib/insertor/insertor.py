@@ -37,7 +37,7 @@ class InsertorBase(ABC):
         #     # database.commit()
         #     # cursor.close()
         #     startIdx = endIdx
-        statement = "INSERT INTO " + type + fields
+        statement = "INSERT IGNORE INTO " + type + fields
         cursor.executemany(statement, vals)
         cursor.close()
         database.commit()
