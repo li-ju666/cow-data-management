@@ -14,13 +14,13 @@
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
+        <li><a href="#access">Access</a></li>
+        <li><a href="#stop">Stop</a></li>
+        <li><a href="#resume">Resume</a></li>
+        <li><a href="#remove">Remove</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgements">Acknowledgements</a></li>
   </ol>
 </details>
@@ -59,17 +59,26 @@ Please follow the [post installation instructions](https://docs.docker.com/engin
 
 ### Access
 If you are deploying the system in a local environment, you can access the page on <http://localhost:5000>. 
-Otherwise you can access the page with its IP address or DNS on port 5000. 
+Otherwise you can access the page with the IP address or DNS of the server on port 5000. 
 
-### Stop the system
-If you want to stop the system but keep all your data
+### Stop
+To stop the system but keep all data inserted: 
 ```sh
 sudo ./stop.sh
 ```
 
-### Resume the system
+### Resume
+To resume the system from the a stopped system: 
+```sh
+sudo ./resume.sh
+```
+Do not run this script, unless there is a stopped system. 
 
-### Stop and remove the system
+### Remove
+To Stop the system and remove all inserted files: 
+```sh
+sudo ./clean.sh
+```
 
 <!-- USAGE EXAMPLES -->
 ## Usage
@@ -77,34 +86,6 @@ sudo ./stop.sh
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
 _For more examples, please refer to the [Documentation](https://example.com)_
-
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a list of proposed features (and known issues).
-
-
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-
-
-<!-- LICENSE -->
-## License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
 
 
 <!-- CONTACT -->
