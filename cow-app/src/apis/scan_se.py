@@ -88,7 +88,7 @@ def positionScan(path):
     files = list(filter(lambda x: x not in records, files))
     files = list(map(lambda file: path+file, files))
     shuffle(files)
-    n_threads = min(psutil.cpu_count(), len(files), int(psutil.virtual_memory()[1]/(3*1024*1024*1024)))
+    n_threads = min(psutil.cpu_count(), len(files), int(psutil.virtual_memory()[1]/(1.5*1024*1024*1024)))
     if len(files) != 0 and n_threads == 0:
         raise RuntimeError('No enough resources available: please try later')
     else:
