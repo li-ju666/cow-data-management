@@ -87,7 +87,7 @@
         <h1 class="mt-4">Welcome to Cowsite!</h1>
         <p style="font-size:18px">This is the web page access point for accessing the database system for the cow data. Here you can insert data, fetch/download data and view overall meta data. To learn more, please keep reading.</p>
         <br>
-        <h3>Insert/Scan for data files</h3>
+        <h3>Upload data to database</h3>
         <p style="font-size:18px">To insert files into the database, go to the <i>Upload data</i> tabs, for <a href="/upload_swedish/">Swedish</a> or <a href="/upload_dutch/">Dutch</a> data. 
           </p>
 
@@ -96,12 +96,16 @@
           <p style="font-size:18px">To fetch data from the database, go to the <a href="/swe_db/">Query Swedish Data</a> tab to access data from the Swedish farm or go to the tab <a href="/dutch_data/">Query Dutch Data</a> to access data from the Dutch farm.
             The files will be generated and saved. After query, the files can be downloaded from <a href="/download_after_query">Download Query Data</a>.
             <br>Here you can also delete all generated files in the project folder using the "Clear files" button.
-            <br>If you want to inspect the files manually, they can be found in the server in in <b>&lt;project_folder&gt;/result_files/</b></i>.
+            <br>To inspect the files manually, they can be found in the RISE Linux server, located in <b>&lt;project_folder&gt;/result_files/</b></i>.
             </p>
-
+            <br>
+            <h3>Query Log</h3>
+            <p style="font-size:18px">A log file is kept for all queries made. It contains the file name together with all the search criterias used to render each specific file
+            from the database. It can be found under <a href="/query_log">Query Log</a> tab. </p>
             <br>
             <h3>Overview - Meta data</h3>
             <p style="font-size:18px">To see meta data regarding the content of the database system, go to the <a href="/overview/">Overview</a> tab.</p>
+            
         </div>
       </div>
         
