@@ -23,40 +23,29 @@ def cowQuery(cow_id, grp, stats, start_date, end_date):
 
     localStart = (start_date - datetime.timedelta(days=7)).strftime("%y-%m-%d")
     localEnd = end_date.strftime("%y-%m-%d")
-    if len(cow_id):
-        # query by cow id
-        for i in cow_id:
-            cur = db.cursor()
-            statement = 'SELECT cowID, insertDate, stat FROM CowInfo WHERE cowID = ' + str(i) + \
-                        ' AND insertDate > ' + quote(localStart) + ' AND insertDate <= ' + quote(localEnd)
-            cur.execute(statement)
-            raw_records += cur.fetchall()
-            cur.close()
-    elif len(grp):
-        # query by group no
-        for i in grp:
-            cur = db.cursor()
-            # WHERE grp = 5 AND insertDate > (startDate - 7) AND insertDate <= (endDate)
-            statement = 'SELECT cowID, insertDate, stat FROM CowInfo WHERE grp = ' + str(i) + \
-                        ' AND insertDate > ' + quote(localStart) + ' AND insertDate <= ' + quote(localEnd)
-            # print(statement)
-            cur.execute(statement)
-            raw_records += cur.fetchall()
-            cur.close()
-    else:
-        # select all records between time range
-        cur = db.cursor()
-        # WHERE grp = 5 AND insertDate > (startDate - 7) AND insertDate <= (endDate)
-        statement = 'SELECT cowID, insertDate, stat FROM CowInfo WHERE insertDate > ' + \
-                    quote(localStart) + ' AND insertDate <= ' + quote(localEnd)
-        # print(statement)
-        cur.execute(statement)
-        raw_records += cur.fetchall()
-        cur.close()
+    cur = db.cursor()
+
+    statement = 'SELECT cowID, insertDate, stat, grp FROM CowInfo WHERE insertDate > ' + \
+                quote(localStart) + ' AND insertDate <= ' + quote(localEnd)
+    # print(statement)
+    cur.execute(statement)
+    raw_records = cur.fetchall()
+    cur.close()
+
     # convert tuple to list
     raw_records = list(map(list, raw_records))
+
+    # filter cow id
+    if cow_id:
+        raw_records = list(filter(lambda x: x[0] in cow_id, raw_records))
     # filter status
     raw_records = list(filter(lambda x: x[2] in stats, raw_records))
+    # filter group
+    if grp:
+        raw_records = list(filter(lambda x: x[3] in grp, raw_records))
+
+    # drop group info of all records
+    raw_records = list(map(lambda x: x[:3], raw_records))
 
     # define function to get date intersection of valid range of record and requested date range
     def DateInsectWithRequested(x):
@@ -217,7 +206,6 @@ def positionQuery(cow_id, grp, stats, types, tags, start_date, end_date, start_t
         f.close()
 
         for tag in tagRanges:
-            print(tag, flush=True)
             start = tag[2].strftime("%y-%m-%d")
             end = tag[3].strftime("%y-%m-%d")
             if periodic:
@@ -253,47 +241,43 @@ def positionQuery(cow_id, grp, stats, types, tags, start_date, end_date, start_t
 # args7 = dateType: Int
 
 def infoQuery(cow_id, grp, stats, start_date, end_date, fields, type):
-    print("Info query started")
+    print("Info query started", flush=True)
     path = "result_files/"
     suffix = datetime.datetime.now(cur_timezone).strftime("%Y-%m-%d-%H:%M:%S")
     db = connect_se()
-    cow_dateRange = cowQuery(cow_id, grp, stats, start_date, end_date)
 
     # function to get statement for each type
-    def getStatement(type, cow, start, end):
+    def getStatement(type, start, end):
         if type == 0:
-            statement = "SELECT * FROM CowInfo WHERE " + \
-                        "cowID = " + str(cow) + " AND " + \
+            statement = "SELECT * FROM CowInfo WHERE "\
                         "insertDate between " + quote(start) + " and " + quote(end)
         elif type == 1:
             statement = "SELECT * FROM CowInfo" + \
                         " INNER JOIN HealthInfo ON CowInfo.cowID = HealthInfo.cowID" \
                         " AND CowInfo.insertDate = HealthInfo.insertDate" + \
-                        " WHERE HealthInfo.cowID = " + str(cow) + " AND" + \
-                        " HealthInfo.insertDate between " + quote(start) + " and " + quote(end)
+                        " WHERE HealthInfo.insertDate between " + quote(start) + " and " + quote(end)
             return statement
         else:
             statement = "SELECT * FROM CowInfo" + \
                         " INNER JOIN InsemInfo ON CowInfo.cowID = InsemInfo.cowID" \
                         " AND CowInfo.insertDate = InsemInfo.insertDate" + \
-                        " WHERE InsemInfo.cowID = " + str(cow) + " AND" + \
-                        " InsemInfo.insertDate between " + quote(start) + " and " + quote(end)
+                        " WHERE InsemInfo.insertDate between " + quote(start) + " and " + quote(end)
         return statement
+    start_date = datetime.datetime.strptime(start_date, "%y-%m-%d")
 
-    results = []
-    # query data for each cow and each time range one by one
-    for cow, dates in cow_dateRange.items():
-        for each in dates:
-            start = each[0].strftime("%y-%m-%d")
-            end = each[1].strftime("%y-%m-%d")
-            cur = db.cursor()
-            statement = getStatement(type, cow, start, end)
-            # print(statement)
-            cur.execute(statement)
-            # result = cur.fetchall()
-            # results += result
-            results += cur.fetchall()
-            cur.close()
+    start_date = (start_date - datetime.timedelta(days=7)).strftime("%y-%m-%d")
+    statement = getStatement(type, start_date, end_date)
+    cur = db.cursor()
+    cur.execute(statement)
+    results = cur.fetchall()
+    cur.close()
+
+    # results = list(map(list, results))
+    if cow_id:
+        results = list(filter(lambda x: x[0] in cow_id, results))
+    if grp:
+        results = list(filter(lambda x: x[3] in grp, results))
+    results = list(filter(lambda x: x[4] in stats, results))
     allfields = ["cowID", "insertDate", "resp", "grp", "stat", "lakt", "kalvn_date"]
     fieldnames = [[], ["cowID", "insertDate", "7dag", "100dag", "handelse_day", "comments"],
                   ["cowID", "insertDate", "gp", "avsinad", "insem_date", "sedan_insem", "insem_tjur", "forv_kalvn", "tid_ins",
@@ -326,7 +310,6 @@ def milkQuery(cow_id, grp, stats, start_date, end_date, type):
     path = "result_files/"
     suffix = datetime.datetime.now(cur_timezone).strftime("%Y-%m-%d-%H:%M:%S")
     db = connect_se()
-    cowDateRanges = cowQuery(cow_id, grp, stats, start_date, end_date)
     requested_types = []
     if type[0]:
         requested_types.append("production")
@@ -334,19 +317,32 @@ def milkQuery(cow_id, grp, stats, start_date, end_date, type):
         requested_types.append("station")
     print("Parameters into query function{}".format(requested_types), flush=True)
     return_value = []
+
+    start_date = datetime.datetime.strptime(start_date, "%y-%m-%d")
+    start_date = (start_date - datetime.timedelta(days=7)).strftime("%y-%m-%d")
     for recordType in requested_types:
-        results = []
-        for cow, dates in cowDateRanges.items():
-            for each in dates:
-                start = (each[0]-datetime.timedelta(days=7)).strftime("%y-%m-%d")
-                end = each[1].strftime("%y-%m-%d")
-                cur = db.cursor()
-                statement = "SELECT * FROM MilkInfo WHERE cowID = {} AND recordType = {} AND " \
-                            "insertDate between {} and {}".format(cow, quote(recordType), quote(start), quote(end))
-                # print(statement, flush=True)
-                cur.execute(statement)
-                results += cur.fetchall()
-                cur.close()
+        cur = db.cursor()
+
+        statement = "SELECT * FROM CowInfo INNER JOIN MilkInfo ON CowInfo.cowID = MilkInfo.cowID" \
+                    " AND CowInfo.insertDate = MilkInfo.insertDate WHERE recordType = {}" \
+                    " AND MilkInfo.insertDate between {} and {}".format(quote(recordType),
+                                                                        quote(start_date), quote(end_date))
+        # print(statement, flush=True)
+        cur.execute(statement)
+        results = cur.fetchall()
+        cur.close()
+
+        # filter data
+        if cow_id:
+            results = list(filter(lambda x: x[0] in cow_id, results))
+        if grp:
+            results = list(filter(lambda x: x[3] in grp, results))
+        results = list(filter(lambda x: x[4] in stats, results))
+
+        headers = ["cowID", "insertDate", "recordType", "data"]
+        # drop fields from cow info
+        results = list(map(lambda x: x[7:], results))
+
         data = df(results)
         filename = recordType + suffix + ".csv"
         if data.empty:
@@ -354,7 +350,7 @@ def milkQuery(cow_id, grp, stats, start_date, end_date, type):
             text_file.write("No records fetched")
             text_file.close()
         else:
-            data.to_csv(path+filename, index=False, header=False, sep=" ")
+            data.to_csv(path+filename, index=False, header=headers)
         return_value.append((filename, len(data.index)))
     return return_value
 
