@@ -12,6 +12,7 @@ services:
     # network_mode: host
     volumes:
       - ./mysql/:/var/lib/mysql
+      - ./sqlconf/:/etc/mysql/conf.d/
   adminer:
     image: adminer
     restart: always
