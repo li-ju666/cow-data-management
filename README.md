@@ -20,8 +20,7 @@
         <li><a href="#remove">Remove</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#acknowledgements">Acknowledgements</a></li>
+    <li><a href="#documentation">Documentation</a></li>
   </ol>
 </details>
 
