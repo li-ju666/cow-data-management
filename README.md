@@ -57,8 +57,8 @@ Please follow the [post installation instructions](https://docs.docker.com/engin
    ```
 
 ### Access
-If you are deploying the system in a local environment, you can access the page on <http://localhost:5000>. 
-Otherwise you can access the page with the IP address or DNS of the server on port 5000. 
+If you are deploying the system in a local environment, you can access the page on <http://localhost:8000>. 
+Otherwise you can access the page with the IP address of the server on port 8000. 
 
 ### Stop
 To stop the system but keep all data inserted: 
